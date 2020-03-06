@@ -1,0 +1,117 @@
+provider "aws" {
+  profile = "2auth"
+  region = "us-west-1"
+}
+
+locals {
+  user_data = <<EOF
+#!/bin/bash
+echo "Welcome to OBIEE Server!"
+EOF
+}
+
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "all" {
+  vpc_id = data.aws_vpc.default.id
+}
+
+data "aws_ami" "" {
+  most_recent = true
+
+  owners = ["amazon"]
+
+  filter {
+    name = "name"
+
+    values = [ "amzn-ami-hvm-*-x86_64-gp2", ]
+  }
+
+  filter {
+    name = "owner-alias"
+ 
+    values = [ "amazon", ]
+  }
+}
+
+module "security_group" {
+  source = "terraform-aws-module/security-group/aws"
+  version = "~> 3.0"
+
+  name = ""
+  description = "OBIEE Security group"
+  vpc_id = data.aws_vpn.default.id
+
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+  ingress_rules = ["http-80-tcp", "all-icmp"]
+  egress_rules = ["all-all"]
+}
+
+resource "aws_eip" "this" {
+  vpc = true
+  instance = module.ec2.id[0]
+}
+
+resource "aws_placement_group" "obiee" {
+  name = "obiee-pg"
+  strategy = "cluster"
+}
+
+resource = "aws_kms_key" "this" {
+  
+}
+
+resource "aws_network_interface" "this" {
+  count = 1
+  
+  subnet_id = tolist(data.aws.subnet.ids.all.ids)[count.index]
+}
+
+module "ec2" {
+  source = "../../"
+
+  instance_count = 1
+
+  name = "usw-obi01"
+  ami = data.aws_ami.amazon_linux.id
+  instance_type = "t2.medium"
+  subnet_id = tolist(data.aws_subnet_ids.all.ids)[0]
+  vpc_security_group_ids = [module.security_group.this_security_group_id]
+  associate_public_ip_address = true
+  placement_group = aws_placement_group.web.id
+
+  user_data_base64 = base64encode(local.user_data)
+
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 10
+    },
+
+  ]
+  
+  ebs_block_device = [
+    {
+      device_name = "/dev/sdf"
+      volume_type = "gp2"
+      volume_size = 5
+      encrypted = true
+      kms_key_id = aws_kms_key.this.arn
+    }
+  ]
+
+  tags = {
+    "Env" = "Private"
+    "Location" = "Secret"
+  }
+}
+
+resource "aws_s3_bucket" "prod_tf_trial" {
+  bucket = "tf-trial-20200214"
+  acl = "private"
+}
+
+resource "aws_default_vpc" "default" {}
+
