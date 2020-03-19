@@ -1,6 +1,6 @@
 # Oregon region
 variable "region" {
-  default = "us-west-2"
+  default = "us-west-2" 
 }
 
 # eng-oregon vpc
@@ -9,7 +9,7 @@ variable "vpc" {
 }
 
 variable "subnet" {
-  default = "10.234.10.0/27"
+  default = "10.234.15.0/28"
 }
 
 # CentOS 7 x86_64 HVM image
