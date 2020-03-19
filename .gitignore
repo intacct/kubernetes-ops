@@ -24,4 +24,3 @@ override.tf.json
 terraform.log
 **/*.tfplan
 tfplan
-#qa/obiee/obi.tfplan
