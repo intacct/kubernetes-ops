@@ -8,8 +8,9 @@ variable "vpc" {
   default = "vpc-48c2bd2e"
 }
 
+# Use aux subnet for monitoring 10.234.5.0/24
 variable "subnet" {
-  default = "10.234.15.0/28"
+  default = "subnet-6489a23f"
 }
 
 # CentOS 7 x86_64 HVM image

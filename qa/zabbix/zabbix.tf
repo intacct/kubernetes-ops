@@ -7,15 +7,6 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_subnet" "monitoring_snet" {
-  vpc_id     = var.vpc
-  cidr_block = var.subnet
-
-  tags = {
-    Name = "dev-monitoring"
-  }
-}
-
 resource "aws_security_group" "monitoring_sg" {
   name        = "dev_monitoring_sg"
   description = "Port definitions for Dev Monitoring Server group"
@@ -75,11 +66,11 @@ resource "aws_security_group" "monitoring_sg" {
 }
 
 resource "aws_instance" "zbx-01" {
-  subnet_id                   = aws_subnet.monitoring_snet.id
+  subnet_id                   = var.subnet
   instance_type               = "t2.large"
   vpc_security_group_ids      = ["${aws_security_group.monitoring_sg.id}"]
   associate_public_ip_address = false
-  private_ip                  = "10.234.15.5"
+  private_ip                  = "10.234.5.14"
   ami                         = var.ami
   key_name                    = "sridhar.krishnamurthy"
 
