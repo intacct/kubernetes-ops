@@ -7,6 +7,9 @@ variable "vpc" {
 }
 
 variable "subnet" {
-  default = "subnet-01b304d44d86e2230"
+  default = "10.234.10.0/27"
 }
 
+variable "ami" {
+  default = "ami-01ed306a12b7d1c96"
+}

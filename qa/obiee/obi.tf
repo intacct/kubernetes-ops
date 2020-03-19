@@ -1,8 +1,9 @@
-# Uncomment resources below and add required arguments.
+/* Create OBIEE Server on AWS
+*/
 
 provider "aws" {
   profile = "2auth"
-  region = "${var.region}""
+  region = var.region
 }
 
 /*
@@ -13,29 +14,29 @@ resource "aws_key_pair" "srk" {
 }
 */
 
-resource "aws_vpc" "dev_obi_vpc" {
-  cidr_block = "${var.vpc_cidr}"
+# resource "aws_vpzc" "dev_obi_vpc" {
+#   cidr_block = "${var.vpc_cidr}"
 
-  tags = {
-    Name = "srk_pg"
-  }
-}
+#   tags = {
+#     Name = "srk_pg"
+#   }
+# }
 
 
-resource "aws_subnet" "dev_obi_subnet1" {
-  vpc_id     = aws_vpc.dev_obi_vpc.id
-  cidr_block = "${var.subnet_cidr}"
+# resource "aws_subnet" "dev_obi_subnet1" {
+#   vpc_id     = var.vpc
+#   cidr_block = var.subnet
 
-  tags = {
-    Name = "srk_subnet1"
-  }
-}
+#   tags = {
+#     Name = "srk_subnet1"
+#   }
+# }
 
 
 resource "aws_security_group" "dev_obi_sg" {
   name        = "dev_obi_sg"
   description = "Port definitions for Dev OBIEE servers"
-  vpc_id      = aws_vpc.dev_obi_vpc.id
+  vpc_id      = var.vpc
 
   ingress {
     # Open port for servers to access Oracle RDS
@@ -77,11 +78,11 @@ resource "aws_security_group" "dev_obi_sg" {
 }
 
 resource "aws_instance" "dev_obi01" {
-  subnet_id                   = aws_subnet.dev_obi_subnet1.id
+  subnet_id                   = var.subnet
   instance_type               = "t2.large"
   vpc_security_group_ids      = ["${aws_security_group.dev_obi_sg.id}"]
   associate_public_ip_address = false
-  private_ip                  = "10.234.50.5"
+  private_ip                  = "10.234.9.20"
   ami                         = "ami-01ed306a12b7d1c96"
   key_name                    = "sridhar.krishnamurthy"
 
