@@ -35,6 +35,13 @@ resource "aws_security_group" "monitoring_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    description = "Zabbix inseure portal/dashboard port"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     # Open SSH port
     description = "SSH port"
     from_port   = 22
