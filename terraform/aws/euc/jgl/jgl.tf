@@ -26,6 +26,8 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
+    icmp_type   = -1
+    icmp_code   = -1
     cidr_block  = "0.0.0.0/0"
   }
   ingress {
@@ -72,6 +74,15 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     protocol    = "tcp"
     cidr_block  = "0.0.0.0/0" 
   }
+  ingress {
+    # Open port for DNS server
+     rule_no    = 160
+     action     = "allow"
+     from_port  = 0
+     to_port    = 0
+     protocol   = -1
+     cidr_block = "192.168.20.13/32"
+  }  
   egress {
     rule_no     = 100
     action      = "allow"
@@ -110,6 +121,17 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     from_port   = 53
     to_port     = 53
     protocol    = "udp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  egress {
+    # Allow ICMP traffic to server for ping and traceroute functions
+    rule_no     = 150
+    action      = "allow"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    icmp_type   = -1
+    icmp_code   = -1
     cidr_block  = "0.0.0.0/0"
   }
 

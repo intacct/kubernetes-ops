@@ -26,6 +26,8 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
+    icmp_type   = -1
+    icmp_code   = -1
     cidr_block  = "0.0.0.0/0"
   }
   ingress {
@@ -91,6 +93,42 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     protocol    = "tcp"
     cidr_block  = "0.0.0.0/0"
   }
+  ingress {
+    # Zabbix agent
+    rule_no     = 180
+    action      = "allow"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_block  = "192.168.20.21/32"
+  }
+  ingress {
+    # Zabbix agent
+    rule_no     = 190
+    action      = "allow"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_block  = "10.234.5.14/32"
+  }
+  ingress {
+    # Forward requests from euc-jgl01
+    rule_no     = 200
+    action      = "allow"
+    from_port   = 5700
+    to_port     = 5702
+    protocol    = "tcp"
+    cidr_block  = "10.235.9.10/32"
+  }
+  ingress {
+    # Open port for DNS server
+     rule_no    = 210
+     action     = "allow"
+     from_port  = 0
+     to_port    = 0
+     protocol   = -1
+     cidr_block = "192.168.20.13/32"
+  }  
   egress {
     rule_no     = 100
     action      = "allow"
@@ -133,6 +171,17 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     protocol    = "udp"
     cidr_block  = "0.0.0.0/0"
   }
+  egress {
+    # Allow ICMP traffic to server for ping and traceroute functions
+    rule_no     = 150
+    action      = "allow"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    icmp_type   = -1
+    icmp_code   = -1
+    cidr_block  = "0.0.0.0/0"
+  }
 
   tags = {
     Name = "obiee"
@@ -167,6 +216,28 @@ resource "aws_security_group" "euc-obi-sg" {
     to_port     = -1
     protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    # Open port for Zabbix
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["192.168.20.21/32"]
+  }
+  ingress {
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["10.234.5.14/32"]
+  }
+  ingress {
+    description = "Forward requests from euc-jgl01"
+    from_port   = 5700
+    to_port     = 5702
+    protocol    = "tcp"
+    cidr_blocks = ["10.235.9.10/32"]
   }
 
   egress {

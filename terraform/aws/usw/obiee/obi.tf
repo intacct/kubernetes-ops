@@ -6,87 +6,292 @@ provider "aws" {
   region = var.region
 }
 
-/*
-resource "aws_key_pair" "srk" {
-  key_name   = "sridhar.krishnamurthy"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAs0lgK+s8ud6wvsWWJDNM6pQajC+CtUTYBLtWOOiwf/Yhqy9aPt6rjBLPnEgQIOy6HuJK3wWCBw56wxp2ENUs6rHTkHasnAaEBmRZDEQU6pBPcSfGsQK9rqMncMTISJNb3/u8QjxgjUAxq0GdYLkwGRbNkvKeehusGvny29q9oyyfnJQnP/Hccb0HYzXxcf+ZqjS1KJnGj9hgAkVabPPRv19xNp6JRrrF9jJzCLMpJicn/hiko5xHLJ8g4b1UPSM346v+dr6O2eqpLHeQBZLTxm5ri3VkFP9072/fqLmE1XZAOPuEl7D2UZboC2uJ5CdCR5+yPSqRVIAiJIH1sN0qJw== Sridhar Krishnamurthy - US - Principal DevOps Engineer"
-
-}
-*/
-
-# resource "aws_vpzc" "dev_obi_vpc" {
-#   cidr_block = "${var.vpc_cidr}"
-
-#   tags = {
-#     Name = "srk_pg"
-#   }
-# }
-
-
-# resource "aws_subnet" "dev_obi_subnet1" {
+# resource "aws_subnet" "usw-obi-snet" {
 #   vpc_id     = var.vpc
 #   cidr_block = var.subnet
 
 #   tags = {
-#     Name = "srk_subnet1"
+#     Name = "obiee"
 #   }
 # }
 
+resource "aws_network_acl" "usw-obi-nacl" {
+  vpc_id    = var.vpc
+  subnet_ids = [var.subnet]
 
-resource "aws_security_group" "dev_obi_sg" {
-  name        = "dev_obi_sg"
-  description = "Port definitions for Dev OBIEE servers"
-  vpc_id      = var.vpc
-
-  ingress {
-    # Open port for servers to access Oracle RDS
-    description = "Oracle server port"
-    from_port   = 1521
-    to_port     = 1521
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    # Open SSH port
-    description = "SSH port"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
   ingress {
     # Allow ICMP traffic to server for ping and traceroute functions
-    description = "ICMP port"
+    rule_no     = 100
+    action      = "allow"
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
+    icmp_type   = -1
+    icmp_code   = -1
+    cidr_block  = "0.0.0.0/0"
+  }
+  ingress {
+    # Open SSH port
+    rule_no     = 110
+    action      = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  ingress {
+    # Open HTTP port
+    rule_no     = 120
+    action      = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block = "0.0.0.0/0"
+  }  
+  ingress {
+    # Open HTTP port
+    rule_no     = 130
+    action      = "allow"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_block = "0.0.0.0/0"
+  }    
+  ingress {
+    # Open HTTPS port
+    rule_no     = 140
+    action      = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  ingress {
+    # Allows inbound return traffic from hosts on internet that are responding to requests originating in the subnet
+    rule_no     = 150
+    action      = "allow"
+    from_port   = 32768
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" 
+  }
+  ingress {
+    # Open port for servers to access Oracle RDS
+    rule_no     = 160
+    action      = "allow"
+    from_port   = 1521
+    to_port     = 1521
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  ingress {
+    # Allow inbound RDP traffic from home network
+    rule_no     = 170
+    action      = "allow"
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  ingress {
+    # Zabbix agent
+    rule_no     = 180
+    action      = "allow"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_block  = "192.168.20.21/32"
+  }
+  ingress {
+    # Zabbix agent
+    rule_no     = 190
+    action      = "allow"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_block  = "10.234.5.14/32"
+  }
+  ingress {
+    # Forward requests from usw-jgl01
+    rule_no     = 200
+    action      = "allow"
+    from_port   = 5700
+    to_port     = 5702
+    protocol    = "tcp"
+    cidr_block  = "10.234.11.10/32"
+  }  
+  ingress {
+    # Open port for DNS server
+     rule_no    = 210
+     action     = "allow"
+     from_port  = 0
+     to_port    = 0
+     protocol   = -1
+     cidr_block = "192.168.20.13/32"
+  }
+  egress {
+    rule_no     = 100
+    action      = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  egress {
+    rule_no     = 110
+    action      = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  egress {
+    rule_no     = 120
+    action      = "allow"
+    from_port   = 32768
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  # Open port for DNS resolution
+  egress {
+    rule_no     = 130
+    action      = "allow"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_block  = "192.168.20.13/32"
+  }
+  # Open port for DNS resolution
+  egress {
+    rule_no     = 140
+    action      = "allow"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_block  = "192.168.20.13/32"
+  }
+  egress {
+    # Allow ICMP traffic to server for ping and traceroute functions
+    rule_no     = 150
+    action      = "allow"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    icmp_type   = -1
+    icmp_code   = -1
+    cidr_block  = "0.0.0.0/0"
   }
 
-  egress {
-    # Allow all outbound traffic
-    description = "Allow all outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = {
-    Name = "srk_obi_sg"
+    Name = "obiee"
   }
 }
 
-resource "aws_instance" "dev_obi01" {
+# resource "aws_security_group" "usw-obi-sg" {
+#   name        = "usw_obi"
+#   description = "Port definitions for USW OBIEE servers"
+#   vpc_id      = var.vpc
+
+#   ingress {
+#     # Open port for servers to access Oracle RDS
+#     description = "Oracle server port"
+#     from_port   = 1521
+#     to_port     = 1521
+#     protocol    = "TCP"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   ingress {
+#     # Open SSH port
+#     description = "SSH port"
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "TCP"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   ingress {
+#     # Allow ICMP traffic to server for ping and traceroute functions
+#     description = "ICMP port"
+#     from_port   = -1
+#     to_port     = -1
+#     protocol    = "icmp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   ingress {
+#     # Open port for Zabbix
+#     description = "Zabbix"
+#     from_port   = 10050
+#     to_port     = 10050
+#     protocol    = "tcp"
+#     cidr_blocks = ["192.168.20.21/32"]
+#   }
+#   ingress {
+#     description = "Zabbix"
+#     from_port   = 10050
+#     to_port     = 10050
+#     protocol    = "tcp"
+#     cidr_blocks = ["10.234.5.14/32"]
+#   }
+#   ingress {
+#     description = "Forward requests from usw-jgl01"
+#     from_port   = 5700
+#     to_port     = 5702
+#     protocol    = "tcp"
+#     cidr_blocks = ["10.234.11.10/32"]
+#   }
+
+#   egress {
+#     # Allow all outbound traffic
+#     description = "Allow all outbound traffic"
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   tags = {
+#     Name = "obiee"
+#   }
+# }
+
+resource "aws_instance" "usw-obi" {
   subnet_id                   = var.subnet
-  instance_type               = "t2.large"
-  vpc_security_group_ids      = ["${aws_security_group.dev_obi_sg.id}"]
+  instance_type               = var.instance-type
+  vpc_security_group_ids      = [var.security-group]
   associate_public_ip_address = false
-  private_ip                  = "10.234.9.20"
-  ami                         = "ami-01ed306a12b7d1c96"
-  key_name                    = "sridhar.krishnamurthy"
+  count                       = 2
+  private_ip                  = "${lookup(var.ips,count.index)}"
+  ami                         = var.ami
+  key_name                    = var.keyname
+
+  lifecycle {
+    # prevent_destroy = true
+    ignore_changes = [ami,tags,]
+  }
+
+  root_block_device {
+    volume_type           = "gp2"
+    volume_size           = 20
+    delete_on_termination = false  
+  }
+
+  # /u01 => 20G
+  ebs_block_device {
+    device_name           = "/dev/sdb"
+    volume_type           = "gp2"
+    volume_size           = 20
+    delete_on_termination = false
+  }
+  # /u02 -> 200G
+  ebs_block_device {
+    device_name           = "/dev/sdf"
+    volume_type           = "gp2"
+    volume_size           = 200
+    delete_on_termination = false
+  }
 
   tags = {
-    Name = "srk_obi01"
+    Name = "${element(var.instance-tags, count.index)}"
   }
 }
