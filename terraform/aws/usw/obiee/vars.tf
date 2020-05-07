@@ -10,9 +10,9 @@ variable "subnet" {
   default = "subnet-01b304d44d86e2230"
 }
 
-variable "security-group" {
-  default = "sg-0e714cfcce12199b8"
-}
+# variable "security-group" {
+#   default = "sg-0e714cfcce12199b8"
+# }
 
 # CentOS 7 x86_64 HVM image
 variable "ami" {
@@ -25,16 +25,10 @@ variable "keyname" {
 
 variable "instance-tags" {
   type    = list
-  # default = ["usw-obi01","usw-obi02", "usw-obi03"]
   default = ["usw-obi02", "usw-obi03"]
 }
 
 variable "ips" {
-  # default =  {
-  #   "0" = "10.234.9.11"
-  #   "1" = "10.234.9.12"
-  #   "2" = "10.234.9.13"
-  # }  
   default =  {
     "0" = "10.234.9.12"
     "1" = "10.234.9.13"

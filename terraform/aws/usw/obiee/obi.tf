@@ -94,7 +94,7 @@ resource "aws_network_acl" "usw-obi-nacl" {
     cidr_block  = "0.0.0.0/0"
   }
   ingress {
-    # Zabbix agent
+    # Allow inbound traffic from usw-zbx-01 to local Zabbix agent
     rule_no     = 180
     action      = "allow"
     from_port   = 10050
@@ -103,7 +103,7 @@ resource "aws_network_acl" "usw-obi-nacl" {
     cidr_block  = "192.168.20.21/32"
   }
   ingress {
-    # Zabbix agent
+    # Allow inbound traffic from usw-zbx-01 to local Zabbix agent
     rule_no     = 190
     action      = "allow"
     from_port   = 10050
@@ -160,7 +160,7 @@ resource "aws_network_acl" "usw-obi-nacl" {
     from_port   = 53
     to_port     = 53
     protocol    = "tcp"
-    cidr_block  = "192.168.20.13/32"
+    cidr_block  = "0.0.0.0/0"
   }
   # Open port for DNS resolution
   egress {
@@ -169,7 +169,7 @@ resource "aws_network_acl" "usw-obi-nacl" {
     from_port   = 53
     to_port     = 53
     protocol    = "udp"
-    cidr_block  = "192.168.20.13/32"
+    cidr_block  = "0.0.0.0/0"
   }
   egress {
     # Allow ICMP traffic to server for ping and traceroute functions
@@ -182,6 +182,43 @@ resource "aws_network_acl" "usw-obi-nacl" {
     icmp_code   = -1
     cidr_block  = "0.0.0.0/0"
   }
+  egress {
+    # Allow db connections to oracle subnet
+    rule_no     = 160
+    action      = "allow"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "10.234.2.0/24"
+  }
+  egress {
+    # Allow db connections to oracle subnet
+    rule_no     = 170
+    action      = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  egress {
+    # Allow db connections to CI oracle subnet
+    rule_no     = 180
+    action      = "allow"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "10.226.17.0/24"
+  }
+  egress {
+    # Allow NTP traffic
+    rule_no     = 190
+    action      = "allow"
+    from_port   = 123
+    to_port     = 123
+    protocol    = "udp"
+    cidr_block  = "0.0.0.0/0"
+  }
+
 
 
   tags = {
@@ -189,78 +226,86 @@ resource "aws_network_acl" "usw-obi-nacl" {
   }
 }
 
-# resource "aws_security_group" "usw-obi-sg" {
-#   name        = "usw_obi"
-#   description = "Port definitions for USW OBIEE servers"
-#   vpc_id      = var.vpc
+resource "aws_security_group" "usw-obi-sg" {
+  name        = "usw_obi"
+  description = "Port definitions for USW OBIEE servers"
+  vpc_id      = var.vpc
 
-#   ingress {
-#     # Open port for servers to access Oracle RDS
-#     description = "Oracle server port"
-#     from_port   = 1521
-#     to_port     = 1521
-#     protocol    = "TCP"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     # Open SSH port
-#     description = "SSH port"
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "TCP"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     # Allow ICMP traffic to server for ping and traceroute functions
-#     description = "ICMP port"
-#     from_port   = -1
-#     to_port     = -1
-#     protocol    = "icmp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     # Open port for Zabbix
-#     description = "Zabbix"
-#     from_port   = 10050
-#     to_port     = 10050
-#     protocol    = "tcp"
-#     cidr_blocks = ["192.168.20.21/32"]
-#   }
-#   ingress {
-#     description = "Zabbix"
-#     from_port   = 10050
-#     to_port     = 10050
-#     protocol    = "tcp"
-#     cidr_blocks = ["10.234.5.14/32"]
-#   }
-#   ingress {
-#     description = "Forward requests from usw-jgl01"
-#     from_port   = 5700
-#     to_port     = 5702
-#     protocol    = "tcp"
-#     cidr_blocks = ["10.234.11.10/32"]
-#   }
+  ingress {
+    # Open port for servers to access Oracle RDS
+    description = "Oracle server port"
+    from_port   = 1521
+    to_port     = 1521
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    # Open SSH port
+    description = "SSH port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    # Open HTTPS port
+    description = "HTTPS port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    # Allow ICMP traffic to server for ping and traceroute functions
+    description = "ICMP port"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    # Open port for Zabbix
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["192.168.20.21/32"]
+  }
+  ingress {
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["10.234.5.14/32"]
+  }
+  ingress {
+    description = "Forward requests from euc-obi*"
+    from_port   = 5700
+    to_port     = 5702
+    protocol    = "tcp"
+    cidr_blocks = ["10.234.11.10/32"]
+  }
 
-#   egress {
-#     # Allow all outbound traffic
-#     description = "Allow all outbound traffic"
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  egress {
+    # Allow all outbound traffic
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-#   tags = {
-#     Name = "obiee"
-#   }
-# }
+  tags = {
+    Name = "obiee"
+  }
+}
 
 resource "aws_instance" "usw-obi" {
   subnet_id                   = var.subnet
   instance_type               = var.instance-type
-  vpc_security_group_ids      = [var.security-group]
+  vpc_security_group_ids      = ["${aws_security_group.usw-obi-sg.id}"]
   associate_public_ip_address = false
-  count                       = 2
+  count                       = length(var.instance-tags)
   private_ip                  = "${lookup(var.ips,count.index)}"
   ami                         = var.ami
   key_name                    = var.keyname
@@ -289,6 +334,22 @@ resource "aws_instance" "usw-obi" {
     volume_type           = "gp2"
     volume_size           = 200
     delete_on_termination = false
+  }
+
+  # Run the attach_ebs.sh file as part of startup
+  user_data = "${file("files/attach_ebs.sh")}"
+
+  # user_data = "${data.template_cloudinit_config.config.rendered}"
+
+  provisioner "remote-exec" {
+    inline = ["sudo hostnamectl set-hostname ${element(var.instance-tags, count.index)}"]
+  }
+
+  connection {
+    host  = "${element(var.instance-tags, count.index)}"
+    type = "ssh"
+    user = "centos"
+    private_key = "${file("~/.aws/sridharkrishnamurthy.pem")}"
   }
 
   tags = {

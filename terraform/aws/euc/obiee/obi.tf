@@ -15,7 +15,7 @@ resource "aws_subnet" "euc-obi-snet" {
   }
 }
 
-resource "aws_network_acl" "euc-jgl-nacl" {
+resource "aws_network_acl" "euc-obi-nacl" {
   vpc_id    = var.vpc
   subnet_ids = ["${aws_subnet.euc-obi-snet.id}",]
 
@@ -112,7 +112,7 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     cidr_block  = "10.234.5.14/32"
   }
   ingress {
-    # Forward requests from euc-jgl01
+    # Forward requests from euc-obi*
     rule_no     = 200
     action      = "allow"
     from_port   = 5700
@@ -182,6 +182,44 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     icmp_code   = -1
     cidr_block  = "0.0.0.0/0"
   }
+  egress {
+    # Allow db connections to AWS oracle subnet
+    rule_no     = 160
+    action      = "allow"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "10.235.1.0/24"
+  }
+  egress {
+    # Allow outbound SSH connections 
+    rule_no     = 170
+    action      = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+  }
+  egress {
+    # Allow db connections to CI oracle subnet
+    rule_no     = 180
+    action      = "allow"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "10.226.17.0/24"
+  }
+  egress {
+    # Allow NTP traffic
+    rule_no     = 190
+    action      = "allow"
+    from_port   = 123
+    to_port     = 123
+    protocol    = "udp"
+    cidr_block  = "0.0.0.0/0"
+  }
+
+
 
   tags = {
     Name = "obiee"
@@ -210,6 +248,14 @@ resource "aws_security_group" "euc-obi-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    # Open HTTPS port
+    description = "HTTPS port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     # Allow ICMP traffic to server for ping and traceroute functions
     description = "ICMP port"
     from_port   = -1
@@ -233,7 +279,7 @@ resource "aws_security_group" "euc-obi-sg" {
     cidr_blocks = ["10.234.5.14/32"]
   }
   ingress {
-    description = "Forward requests from euc-jgl01"
+    description = "Forward requests from euc-obi*"
     from_port   = 5700
     to_port     = 5702
     protocol    = "tcp"
@@ -259,13 +305,13 @@ resource "aws_instance" "euc-obi" {
   instance_type               = var.instance_type
   vpc_security_group_ids      = ["${aws_security_group.euc-obi-sg.id}"]
   associate_public_ip_address = false
-  count                       = 2
+  count                       = length(var.instance_tags)
   private_ip                  = "${lookup(var.ips,count.index)}"
   ami                         = var.ami
   key_name                    = var.keyname
 
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
     ignore_changes = [ami,tags,]
   }
 
@@ -282,15 +328,64 @@ resource "aws_instance" "euc-obi" {
     volume_size           = 20
     delete_on_termination = false
   }
-  # /u02 -> 200G
+  # /u02 => 200G
   ebs_block_device {
-    device_name           = "/dev/sdf"
+    device_name           = "/dev/sdc"
     volume_type           = "gp2"
     volume_size           = 200
     delete_on_termination = false
+  }
+
+  # Run the attach_ebs.sh file as part of startup
+  user_data = "${file("files/attach_ebs.sh")}"
+
+  # user_data = "${data.template_cloudinit_config.config.rendered}"
+
+  provisioner "remote-exec" {
+    inline = ["sudo hostnamectl set-hostname ${element(var.instance_tags, count.index)}"]
+  }
+
+  connection {
+    host  = "${element(var.instance_tags, count.index)}"
+    type = "ssh"
+    user = "centos"
+    private_key = "${file("~/.aws/sridharkrishnamurthy-frankfurt.pem")}"
   }
 
   tags = {
     Name = "${element(var.instance_tags, count.index)}"
   }
 }
+
+# resource "aws_ebs_volume" "euc-obi-u01" {
+#   count             = length(var.instance_tags)
+#   availability_zone = "${aws_instance.euc-obi[count.index].availability_zone}"
+#   type              = "gp2"
+#   size              = 20
+# }
+
+# resource "aws_ebs_volume" "euc-obi-u02" {
+#   count             = length(var.instance_tags)
+#   availability_zone = "${aws_instance.euc-obi[count.index].availability_zone}"
+#   type              = "gp2"
+#   size              = 200
+# }
+
+# resource "aws_volume_attachment" "euc-obi-u01-attachment" {
+#   count        = length(var.instance_tags)
+#   device_name  = "/dev/sdb"
+#   # skip_destroy = true
+#   force_detach = true
+#   instance_id  = "${aws_instance.euc-obi[count.index].id}"
+#   volume_id    = "${aws_ebs_volume.euc-obi-u01[count.index].id}"
+# }
+
+# resource "aws_volume_attachment" "euc-obi-u02-attachment" {
+#   count        = length(var.instance_tags)
+#   device_name  = "/dev/sdc"
+#   # skip_destroy = true
+#   force_detach = true
+#   instance_id  = "${aws_instance.euc-obi[count.index].id}"
+#   volume_id    = "${aws_ebs_volume.euc-obi-u02[count.index].id}"
+# }
+

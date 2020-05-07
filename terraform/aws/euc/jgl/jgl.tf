@@ -83,6 +83,25 @@ resource "aws_network_acl" "euc-jgl-nacl" {
      protocol   = -1
      cidr_block = "192.168.20.13/32"
   }  
+  ingress {
+    # Allow zabbix monitoring from zabbix-eng.intacct.com
+    rule_no     = 170
+    action      = "allow"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_block  = "192.168.20.21/32"
+  }
+  ingress {
+    # Allow zabbix monitoring from usw-zbx-01.intacct.com
+    rule_no     = 180
+    action      = "allow"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_block  = "10.234.5.14/32"
+  }
+
   egress {
     rule_no     = 100
     action      = "allow"
@@ -134,6 +153,24 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     icmp_code   = -1
     cidr_block  = "0.0.0.0/0"
   }
+  egress {
+    # Allow traffic OBIEE app server
+    rule_no     = 160
+    action      = "allow"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_block  = "10.235.10.0/24"
+  }
+  egress {
+    # Allow NTP traffic
+    rule_no     = 170
+    action      = "allow"
+    from_port   = 123
+    to_port     = 123
+    protocol    = "udp"
+    cidr_block  = "0.0.0.0/0"
+  }
 
   tags = {
     Name = "juggler"
@@ -168,6 +205,22 @@ resource "aws_security_group" "euc-jgl-sg" {
     to_port     = -1
     protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    # Allow zabbix monitoring from zabbix-eng.intacct.com
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["192.168.20.21/32"]
+  }
+  ingress {
+    # Allow zabbix monitoring from usw-zbx-01.intacct.com
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["10.234.5.14/32"]
   }
 
   egress {

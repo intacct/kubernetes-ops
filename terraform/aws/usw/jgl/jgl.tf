@@ -45,6 +45,23 @@ resource "aws_security_group" "usw-jgl-sg" {
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    # Allow zabbix monitoring from zabbix-eng.intacct.com
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["192.168.20.21/32"]
+  }
+  ingress {
+    # Allow zabbix monitoring from usw-zbx-01.intacct.com
+    description = "Zabbix"
+    from_port   = 10050
+    to_port     = 10050
+    protocol    = "tcp"
+    cidr_blocks = ["10.234.5.14/32"]
+  }
+
   egress {
     # Allow all outbound traffic
     description = "Allow all outbound traffic"
