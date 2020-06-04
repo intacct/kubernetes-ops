@@ -83,7 +83,7 @@ variable "create_crawler" {
 }
 
 variable "crawl_name" {
-  default = "IA-AuditDataCralwer"
+  default = "IA-AuditDataCrawler"
 }
 
 variable "crawl_role" {
