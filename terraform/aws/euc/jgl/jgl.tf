@@ -101,7 +101,15 @@ resource "aws_network_acl" "euc-jgl-nacl" {
     protocol    = "tcp"
     cidr_block  = "10.234.5.14/32"
   }
-
+  ingress {
+    # Open port for NTP traffic
+     rule_no    = 190
+     action     = "allow"
+     from_port  = 123
+     to_port    = 123
+     protocol   = "udp"
+     cidr_block = "0.0.0.0/0"
+  }    
   egress {
     rule_no     = 100
     action      = "allow"

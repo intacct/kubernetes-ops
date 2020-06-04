@@ -129,6 +129,16 @@ resource "aws_network_acl" "usw-obi-nacl" {
      protocol   = -1
      cidr_block = "192.168.20.13/32"
   }
+  ingress {
+    # Open port for NTP traffic
+     rule_no    = 220
+     action     = "allow"
+     from_port  = 123
+     to_port    = 123
+     protocol   = "udp"
+     cidr_block = "0.0.0.0/0"
+  }    
+
   egress {
     rule_no     = 100
     action      = "allow"
