@@ -313,7 +313,7 @@ resource "aws_instance" "euc-obi" {
   instance_type               = var.instance_type
   vpc_security_group_ids      = ["${aws_security_group.euc-obi-sg.id}"]
   associate_public_ip_address = false
-  count                       = length(var.instance_tags)
+  count                       = length(var.hostnames)
   private_ip                  = "${lookup(var.ips,count.index)}"
   ami                         = var.ami
   key_name                    = var.keyname
@@ -344,25 +344,44 @@ resource "aws_instance" "euc-obi" {
     delete_on_termination = false
   }
 
-  # Run the attach_ebs.sh file as part of startup
-  user_data = "${file("files/attach_ebs.sh")}"
+  provisioner "local-exec" {
+      command = <<EOT
+sed '/^${lookup(var.ips,count.index)}/d' ~/.ssh/known_hosts > /tmp/kh
+sed '/^${element(var.hostnames,count.index)}/d' /tmp/kh > /tmp/kh2
+mv /tmp/kh2 ~/.ssh/known_hosts
+EOT
+  }
 
-  # user_data = "${data.template_cloudinit_config.config.rendered}"
+  # Run the attach_ebs.sh file as part of startup
+  
+  # Use attach_ebs.sh if working on euc-obi2 and euc-obi3; as otherwise it will force destroy and recreate
+  # Use attach_ebs_v2.sh if working on instances other than euc-obi2/euc-obi3
+  # user_data = "${file("files/attach_ebs.sh")}"
+  user_data = "${file("files/attach_ebs_v2.sh")}"
 
   provisioner "remote-exec" {
-    inline = ["sudo hostnamectl set-hostname ${element(var.instance_tags, count.index)}"]
+    inline = ["sudo hostnamectl set-hostname ${element(var.hostnames, count.index)}"]
   }
 
   connection {
-    host  = "${element(var.instance_tags, count.index)}"
+    host  = "${element(var.hostnames, count.index)}"
     type = "ssh"
     user = "centos"
     private_key = "${file("~/.aws/sridharkrishnamurthy-frankfurt.pem")}"
   }
 
   tags = {
-    Name = "${element(var.instance_tags, count.index)}"
+    Name = "${replace("${element(var.hostnames, count.index)}", ".intacct.com", "")}"
+    # Name = "${regex("^.*?[^\.]*" "${element(var.hostnames, count.index)}")}"
   }
+
+  provisioner "local-exec" {
+    command = <<EOT
+ssh-add var.key_file
+ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+EOT
+  }
+
 }
 
 # resource "aws_ebs_volume" "euc-obi-u01" {
