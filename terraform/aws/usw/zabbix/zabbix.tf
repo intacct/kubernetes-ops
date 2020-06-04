@@ -73,15 +73,42 @@ resource "aws_security_group" "monitoring_sg" {
 }
 
 resource "aws_instance" "zbx-01" {
+  count = length(var.ips)
   subnet_id                   = var.subnet
   instance_type               = "t2.large"
   vpc_security_group_ids      = ["${aws_security_group.monitoring_sg.id}"]
   associate_public_ip_address = false
-  private_ip                  = "10.234.5.14"
-  ami                         = var.ami
+  private_ip                  = "${element(var.ips, count.index)}"
+  ami                         = "${element(var.ami, count.index)}"
   key_name                    = "sridhar.krishnamurthy"
 
   tags = {
-    Name = "usw-zbx-01"
+    Name = "${element(var.hostnames, count.index)}"
+  }
+
+  provisioner "local-exec" {
+      command = <<EOT
+sed '/^${element(var.ips,count.index)}/d' ~/.ssh/known_hosts > /tmp/kh
+sed '/^${element(var.hostnames,count.index)}/d' /tmp/kh > /tmp/kh2
+mv /tmp/kh2 ~/.ssh/known_hosts
+EOT
+  }
+
+  provisioner "remote-exec" {
+    inline = ["sudo hostnamectl set-hostname ${element(var.hostnames, count.index)}"]
+  }
+
+  connection {
+    host  = "${element(var.ips,count.index)}"
+    type = "ssh"
+    user = "centos"
+    private_key = "${file(var.key_file)}"
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+ssh-add var.key_file
+ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+EOT
   }
 }
