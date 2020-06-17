@@ -49,6 +49,67 @@ variable "create_s3_objects" {
 }
 
 ##################
+# IAM User
+##################
+variable "user_name" {
+  type = string
+  default = "IA-AuditTrailUser"
+} 
+
+variable "pgp_key" {
+  type = string
+  default = "keybase:kaysree"
+}
+
+variable "password_len" {
+  type = number
+  default = 10
+}
+
+variable "require_password_reset" {
+  type = bool
+  default = false
+}
+
+##################
+# IAM Group
+##################
+variable "group_name" {
+  type = string
+  default = "IA-AuditTrailUserGroup"
+}
+
+##################
+# IAM Policy
+##################
+variable "policy_name" {
+  type = string
+  default = "IA-AuditTrailUserAccess"
+}
+
+variable "policy_path" {
+  type = string
+  default = "/"
+}
+
+##################
+# Service Role
+##################
+variable "role_name" {
+  default = "IA-AuditTrailServiceRole"
+}
+
+variable "role_path" {
+  default = "/"
+}
+
+variable "role_policy_name" {
+  default = "IA-AuditTrailServiceRoleAccess"
+}
+
+
+
+##################
 # Glue
 ##################
 # # ---- aws_glue_catalog_database
@@ -75,6 +136,153 @@ variable "db_location_uri" {
 variable "db_params" {
   type    = "map"
   default = {}
+}
+
+# # --- aws_glue_catalog_table
+variable "create_table" {
+  default = true
+}
+
+variable "table1_name" {
+    default = "audittrail"
+
+}
+
+variable "table1_description" {
+    default = "audit trail table"
+}
+
+variable "table1_partition_keys" {
+    default = {
+      cny  = "int"
+      type = "string"
+      dt   = "int"
+    }
+}
+
+variable "table1_type" {
+    default = "EXTERNAL_TABLE"
+}
+
+variable "table1_parameters" {
+    default = [
+        {
+            EXTERNAL = "TRUE"
+        }
+    ]
+}
+
+variable "table1_columns" {
+    default = {
+      recordid       = "STRING"
+      objecttype     = "STRING"
+      objectkey      = "STRING"
+      objectdesc     = "STRING"
+      userid         = "STRING"
+      accesstime     = "TIMESTAMP"
+      accessmode     = "STRING"
+      ipaddress      = "STRING"
+      source         = "STRING"
+      workflowaction = "STRING"
+    }
+}
+
+variable "table2_name" {
+    default = "audittrailfields"
+
+}
+
+variable "table2_description" {
+    default = "audit trail fields table"
+}
+
+variable "table2_partition_keys" {
+    default = {
+      cny  = "int"
+      type = "string"
+      dt   = "int"
+    }
+}
+
+variable "table2_type" {
+    default = "EXTERNAL_TABLE"
+}
+
+variable "table2_parameters" {
+    default = [
+        {
+            EXTERNAL = "TRUE"
+        }
+    ]
+}
+
+variable "table2_columns" {
+    default = {
+      recordid   = "STRING"
+      fieldname  = "STRING"
+      fieldtype  = "STRING"
+      oldval     = "STRING"
+      newval     = "STRING"
+      oldstrval  = "STRING"
+      newstrval  = "STRING"
+      oldintval  = "STRING"
+      newintval  = "STRING"
+      oldnumval  = "STRING"
+      newnumval  = "STRING"
+      olddateval = "STRING"
+      newdateval = "STRING"
+    }
+}
+
+variable "table3_name" {
+  default = "audittrailview"
+}
+
+variable "table3_description" {
+  default = "audit trail view"
+}
+
+variable "table3_type" {
+  default = "VIRTUAL_VIEW"
+}
+
+variable "table3_parameters" {
+  default = [
+      {        
+        presto_view = "true"
+        comment     = "Presto View"    
+      }
+  ]
+}
+
+variable "table3_columns" {
+  default = {
+    cny              = "int"
+    type             = "string"
+    dt               = "int"
+    recordid         = "string"
+    objecttype       = "string"
+    objectkey        = "string"
+    objectdesc       = "string"
+    userid           = "string"
+    accesstime       = "timestamp"
+    accessmode       = "string"
+    ipaddress        = "string"
+    source           = "string"
+    workflowaction   = "string"
+    fieldname  = "string"
+    fieldtype  = "string"
+    oldval     = "string"
+    newval     = "string"
+    oldstrval  = "string"
+    newstrval  = "string"
+    oldintval  = "string"
+    newintval  = "string"
+    oldnumval  = "string"
+    newnumval  = "string"
+    olddateval = "string"
+    newdateval = "string"
+  }
 }
 
 # # ---- aws_glue_crawler
