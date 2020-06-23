@@ -39,12 +39,12 @@ variable sg_id {
 
 variable "ips" {
     type    = list
-    default = ["10.234.2.10"]
+    default = ["10.234.2.10","10.234.2.13"]
 }
 
 variable "hostnames" {
     type    = list
-    default = ["usw-db01"]
+    default = ["usw-db01", "usw-ci-db01"]
 } 
 
 variable "key_name" {

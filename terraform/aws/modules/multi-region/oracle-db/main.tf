@@ -79,7 +79,8 @@ EOT
   provisioner "local-exec" {
     command = <<EOT
 ssh-add var.key_file
-ansible-playbook -i "/Users/skrishnamurthy/do-ansible/hosts" -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config-local.yml"
+ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 EOT
   }
+
 }
