@@ -17,13 +17,23 @@ resource "aws_glue_catalog_table" this {
             name                  = " "
             serialization_library = " "
         }
-
         dynamic "columns" {
-            for_each = var.columns
+            for_each = [for s in var.columns: {
+                name = s[0]
+                type = s[1]
+            }]
+
             content {
-                name = "${columns.key}"
-                type = "${columns.value}"
+                name = columns.value.name
+                type = columns.value.type
             }
         }
+        # dynamic "columns" {
+        #     for_each = var.columns
+        #     content {
+        #         name = "${columns.key}"
+        #         type = "${columns.value}"
+        #     }
+        # }
     }
 }

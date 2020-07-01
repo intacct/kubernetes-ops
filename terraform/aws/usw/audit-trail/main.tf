@@ -1,3 +1,8 @@
+locals {
+  audittrail_tn        = "${trim(var.obj_name[0], "/")}"
+  audittrailfields_tn = "${trim(var.obj_name[1], "/")}"
+}
+
 provider "aws" {
   profile = var.auth_profile
   region  = var.region
@@ -18,6 +23,14 @@ data "aws_iam_policy_document" "policy" {
     actions   = [
       "s3:ListAllMyBuckets",
       "s3:HeadBucket"
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+  statement {
+    actions = [
+      "glue:GetTable",
+      "glue:getDatabase"
     ]
     effect    = "Allow"
     resources = ["*"]
@@ -121,16 +134,17 @@ module "iam_user" {
   force_destroy           = true
   pgp_key                 = var.pgp_key
   password_length         = var.password_len
-  password_reset_required = var.require_password_reset
+  password_reset_required = false
+  create_iam_user_login_profile = true
+  create_iam_access_key = true
+  upload_iam_user_ssh_key = false
 }
 
 module "iam_group" {
   source                            = "../../modules/multi-region/iam-group"
   # version = "~> 2.0"
   name                              = var.group_name
-  group_users                       = [
-    module.iam_user.this_iam_user_name
-  ]
+  group_users                       = module.iam_user.this_iam_user_name
   attach_iam_self_management_policy = false
   custom_group_policy_arns          = [
     # "arn:aws:iam::aws:policy/AdministratorAccess",
@@ -164,6 +178,10 @@ output "output_s3" {
 
 output "password" {
   value = module.iam_user.this_iam_user_login_profile_encrypted_password
+}
+
+output "output_table_col" {
+  value = module.glue_table1
 }
 
 # module "iam_policy_glue" {
@@ -281,6 +299,17 @@ module "glue_database" {
   create       = var.create_database
   name         = var.db_name
   description  = var.db_description
+}
+
+variable index {
+  default = 5
+}
+output item {
+  value = [
+    for c in var.table1_columns:
+      "name = ${c[0]}"
+      # "type = ${c[1]}"
+  ]
 }
 
 module "glue_table1" {

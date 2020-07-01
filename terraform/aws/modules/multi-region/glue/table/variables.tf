@@ -16,8 +16,8 @@ variable "table_description" {
 }
 
 variable "partition_keys" {
-    type = map
-    default = {}
+    type = list
+    default = []
 }
 
 variable "table_type" {
@@ -40,8 +40,9 @@ variable "location_url" {
 
 variable "columns" {
     description = "Table columns"
-    type = "map"
+    type = list
 }
+
 
 
 

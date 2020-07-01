@@ -34,12 +34,12 @@ resource "aws_iam_group_policy_attachment" "iam_self_management" {
   policy_arn = aws_iam_policy.iam_self_management[0].arn
 }
 
-# resource "aws_iam_group_policy_attachment" "custom" {
-#   count = length(var.custom_group_policies) > 0 ? length(var.custom_group_policies) : 0
+resource "aws_iam_group_policy_attachment" "custom" {
+  count = length(var.custom_group_policies) > 0 ? length(var.custom_group_policies) : 0
 
-#   group      = local.group_name
-#   policy_arn = element(aws_iam_policy.custom.*.arn, count.index)
-# }
+  group      = local.group_name
+  policy_arn = element(aws_iam_policy.custom.*.arn, count.index)
+}
 
 ###############
 # IAM policies
