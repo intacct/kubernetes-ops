@@ -83,3 +83,19 @@ variable "key_file" {
     description = "name of the pem file to authenticate against instance, including path"
     type = string
 }
+
+variable "mount_script" {
+    description = "path to the location of mount script"
+    type = string
+    default = ""
+}
+
+variable "create_security_group" {
+    type = bool
+    default = false
+}
+
+variable "security_group_ids" {
+    type = list
+    default = []
+}
