@@ -314,7 +314,7 @@ output item {
 
 module "glue_table1" {
   source            = "../../modules/multi-region/glue/table"
-  create_table      = true
+  create_table      = var.create_table
   table_name        = var.table1_name
   db_name           = var.db_name
   table_description = var.table1_description
@@ -327,7 +327,7 @@ module "glue_table1" {
 
 module "glue_table2" {
   source            = "../../modules/multi-region/glue/table"
-  create_table      = true
+  create_table      = var.create_table
   table_name        = var.table2_name
   db_name           = var.db_name
   table_description = var.table2_description
@@ -340,7 +340,7 @@ module "glue_table2" {
 
 module "glue_table3" {
   source            = "../../modules/multi-region/glue/view"
-  create_table      = true
+  create_table      = var.create_table
   table_name        = var.table3_name
   db_name           = var.db_name
   table_description = var.table3_description
@@ -362,6 +362,7 @@ module "glue_crawler" {
   role         = module.iam_role.this_role_name
   schedule     = var.crawl_schedule
   table_prefix = var.crawl_table_prefix
+  delete_behavior = var.schema_delete_behavior
   data_source_paths = [
     for obj in var.obj_name: 
     format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)  

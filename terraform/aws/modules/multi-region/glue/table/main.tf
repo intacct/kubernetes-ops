@@ -18,8 +18,13 @@ resource "aws_glue_catalog_table" "this" {
         ser_de_info {
             name                  = "trail-logs"
             serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
+            # serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
             parameters            = {
                 "serialization.format" = 1
+                # "field.delim"          = ","
+                # "separatorChar"        = ","
+                # "quoteChar"            = "\""
+                # "escapeChar"           = "\\"
             }
         }
 

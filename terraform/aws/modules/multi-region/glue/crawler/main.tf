@@ -9,6 +9,11 @@ resource "aws_glue_crawler" "glue_crawler_s3" {
   table_prefix  = var.table_prefix
   description   = var.description
 
+  schema_change_policy {
+    delete_behavior = var.delete_behavior
+    update_behavior = var.update_behavior
+  }
+
   s3_target {
     path = var.data_source_paths[0]
   }

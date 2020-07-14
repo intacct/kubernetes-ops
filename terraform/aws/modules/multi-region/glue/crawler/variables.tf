@@ -36,3 +36,13 @@ variable "s3_exclusions" {
   type    = "list"
   default = []
 }
+
+variable "delete_behavior" {
+  type = string
+  default = "LOG"
+}
+
+variable "update_behavior" {
+  type = string
+  default = "LOG"
+}

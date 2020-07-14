@@ -94,9 +94,9 @@ variable "table1_description" { default = "audit trail table" }
 # audittrail table partiion keys
 variable "table1_partition_keys" {
     default = [
-      ["cny", "string"],
+      ["cny", "int"],
       ["type", "string"],
-      ["dt", "string"]
+      ["dt", "int"]
     ]
 }
 
@@ -132,9 +132,9 @@ variable "table2_name" { default = "audittrailfields" }
 variable "table2_description" { default = "audit trail fields table" }
 variable "table2_partition_keys" {
     default = [
-      ["cny", "string"],
+      ["cny", "int"],
       ["type", "string"],
-      ["dt", "string"]
+      ["dt", "int"]
     ]
 }
 variable "table2_type" { default = "EXTERNAL_TABLE" }
@@ -179,9 +179,9 @@ variable "table3_parameters" {
 
 variable "table3_columns" {
   default = [
-    ["cny", "string"],
+    ["cny", "int"],
     ["type", "string"],
-    ["dt", "string"],
+    ["dt", "int"],
     ["recordid", "string"],
     ["objecttype", "string"],
     ["objectkey", "string"],
@@ -212,6 +212,7 @@ variable "create_crawler" { default = true }
 variable "crawl_name" { default = "IA-AuditDataCrawler" }
 variable "crawl_role" { default = "" }
 variable "crawl_database" { default = "" }
+variable "schema_delete_behavior" { default = "LOG" }
 
 # Run at 1:15a every day
 variable "crawl_schedule" {
