@@ -66,6 +66,13 @@ resource "aws_security_group" "usw-ci-sg" {
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+      description = "Docker"
+      from_port   = 4243
+      to_port     = 4243
+      protocol    = "tcp"
+      cidr_blocks = ["10.234.4.0/24"]
+  }
 
   egress {
     # Allow all outbound traffic
@@ -94,7 +101,7 @@ resource "aws_instance" "usw-ci" {
   root_block_device {
     volume_type = "gp2"
     volume_size = 20
-    delete_on_termination = true  
+    delete_on_termination = false  
   }
 
 
