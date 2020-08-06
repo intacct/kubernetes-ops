@@ -17,7 +17,7 @@ variable "ami" {
     # CentOS 7 AMI provided by CentOS "ami-a042f4d8" could not be used 
     # as it does not have ENA enabled
     # Elastic Network Adapter (ENA) is required for the 'm5a.4xlarge' instance type. Ensure that you are using an AMI that is enabled for ENA.
-    default = "ami-01ed306a12b7d1c96"
+    default = "ami-0a248ce88bcc7bd23"
 }
 
 variable "vpc" {
@@ -40,11 +40,13 @@ variable sg_id {
 variable "ips" {
     type    = list
     default = ["10.234.2.10","10.234.2.13"]
+    # default = ["10.234.2.10"]
 }
 
 variable "hostnames" {
     type    = list
     default = ["usw-db01", "usw-ci-db01"]
+    # default = ["usw-db01"]
 } 
 
 variable "key_name" {
