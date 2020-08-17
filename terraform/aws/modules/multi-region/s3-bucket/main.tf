@@ -36,9 +36,9 @@ resource "aws_s3_bucket" "this" {
 
 resource "aws_s3_bucket_object" "this" {
     count   = var.create_s3_objects ? length(var.obj_name) : 0
-    bucket  = "${aws_s3_bucket.this[0].id}"
+    bucket  = aws_s3_bucket.this[0].id
     acl     = var.acl
-    key     = "${element(var.obj_name, count.index)}"
+    key     = element(var.obj_name, count.index)
     source  = var.obj_source
 }
 
