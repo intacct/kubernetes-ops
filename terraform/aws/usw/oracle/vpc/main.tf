@@ -41,7 +41,7 @@ locals {
         rule_number = 800
         rule_action = "allow"
         icmp_code   = -1
-        icmp_type   = 0
+        icmp_type   = -1
         protocol    = "icmp"
         cidr_block  = "0.0.0.0/0"
       },       
@@ -119,7 +119,7 @@ locals {
         rule_number = 800
         rule_action = "allow"
         icmp_code   = -1
-        icmp_type   = 8
+        icmp_type   = -1
         protocol    = "icmp"
         cidr_block  = "0.0.0.0/0"
       },  
