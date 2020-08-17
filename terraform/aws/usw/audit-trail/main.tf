@@ -160,29 +160,10 @@ module "s3_module" {
     tags              = var.tags
     versioning        = var.versioning
     create_s3_objects  = var.create_s3_objects
-    obj_name          = var.obj_name
+    obj_name          = concat(var.obj_name, var.glue_obj_name)
     # attach_policy = true
 }
 
-# output "s3_bucket_arn" {
-#   value = module.s3_module.this_s3_bucket_arn
-# }
-
-output "output_module" {
-  value = module.iam_user
-}
-
-output "output_s3" {
-  value = module.s3_module
-}
-
-output "password" {
-  value = module.iam_user.this_iam_user_login_profile_encrypted_password
-}
-
-output "output_table_col" {
-  value = module.glue_table1
-}
 
 # module "iam_policy_glue" {
 #   source  = "../../modules/multi-region/iam-policy"
@@ -321,7 +302,7 @@ module "glue_table1" {
   partition_keys    = var.table1_partition_keys
   table_type        = var.table1_type
   parameters        = var.table1_parameters
-  location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[0])
+  location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])
   columns           = var.table1_columns
 }
 
@@ -334,7 +315,7 @@ module "glue_table2" {
   partition_keys    = var.table2_partition_keys
   table_type        = var.table2_type
   parameters        = var.table2_parameters
-  location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[1])
+  location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[3])
   columns           = var.table2_columns
 }
 
@@ -363,43 +344,59 @@ module "glue_crawler" {
   schedule     = var.crawl_schedule
   table_prefix = var.crawl_table_prefix
   delete_behavior = var.schema_delete_behavior
+  # data_source_paths = [format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])]
   data_source_paths = [
-    for obj in var.obj_name: 
+    for obj in slice(var.obj_name,2,4): 
     format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)  
   ]
+}
+
+#######################
+# Glue Job
+#######################
+module "glue_job" {
+  source          = "./../../modules/multi-region/glue/job"
+
+  create          = var.create_job
+  name            = var.job_name
+  role_arn        = module.iam_role.this_role_arn[0]
+  script_location = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[0],"/"))
+  temp_dir        = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[1],"/"))
 }
 
 # resource "null_resource" "audittrail" {
 #     provisioner     "local-exec" {
 
-#         ## success using file://
-#         #command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
+#       # success using file://
+#       # command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
 
-#         ## fails when using string
-#         # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-#         command = "aws athena start-query-execution --query-string file://files/create_audittrail.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
+#       ## fails when using string
+#       # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
+#       command = "aws athena start-query-execution --query-string file://files/create_audittrail.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData/ --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
 #     }
 # }
+
 # resource "null_resource" "audittrailfields" {
 #     provisioner     "local-exec" {
 
-#         ## success using file://
-#         #command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
+#       # success using file://
+#       # command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
 
-#         ## fails when using string
-#         # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-#         command = "aws athena start-query-execution --query-string file://files/create_audittrailfields.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
+#       ## fails when using string
+#       # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
+#       command = "aws athena start-query-execution --query-string file://files/create_audittrailfields.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData/ --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
 #     }
 # }
+
 # resource "null_resource" "athena_view" {
 #     provisioner     "local-exec" {
 
-#         ## success using file://
-#         #command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
+#       # success using file://
+#       # command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
 
-#         ## fails when using string
-#         # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-#         command = "aws athena start-query-execution --query-string file://files/create_audittrailview.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
+#       ## fails when using string
+#       # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
+#       command = "aws athena start-query-execution --query-string file://files/create_audittrailview.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData/ --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
 #     }
 # }
 
@@ -427,4 +424,28 @@ module "glue_crawler" {
 # #   WITH SERDEPROPERTIES ( 'serialization.format' = '1')
 # #   LOCATION 's3://ia-audittrailbucket/AuditData/'
 # # EOF
+# }
+
+# output "s3_bucket_arn" {
+#   value = module.s3_module.this_s3_bucket_arn
+# }
+
+output "output_module" {
+  value = module.iam_user
+}
+
+output "output_s3" {
+  value = module.s3_module
+}
+
+output "password" {
+  value = module.iam_user.this_iam_user_login_profile_encrypted_password
+}
+
+output "output_role" {
+  value = module.iam_role
+}
+
+# output "output_table_col" {
+#   value = module.glue_table1
 # }

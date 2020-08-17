@@ -20,13 +20,13 @@ resource "aws_iam_role" "this" {
 # }
 
 resource "aws_iam_role_policy_attachment" "this" {
-    role = "${aws_iam_role.this.id}"
+    role = aws_iam_role.this.id
     policy_arn = var.policy_arn
 }
 
 resource "aws_iam_role_policy" "this" {
   name = var.target_policy_name
-  role = "${aws_iam_role.this.id}"
+  role = aws_iam_role.this.id
   policy = var.target_policy
 }
 

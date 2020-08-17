@@ -33,7 +33,13 @@ variable "versioning" {
 variable "obj_name" {
   description = "Name of the object/folder to be created inside bucket"
   type        = list
-  default     = ["audittrail/","audittrailfields/"]
+  default     = ["audittrail/", "audittrailfields/", "ParquetData/", "ParquetFields/"]
+}
+
+variable "glue_obj_name" {
+  description = "Name of the object/folder to be created inside bucket"
+  type        = list
+  default     = ["glue-script/", "glue-temp/"]
 }
 
 variable "create_s3_objects" {
@@ -80,9 +86,17 @@ variable "db_description" { default = "IntAcct Audit Trail Database" }
 variable "db_catalog_id" { default = "" }
 variable "db_location_uri" { default = "" }
 variable "db_params" {
-  type    = "map"
+  type    = map
   default = {}
 }
+
+##################
+# Glue Job
+##################
+variable "create_job" { default = false }
+variable "job_name" { default = "ia-autittrailjob" }
+variable "language" { default = "python" }
+
 
 # # --- aws_glue_catalog_table
 variable "create_table" { default = true }

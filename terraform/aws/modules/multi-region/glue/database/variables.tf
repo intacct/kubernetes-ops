@@ -17,6 +17,6 @@ variable "location_uri" {
 }
 
 variable "params" {
-  type    = "map"
+  type    = map
   default = {}
 }

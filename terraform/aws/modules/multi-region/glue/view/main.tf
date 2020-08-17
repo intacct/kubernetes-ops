@@ -1,5 +1,5 @@
 resource "aws_glue_catalog_table" this {
-    count          = "${var.create_table ? 1 : 0}"
+    count          = var.create_table ? 1 : 0
 
     name           = var.table_name
     database_name  = var.db_name

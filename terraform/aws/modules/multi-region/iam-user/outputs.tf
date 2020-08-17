@@ -55,14 +55,14 @@ output "this_iam_access_key_encrypted_secret" {
   value       = aws_iam_access_key.this.*.encrypted_secret
 }
 
-output "this_iam_access_key_ses_smtp_password" {
-  description = "The secret access key converted into an SES SMTP password"
-  value = concat(
-      aws_iam_access_key.this.*.ses_smtp_password,
-      aws_iam_access_key.this_no_pgp.*.ses_smtp_password,
-      [""],
-    )
-}
+# output "this_iam_access_key_ses_smtp_password" {
+#   description = "The secret access key converted into an SES SMTP password"
+#   value = concat(
+#       aws_iam_access_key.this.*.ses_smtp_password,
+#       aws_iam_access_key.this_no_pgp.*.ses_smtp_password,
+#       [""],
+#     )
+# }
 
 output "this_iam_access_key_status" {
   description = "Active or Inactive. Keys are initially active, but can be made inactive by other means."

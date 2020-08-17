@@ -33,7 +33,7 @@ variable "data_source_paths" {
 }
 
 variable "s3_exclusions" {
-  type    = "list"
+  type    = list
   default = []
 }
 

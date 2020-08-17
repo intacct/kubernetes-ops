@@ -1,5 +1,5 @@
 resource "aws_glue_catalog_table" "this" {
-    count          = "${var.create_table ? 1 : 0}"
+    count          = var.create_table ? 1 : 0
 
     name           = var.table_name
     database_name  = var.db_name
@@ -7,24 +7,30 @@ resource "aws_glue_catalog_table" "this" {
     table_type     = var.table_type
     parameters     = {        
         EXTERNAL = "TRUE"    
+        "parquet.compression" = "SNAPPY"
     }
 
     storage_descriptor {
+        # location      = var.location_url
         location      = var.location_url
+        # STORED AS PARQUET
         # location      = "s3://ia-audittrailbucket/AuditData/"
-        input_format  = "org.apache.hadoop.mapred.TextInputFormat"
-        output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+        # input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+        # output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+        input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+        output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
 
         ser_de_info {
             name                  = "trail-logs"
-            serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
+            serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+            # serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
             # serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
             parameters            = {
-                "serialization.format" = 1
+                # "serialization.format" = 1
                 # "field.delim"          = ","
-                # "separatorChar"        = ","
-                # "quoteChar"            = "\""
-                # "escapeChar"           = "\\"
+                "separatorChar"        = ","
+                "quoteChar"            = "\""
+                "escapeChar"           = "\\"
             }
         }
 
