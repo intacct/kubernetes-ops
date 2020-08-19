@@ -20,7 +20,7 @@ variable "name" {
 variable "use_name_prefix" {
   description = "Whether to use name_prefix or fixed name. Should be true to able to update security group name after initial creation"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "description" {

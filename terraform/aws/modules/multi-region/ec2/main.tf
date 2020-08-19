@@ -78,7 +78,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = element(var.hostnames, count.index)
+      "Name" = var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)
     },
     var.tags,
   )
@@ -98,14 +98,19 @@ resource "aws_instance" "this" {
   provisioner "local-exec" {
       command = <<EOT
 sed '/^${element(var.private_ips,count.index)}/d' ~/.ssh/known_hosts > /tmp/kh
-sed '/^${element(var.hostnames,count.index)}/d' /tmp/kh > /tmp/kh2
+sed '/^${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}/d' /tmp/kh > /tmp/kh2
 mv /tmp/kh2 ~/.ssh/known_hosts
 EOT
   }
 
   // Set hostname on the provisioned instance
   provisioner "remote-exec" {
-    inline = ["sudo hostnamectl set-hostname ${element(var.hostnames, count.index)}"]
+    inline = [
+      "sudo hostnamectl set-hostname ${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}",
+      "sudo dnf -y install firewalld",
+      "sudo systemctl start firewalld",
+      "sudo systemctl enable firewalld"
+    ]
   }
   connection {
     host  = element(var.private_ips,count.index)
@@ -119,8 +124,8 @@ EOT
   provisioner "local-exec" {
     command = <<EOT
 ssh-add "${var.key_file}"
-ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
-ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/zabbix-agent.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/zabbix-agent.yml" --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 EOT
   }
 

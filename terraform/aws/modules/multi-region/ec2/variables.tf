@@ -3,6 +3,21 @@ variable "name" {
   type        = string
 }
 
+variable "use_name_prefix" {
+  type = bool
+  default = false
+}
+
+variable "name_prefix_format" {
+  type = string
+  default = "%s-"
+}
+
+variable "name_prefix" {
+  type = string
+  default = ""
+}
+
 variable "instance_count" {
   description = "Number of instances to launch"
   type        = number

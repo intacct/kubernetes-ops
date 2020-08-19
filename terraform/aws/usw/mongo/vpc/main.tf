@@ -240,7 +240,7 @@ locals {
     ]
     public_outbound = [
       {
-        # Allow db connections to oracle subnet
+        # Allow db connections to mongo subnet
         rule_number     = 100
         rule_action     = "allow"
         from_port       = 0
