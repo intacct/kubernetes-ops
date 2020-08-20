@@ -182,7 +182,42 @@ locals {
         protocol    = "udp"
         cidr_block  = "0.0.0.0/0"
       },
-
+      {
+        # NIS ananke traffic
+        rule_number = 880
+        rule_action = "allow"
+        from_port   = 910
+        to_port     = 910
+        protocol    = "tcp"
+        cidr_block  = "192.168.20.13/32"
+      },
+      {
+        # NIS ananke traffic
+        rule_number = 890
+        rule_action = "allow"
+        from_port   = 910
+        to_port     = 910
+        protocol    = "udp"
+        cidr_block  = "192.168.20.13/32"
+      },
+      {
+        # SunRPC to ananke
+        rule_number = 900
+        rule_action = "allow"
+        from_port   = 111
+        to_port     = 111
+        protocol    = "tcp"
+        cidr_block  = "192.168.20.13/32"
+      },
+      {
+        # SunRPC to ananke
+        rule_number = 910
+        rule_action = "allow"
+        from_port   = 111
+        to_port     = 111
+        protocol    = "udp"
+        cidr_block  = "192.168.20.13/32"
+      },
     ]
     public_inbound = [
       {
