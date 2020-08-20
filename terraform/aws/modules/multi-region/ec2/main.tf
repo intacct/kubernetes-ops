@@ -85,7 +85,7 @@ resource "aws_instance" "this" {
 
   volume_tags = merge(
     {
-      "Name" = var.instance_count > 1 || var.use_num_suffix ? format("%s${var.num_suffix_format}", var.name, count.index + 1) : var.name
+      "Name" = var.instance_count > 1 || var.use_num_suffix ? format("%s${var.num_suffix_format}", element(var.hostnames, count.index), count.index + 1) : element(var.hostnames, count.index)
     },
     var.volume_tags,
   )
@@ -107,6 +107,7 @@ EOT
   provisioner "remote-exec" {
     inline = [
       "sudo hostnamectl set-hostname ${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}",
+      "sudo dnf -y update",
       "sudo dnf -y install firewalld",
       "sudo systemctl start firewalld",
       "sudo systemctl enable firewalld"
