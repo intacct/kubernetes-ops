@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "this" {
   tags                = var.tags
   force_destroy       = var.force_destroy
   acceleration_status = var.acceleration_status
-  region              = var.region
+  # region              = var.region
   request_payer       = var.request_payer
 
   dynamic "versioning" {
