@@ -1,12 +1,12 @@
 variable "create_repository" {
   type = bool
   default = true
-  desription = "If true, create the named repository"
+  description = "If true, create the named repository"
 }
 
-variable "repository_name" {
-  type        = string
-  description = "Name of the repository"
+variable "repository_names" {
+  type        = list(string)
+  description = "Names of the repository"
 }
 
 variable "attach_lifecycle_policy" {
@@ -16,7 +16,7 @@ variable "attach_lifecycle_policy" {
 }
 
 variable "lifecycle_policy" {
-  type        = string
+  type        = map(string)
   description = "Contents of the ECR lifecycle policy"
-  default     = ""
+  default     = {}
 }

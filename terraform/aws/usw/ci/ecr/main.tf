@@ -4,8 +4,8 @@ provider "aws" {
 }
 
 module "ecr-repository" {
-  source                  = "../../modules/multi-region/ecr"
+  source                  = "../../../modules/multi-region/ecr"
   create_repository       = var.create_repository
-  repository_name         = var.repository_name
+  repository_names        = var.repository_names
   attach_lifecycle_policy = var.attach_lifecycle_policy
 }
