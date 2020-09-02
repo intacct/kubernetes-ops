@@ -20,3 +20,9 @@ variable "lifecycle_policy" {
   description = "Contents of the ECR lifecycle policy"
   default     = {}
 }
+
+variable "scan_on_push" {
+  description = "If true, enable scanning of pushed images on repo for vulnerabilities"
+  type        = bool
+  default     = true
+}

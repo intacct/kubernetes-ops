@@ -5,6 +5,10 @@
 resource "aws_ecr_repository" "default" {
   count = var.create_repository ? length(var.repository_names) : 0
   name = element(var.repository_names, count.index)
+
+  image_scanning_configuration {
+    scan_on_push = var.scan_on_push
+  }
 }
 
 resource "aws_ecr_lifecycle_policy" "default" {
