@@ -1,0 +1,9 @@
+region   = "us-west-2"
+profile  = "2auth"
+vpc_id   = "vpc-48c2bd2e"
+create_subnet = false
+subnet_id = ["subnet-ec035db7"]
+subnet_name = "oracle"
+subnet_suffix = "tf"
+subnets = ["10.234.2.0/24"]
+azs = ["us-west-2a","us-west-2b","us-west-2c"]

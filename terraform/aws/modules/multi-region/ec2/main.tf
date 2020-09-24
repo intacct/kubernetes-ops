@@ -106,7 +106,7 @@ EOT
   // Set hostname on the provisioned instance
   provisioner "remote-exec" {
     inline = [
-      "sudo hostnamectl set-hostname ${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}",
+      "sudo hostnamectl set-hostname ${var.use_name_prefix ? format("${var.name_prefix_format}%s.%s", var.name_prefix, element(var.hostnames, count.index), var.domain_suffix) : format("%s.%s",element(var.hostnames, count.index), var.domain_suffix)}",
       "sudo dnf -y update",
       "sudo dnf -y install firewalld",
       "sudo systemctl start firewalld",

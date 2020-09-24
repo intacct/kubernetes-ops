@@ -226,3 +226,9 @@ variable "num_suffix_format" {
   default     = "-%d"
 }
 
+variable "domain_suffix" {
+  description = "Suffix to be appended to get FQDN for hostname"
+  type        = string
+  default     = "intacct.com"
+}
+
