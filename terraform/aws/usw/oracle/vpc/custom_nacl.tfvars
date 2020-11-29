@@ -35,5 +35,23 @@
         protocol    = "tcp"
         cidr_block  = "10.234.5.0/24"
       }, 
+      {
+        # USW VPN Subnet
+        rule_number = 540
+        rule_action = "allow"
+        from_port   = 1521
+        to_port     = 1521
+        protocol    = "tcp"
+        cidr_block  = "10.228.2.0/24"
+      }, 
+      {
+        # USW VPN Subnet
+        rule_number = 550
+        rule_action = "allow"
+        from_port   = 1521
+        to_port     = 1521
+        protocol    = "tcp"
+        cidr_block  = "10.228.3.0/24"
+      }, 
     ]
     custom_outbound = []

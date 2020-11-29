@@ -113,6 +113,16 @@ locals {
          protocol    = "-1"
          cidr_block  = "192.168.20.13/32"
       },
+      {
+        # Radius requests 10.226.12.13, 10.226.12.14
+         rule_number = 890
+         rule_action = "allow"
+         from_port   = 1812
+         to_port     = 1812
+         protocol    = "-1"
+         cidr_block  = "10.226.12.13/30"
+      },
+
     ]
     default_outbound = [
       {
@@ -182,7 +192,24 @@ locals {
         protocol    = "udp"
         cidr_block  = "0.0.0.0/0"
       },
-
+      {
+        # DNS Server requests
+         rule_number = 880
+         rule_action = "allow"
+         from_port   = 0
+         to_port     = 0
+         protocol    = "-1"
+         cidr_block  = "192.168.20.13/32"
+      },
+      {
+        # Radius requests
+         rule_number = 890
+         rule_action = "allow"
+         from_port   = 1812
+         to_port     = 1812
+         protocol    = "-1"
+         cidr_block  = "10.226.12.13/30"
+      },
     ]
     public_inbound = [
       {
