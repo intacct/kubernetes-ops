@@ -14,8 +14,7 @@ require_password_reset = false
 # IAM User
 ##################
 user_names = [
-    "prerna.sharma",
-//    "Sandip.Lakshminarasaiah",
+    "vcrisan",
     "RicardoFilipe.Santos"
   ] 
 

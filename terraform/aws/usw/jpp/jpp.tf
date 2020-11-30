@@ -1,9 +1,19 @@
 /*
  * Create JPP Servers 
 */
+# terraform {
+#   required_providers {
+#     aws = {
+#       source = "hashicorp/aws"
+#       version = "~> 2.50"
+#     }
+#   }
+# }
+
 provider "aws" {
+  region  = var.region
   profile = "2auth"
-  region = var.region
+  # shared_credentials_file = "/Users/skrishnamurthy/.aws/credentials"
 }
 
 resource "aws_subnet" "jpp" {

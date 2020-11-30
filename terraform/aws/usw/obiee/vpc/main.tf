@@ -6,13 +6,15 @@ provider "aws" {
 module "vpc" {
   source = "../../../modules/multi-region/vpc"
 
-  create_subnet = false
+  create_subnet = var.create_subnet
   create_default_network_acl = false
   create_network_acl = true
   vpc_id = var.vpc_id
   subnet_ids = var.subnet_id
-  name = "mongo"
+  name = var.subnet_name
   subnet_suffix = var.subnet_suffix
+  subnets = var.subnets
+  azs = var.azs
 
   
   inbound_acl_rules = concat(
@@ -25,7 +27,7 @@ module "vpc" {
   )
 
   subnet_tags = {
-    Name = "mongo-tf"
+    Name = format("%s-%s", var.subnet_name, var.subnet_suffix)
   }
   tags = {
     Owner       = "devops"

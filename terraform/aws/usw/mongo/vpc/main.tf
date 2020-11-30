@@ -71,11 +71,11 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        rule_number     = 840
-        rule_action     = "allow"
-        from_port       = 8080
-        to_port         = 8080
-        protocol        = "tcp"
+        rule_number = 840
+        rule_action = "allow"
+        from_port   = 8080
+        to_port     = 8080
+        protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
       },
       {
@@ -88,13 +88,13 @@ locals {
         cidr_block  = "192.168.20.21/32"
       },
       {
-        # Port to Zabbix server usw-zbx-01
+        # Port to Zabbix server euc-zbx01
         rule_number = 860
         rule_action = "allow"
         from_port   = 10050
         to_port     = 10050
         protocol    = "tcp"
-        cidr_block  = "10.234.5.14/32"
+        cidr_block  = "10.235.4.10/32"
       },
       {
         rule_number = 870
@@ -105,7 +105,7 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        # DNS Server requests
+        # DNS - 123, NIS - 910, SunRPC - 111 Server requests
          rule_number = 880
          rule_action = "allow"
          from_port   = 0
@@ -122,7 +122,24 @@ locals {
         protocol    = "tcp"
         cidr_block  = "192.168.20.21/32"
       },
-
+      {
+        # JMX, RMI Ports for monitoring
+        rule_number = 900
+        rule_action = "allow"
+        from_port   = 8008
+        to_port     = 8009
+        protocol    = "tcp"
+        cidr_block  = "10.235.4.10/32"
+      },
+      {
+        # Radius requests 10.226.12.13, 10.226.12.14
+         rule_number = 910
+         rule_action = "allow"
+         from_port   = 1812
+         to_port     = 1812
+         protocol    = "-1"
+         cidr_block  = "10.226.12.13/30"
+      },
     ]
     default_outbound = [
       {
@@ -171,21 +188,12 @@ locals {
         rule_action = "allow"
         from_port   = 53
         to_port     = 53
-        protocol    = "tcp"
-        cidr_block  = "0.0.0.0/0"
-      },
-      {
-        # DNS resolution
-        rule_number = 860
-        rule_action = "allow"
-        from_port   = 53
-        to_port     = 53
-        protocol    = "udp"
+        protocol    = "-1"
         cidr_block  = "0.0.0.0/0"
       },
       {
         # NTP traffic
-        rule_number = 870
+        rule_number = 860
         rule_action = "allow"
         from_port   = 123
         to_port     = 123
@@ -193,40 +201,22 @@ locals {
         cidr_block  = "0.0.0.0/0"
       },
       {
-        # NIS to ananke
-        rule_number = 880
-        rule_action = "allow"
-        from_port   = 910
-        to_port     = 910
-        protocol    = "tcp"
-        cidr_block  = "192.168.20.13/32"
+        # DNS Server requests
+         rule_number = 870
+         rule_action = "allow"
+         from_port   = 0
+         to_port     = 0
+         protocol    = "-1"
+         cidr_block  = "192.168.20.13/32"
       },
       {
-        # NIS to ananke
-        rule_number = 890
-        rule_action = "allow"
-        from_port   = 910
-        to_port     = 910
-        protocol    = "udp"
-        cidr_block  = "192.168.20.13/32"
-      },
-      {
-        # SunRPC to ananke
-        rule_number = 900
-        rule_action = "allow"
-        from_port   = 111
-        to_port     = 111
-        protocol    = "tcp"
-        cidr_block  = "192.168.20.13/32"
-      },
-      {
-        # SunRPC to ananke
-        rule_number = 910
-        rule_action = "allow"
-        from_port   = 111
-        to_port     = 111
-        protocol    = "udp"
-        cidr_block  = "192.168.20.13/32"
+        # Radius requests
+         rule_number = 880
+         rule_action = "allow"
+         from_port   = 1812
+         to_port     = 1812
+         protocol    = "-1"
+         cidr_block  = "10.226.12.13/30"
       },
     ]
     public_inbound = [

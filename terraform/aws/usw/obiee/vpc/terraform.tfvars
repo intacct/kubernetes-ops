@@ -1,0 +1,9 @@
+region   = "us-west-2"
+profile  = "2auth"
+vpc_id   = "vpc-48c2bd2e"
+create_subnet = false
+subnet_id = ["subnet-01b304d44d86e2230"]
+subnet_name = "obiee"
+subnet_suffix = "tf"
+subnets = ["10.234.9.0/24"]
+azs = ["us-west-2a","us-west-2b","us-west-2c"]

@@ -16,7 +16,9 @@ variable "require_password_reset" { default = false }
 variable "user_names" { 
   default = [
     "andrei.florea",
-    "lorena.rus"
+    "lorena.rus",
+    "marina.vatkina",
+    "vcrisan"
   ] 
 } 
 

@@ -1,18 +1,18 @@
 provider "aws" {
-    region = "eu-central-1"
-    profile = "2auth"
+    region = var.region
+    profile = var.profile
 }
 
 module "vpc" {
   source = "../../../modules/multi-region/vpc"
 
-  create_subnet = false
+  create_subnet              = false
   create_default_network_acl = false
-  create_network_acl = true
-  vpc_id = "vpc-4b8def20"
-  subnet_ids = ["subnet-2fea7852"]
-  name = "monitoring-tf"
-  subnet_suffix = "2fea7852"
+  create_network_acl         = true
+  vpc_id                     = var.vpc_id
+  subnet_ids                 = var.subnet_id
+  name                       = var.name
+  subnet_suffix              = var.subnet_suffix
 
   
   inbound_acl_rules = concat(
@@ -25,7 +25,7 @@ module "vpc" {
   )
 
   subnet_tags = {
-    Name = "monitoring-tf"
+    Name = format("%s-%s", var.name, "tf")
   }
   tags = {
     Owner       = "devops"
@@ -221,25 +221,24 @@ locals {
     ]
     public_inbound = [
       {
-        # To accommodate for rule used by usw-wsd instance 
-        # Custom WSD Web Port
+        # NFS
         rule_number = 100
         rule_action = "allow"
-        from_port   = 1086
-        to_port     = 1086
+        from_port   = 2049
+        to_port     = 2049
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
       },
     ]
     public_outbound = [
       {
-        # Allow db connections to oracle subnet
+        # Allow connections to subnet
         rule_number     = 100
         rule_action     = "allow"
         from_port       = 0
         to_port         = 65535
         protocol        = "tcp"
-        cidr_block      = "0.0.0.0/0"
+        cidr_block      = "10.234.1.0/0"
       },
     ]
   }

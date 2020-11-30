@@ -24,3 +24,9 @@ override.tf.json
 terraform.log
 **/*.tfplan
 tfplan
+terraform/aws/usw/obiee-test/backend.tf
+terraform/aws/usw/obiee-test/destroyplan
+terraform/aws/usw/obiee-test/terragrunt.hcl
+terraform/aws/usw/obiee-test/vars.tf
+terraform/aws/usw/obiee-test/obi.tf
+terraform/aws/usw/obiee-test/files/attach_ebs.sh
