@@ -1,11 +1,17 @@
-locals {
-  audittrail_tn        = "${trim(var.obj_name[0], "/")}"
-  audittrailfields_tn = "${trim(var.obj_name[1], "/")}"
-}
+# locals {
+#   audittrail_tn        = "${trim(var.obj_name[0], "/")}"
+#   audittrailfields_tn = "${trim(var.obj_name[1], "/")}"
+# }
 
 provider "aws" {
   profile = var.auth_profile
   region  = var.region
+}
+
+terraform {
+  required_providers {
+    archive = "~> 1.3"
+  }
 }
 
 module "iam_policy" {
@@ -239,7 +245,7 @@ data "aws_iam_policy_document" "service-role-s3-policy" {
 
 module "iam_role" {
   source = "../../modules/multi-region/iam-role"
-  # version = "~> 2.0"
+  # version = "~> 3.0"
   
   name  = var.role_name
   path  = var.role_path
@@ -272,9 +278,9 @@ EOF
 #   required_version = ">= 0.10.3" # introduction of Local Values configuration language feature
 # }
 
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 # Glue Database Catalog
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 module "glue_database" {
   source       = "./../../modules/multi-region/glue/database"
   create       = var.create_database
@@ -285,39 +291,61 @@ module "glue_database" {
 variable index {
   default = 5
 }
-output item {
-  value = [
-    for c in var.table1_columns:
-      "name = ${c[0]}"
-      # "type = ${c[1]}"
+# output item {
+#   value = [
+#     for c in var.table_columns:
+#       "name = ${c[0]}"
+#       # "type = ${c[1]}"
+#   ]
+# }
+
+locals {
+  location_urls = [
+    for obj in var.obj_name:
+      format ("%s%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj, "/")
   ]
 }
-
-module "glue_table1" {
-  source            = "../../modules/multi-region/glue/table"
-  create_table      = var.create_table
-  table_name        = var.table1_name
-  db_name           = var.db_name
-  table_description = var.table1_description
-  partition_keys    = var.table1_partition_keys
-  table_type        = var.table1_type
-  parameters        = var.table1_parameters
-  location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])
-  columns           = var.table1_columns
+module "glue_table" {
+  source             = "../../modules/multi-region/glue/table"
+  create_table       = var.create_table
+  table_names        = var.table_names
+  db_name            = var.db_name
+  table_descriptions = var.table_descriptions
+  input_formats      = var.table_input_formats
+  output_formats     = var.table_output_formats
+  serialization_libs = var.table_serialization_libs
+  serde_parameters  = var.table_serde_parameters
+  table_types       = var.table_types
+  table_parameters  = var.table_parameters
+  columns           = var.table_columns
+  partition_keys    = var.table_partition_keys
+  location_urls     = local.location_urls
 }
+# module "glue_table1" {
+#   source            = "../../modules/multi-region/glue/table"
+#   create_table      = var.create_table
+#   table_name        = var.table1_name
+#   db_name           = var.db_name
+#   table_description = var.table1_description
+#   partition_keys    = var.table1_partition_keys
+#   table_type        = var.table1_type
+#   parameters        = var.table1_parameters
+#   location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])
+#   columns           = var.table1_columns
+# }
 
-module "glue_table2" {
-  source            = "../../modules/multi-region/glue/table"
-  create_table      = var.create_table
-  table_name        = var.table2_name
-  db_name           = var.db_name
-  table_description = var.table2_description
-  partition_keys    = var.table2_partition_keys
-  table_type        = var.table2_type
-  parameters        = var.table2_parameters
-  location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[3])
-  columns           = var.table2_columns
-}
+# module "glue_table2" {
+#   source            = "../../modules/multi-region/glue/table"
+#   create_table      = var.create_table
+#   table_name        = var.table2_name
+#   db_name           = var.db_name
+#   table_description = var.table2_description
+#   partition_keys    = var.table2_partition_keys
+#   table_type        = var.table2_type
+#   parameters        = var.table2_parameters
+#   location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[3])
+#   columns           = var.table2_columns
+# }
 
 module "glue_table3" {
   source            = "../../modules/multi-region/glue/view"
@@ -332,9 +360,9 @@ module "glue_table3" {
 }
 
 
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 # Glue Crawler
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 module "glue_crawler" {
   source       = "./../../modules/multi-region/glue/crawler"
   create       = var.create_crawler
@@ -351,9 +379,9 @@ module "glue_crawler" {
   ]
 }
 
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 # Glue Job
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 module "glue_job" {
   source          = "./../../modules/multi-region/glue/job"
 
@@ -400,9 +428,9 @@ module "glue_job" {
 #     }
 # }
 
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 # Create Athena Tables and views
-#######################
+# ----------------------------------------------------------------------------------------------------------------------
 # module "athena_tables" {
 #   source = "./../../modules/multi-region/athena"
 # #   name = "ia-autittrail"
@@ -429,6 +457,106 @@ module "glue_job" {
 # output "s3_bucket_arn" {
 #   value = module.s3_module.this_s3_bucket_arn
 # }
+
+# ----------------------------------------------------------------------------------------------------------------------
+# AWS LAMBDA EXPECTS A DEPLOYMENT PACKAGE
+# A deployment package is a ZIP archive that contains your function code and dependencies.
+# ----------------------------------------------------------------------------------------------------------------------
+
+data "archive_file" "lambda" {
+  type        = "zip"
+  source_file = "${path.module}/python/uploadAuditTrail.py"
+  output_path = "${path.module}/python/uploadAuditTrail.py.zip"
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# DEPLOY THE LAMBDA FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
+
+module "lambda-function" {
+  source  = "./../../modules/multi-region/lambda"
+  # version = "~> 0.2.0"
+
+  function_name = "IA-AuditTrail-Upload"
+  description   = "Convert audit trail headers from table to CSV format"
+  filename      = data.archive_file.lambda.output_path
+  runtime       = "python3.8"
+  handler       = "main.lambda_handler"
+  timeout       = 20
+  memory_size   = 128
+
+  role_arn = module.lambda_role.this_role_name
+
+  module_tags = {
+    Environment = var.environment_tag
+  }
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# CREATE AN IAM LAMBDA EXECUTION ROLE WHICH WILL BE ATTACHED TO THE FUNCTION
+# ----------------------------------------------------------------------------------------------------------------------
+
+data "aws_iam_policy_document" "lambda-service-role-policy" {
+  statement {
+    sid = "1"
+    actions   = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+  statement {
+    sid = "2"
+    actions = [
+      "logs:CreateLogGroup"
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+  statement {
+    sid = "3"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject"
+    ]
+    effect = "Allow"
+    resources = [
+      module.s3_module.this_s3_bucket_arn, format("%s%s", module.s3_module.this_s3_bucket_arn,"/*")
+    ]
+  }
+}
+
+module "lambda_role" {
+  source = "../../modules/multi-region/iam-role"
+  # version = "~> 3.0"
+  
+  name  = var.lambda_upload_role_name
+  path  = var.lambda_role_path
+  # custom_iam_policy_arns = [
+  #   module.iam_policy_glue.arn
+  # ]
+  # policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+  target_policy_name = var.lambda_role_policy_name
+  target_policy = data.aws_iam_policy_document.lambda-service-role-policy.json
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+}
 
 output "output_module" {
   value = module.iam_user

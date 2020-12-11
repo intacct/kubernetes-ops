@@ -1,47 +1,60 @@
 variable "create_table" {
     type = bool
 }
-
-variable "table_name" {
-    type = string
+variable "table_names" {
+    type = list(string)
 }
 
 variable "db_name" {
     type = string
 }
-
-variable "table_description" {
-    type    = string
-    default = ""
+variable "table_descriptions" {
+    type    = list(string)
+    default = [""]
 }
 
-variable "partition_keys" {
+variable "input_formats" {
+  description = "Input format library to be used"
+  type = list(string)
+}
+
+variable "output_formats" {
+  type = list(string)
+}
+
+variable "serialization_libs" {
+    description = "Serde serialization lib to be used to serialize data"
+  type = list(string)
+}
+variable "serde_parameters" {
+    description = "Map of serde parameters"
     type = list
     default = []
 }
-
-variable "table_type" {
-    type    = string
-    default = "EXTERNAL_TABLE"
+variable "table_types" {
+    type    = list(string)
+    default = ["EXTERNAL_TABLE"]
 }
-
-variable "parameters" {
-    type = any
+variable "table_parameters" {
+    type = list
     default = [
         {
             EXTERNAL = "TRUE"
         }
     ]
 }
-
-variable "location_url" {
-    type = string
-}
-
 variable "columns" {
     description = "Table columns"
     type = list
 }
+variable "partition_keys" {
+    type = list
+    default = []
+}
+variable "location_urls" {
+    type = list(string)
+}
+
 
 
 

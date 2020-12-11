@@ -1,7 +1,7 @@
-#################
+# ----------------------------------------------------------------------------------------------------------------------
 # Common vars
 # These are common to both USW and EUC regions
-#################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "auth_profile" { default = "2auth" }
 
 variable "acl" { default = "private" }
@@ -33,7 +33,7 @@ variable "versioning" {
 variable "obj_name" {
   description = "Name of the object/folder to be created inside bucket"
   type        = list
-  default     = ["audittrail/", "audittrailfields/", "ParquetData/", "ParquetFields/"]
+  default     = ["audittrail/", "audittrailfields/", "audittrail-parquet/", "audittrailfields-parquet/"]
 }
 
 variable "glue_obj_name" {
@@ -48,37 +48,39 @@ variable "create_s3_objects" {
   default     = true
 }
 
-##################
+variable "environment_tag" {}
+
+# ----------------------------------------------------------------------------------------------------------------------
 # IAM User
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "user_name" { default = ["IA-AuditTrailUser"] } 
 variable "pgp_key" { default = "keybase:kaysree" }
 variable "password_len" { default = 10 }
 variable "require_password_reset" { default = false }
 
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 # IAM Group
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "group_name" { default = "IA-AuditTrailUserGroup" }
 
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 # IAM Policy
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "policy_name" { default = "IA-AuditTrailUserAccess" }
 variable "policy_path" { default = "/" }
 
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 # Service Role
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "role_name" { default = "IA-AuditTrailServiceRole" }
 variable "role_path" { default = "/" }
 variable "role_policy_name" { default = "IA-AuditTrailServiceRoleAccess" }
 
 
 
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 # Glue
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 # # ---- aws_glue_catalog_database
 variable "create_database" { default = true }
 variable "db_name" { default = "ia-audittrail" }
@@ -90,136 +92,48 @@ variable "db_params" {
   default = {}
 }
 
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 # Glue Job
-##################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "create_job" { default = false }
 variable "job_name" { default = "ia-autittrailjob" }
 variable "language" { default = "python" }
 
 
-# # --- aws_glue_catalog_table
-variable "create_table" { default = true }
-variable "table1_name" { default = "audittrail" }
+# ----------------------------------------------------------------------------------------------------------------------
+# Glue table parameters
+# ----------------------------------------------------------------------------------------------------------------------
+variable "create_table" {}
+variable "table_names" {}
+variable "table_descriptions" {}
+variable "table_input_formats" {}
+variable "table_output_formats" {}
+variable "table_serialization_libs" {}
+variable "table_serde_parameters" {}
+variable "table_types" {}
+variable "table_parameters" {}
+variable "table_columns" {}
+variable "table_partition_keys" {}
 
-# audittrail table description
-variable "table1_description" { default = "audit trail table" }
+# variable "table1_name" {}
+# variable "table1_description" {}
+# variable "table1_partition_keys" {}
+# variable "table1_type" {}
+# variable "table1_parameters" {}
+# variable "table1_columns" {}
 
-# audittrail table partiion keys
-variable "table1_partition_keys" {
-    default = [
-      ["cny", "int"],
-      ["type", "string"],
-      ["dt", "int"]
-    ]
-}
+# variable "table2_name" {}
+# variable "table2_description" {}
+# variable "table2_partition_keys" {}
+# variable "table2_type" {}
+# variable "table2_parameters" {}
+# variable "table2_columns" {}
 
-# audittrail table type
-variable "table1_type" { default = "EXTERNAL_TABLE" }
-
-# audittrail table parameters
-variable "table1_parameters" {
-    default = [
-        {
-            EXTERNAL = "TRUE"
-        }
-    ]
-}
-
-# audittrail table columns
-variable "table1_columns" {
-    default = [
-      ["recordid", "string"],
-      ["objecttype", "string"],
-      ["objectkey", "string"],
-      ["objectdesc", "string"],
-      ["userid", "string"],
-      ["accesstime", "bigint"],
-      ["accessmode", "string"],
-      ["ipaddress", "string"],
-      ["source", "string"],
-      ["workflowaction", "string"]
-    ]
-}
-
-variable "table2_name" { default = "audittrailfields" }
-variable "table2_description" { default = "audit trail fields table" }
-variable "table2_partition_keys" {
-    default = [
-      ["cny", "int"],
-      ["type", "string"],
-      ["dt", "int"]
-    ]
-}
-variable "table2_type" { default = "EXTERNAL_TABLE" }
-variable "table2_parameters" {
-    default = [
-        {
-            EXTERNAL = "TRUE"
-        }
-    ]
-}
-
-variable "table2_columns" {
-    default = [
-      ["recordid", "string"],
-      ["fieldname", "string"],
-      ["fieldtype", "string"],
-      ["oldval", "string"],
-      ["newval", "string"],
-      ["oldstrval", "string"],
-      ["newstrval", "string"],
-      ["oldintval", "string"],
-      ["newintval", "string"],
-      ["oldnumval", "string"],
-      ["newnumval", "string"],
-      ["olddateval", "string"],
-      ["newdateval", "string"]
-    ]
-}
-
-variable "table3_name" { default = "audittrailview" }
-variable "table3_description" { default = "audit trail view" }
-variable "table3_type" { default = "VIRTUAL_VIEW" }
-
-variable "table3_parameters" {
-  default = [
-      {        
-        presto_view = "true"
-        comment     = "Presto View"    
-      }
-  ]
-}
-
-variable "table3_columns" {
-  default = [
-    ["cny", "int"],
-    ["type", "string"],
-    ["dt", "int"],
-    ["recordid", "string"],
-    ["objecttype", "string"],
-    ["objectkey", "string"],
-    ["objectdesc", "string"],
-    ["userid", "string"],
-    ["accesstime", "bigint"],
-    ["accessmode", "string"],
-    ["ipaddress", "string"],
-    ["source", "string"],
-    ["workflowaction", "string"],
-    ["fieldname", "string"],
-    ["fieldtype", "string"],
-    ["oldval", "string"],
-    ["newval", "string"],
-    ["oldstrval", "string"],
-    ["newstrval", "string"],
-    ["oldintval", "string"],
-    ["newintval", "string"],
-    ["oldnumval", "string"],
-    ["newnumval", "string"],
-    ["olddateval", "string"],
-    ["newdateval", "string"]
-  ]
-}
+variable "table3_name" {}
+variable "table3_description" {}
+variable "table3_type" {}
+variable "table3_parameters" {}
+variable "table3_columns" {}
 
 # # ---- aws_glue_crawler
 variable "create_crawler" { default = true }
@@ -237,9 +151,19 @@ variable "crawl_schedule" {
 variable "crawl_table_prefix" { default = "" }
 
 
-#################
+# ----------------------------------------------------------------------------------------------------------------------
+# Lambda
+# ----------------------------------------------------------------------------------------------------------------------
+# variable "lambda_funct_name_1" {}
+variable "lambda_funct_name_2" {}
+variable "lambda_upload_role_name" {}
+variable "lambda_role_path" {}
+variable "lambda_role_policy_name" {}
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 # USW specific vars
-#################
+# ----------------------------------------------------------------------------------------------------------------------
 variable "region" { default = "us-west-2" }
 variable "keyname" { default = "sridhar.krishnamurthy" }
 

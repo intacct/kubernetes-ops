@@ -1,41 +1,43 @@
 resource "aws_glue_catalog_table" "this" {
-    count          = var.create_table ? 1 : 0
+    count          = var.create_table ? length(var.table_names) : 0
 
-    name           = var.table_name
+    name           = element(var.table_names, count.index)
     database_name  = var.db_name
-    description    = var.table_description
-    table_type     = var.table_type
-    parameters     = {        
-        EXTERNAL = "TRUE"    
-        "parquet.compression" = "SNAPPY"
-    }
+    description    = element(var.table_descriptions, count.index)
+    table_type     = element(var.table_types, count.index)
+    parameters     = element(var.table_parameters, count.index)
 
     storage_descriptor {
         # location      = var.location_url
-        location      = var.location_url
+        location      = element(var.location_urls, count.index)
         # STORED AS PARQUET
         # location      = "s3://ia-audittrailbucket/AuditData/"
         # input_format  = "org.apache.hadoop.mapred.TextInputFormat"
         # output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
-        input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
-        output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+        # input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+        # output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+        input_format  = element(var.input_formats, count.index)
+        output_format = element(var.output_formats, count.index)
+
 
         ser_de_info {
             name                  = "trail-logs"
-            serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+            # serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
             # serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
             # serialization_library = "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"
-            parameters            = {
-                # "serialization.format" = 1
-                # "field.delim"          = ","
-                "separatorChar"        = ","
-                "quoteChar"            = "\""
-                "escapeChar"           = "\\"
-            }
+            serialization_library = element(var.serialization_libs, count.index)
+            # parameters            = {
+            #     "serialization.format" = 1
+            #     # "field.delim"          = ","
+            #     # "separatorChar"        = ","
+            #     # "quoteChar"            = "\""
+            #     # "escapeChar"           = "\\"
+            # }
+            parameters = element(var.serde_parameters, count.index)
         }
 
         dynamic "columns" {
-            for_each = [for s in var.columns: {
+            for_each = [for s in element(var.columns, count.index): {
                 name = s[0]
                 type = s[1]
             }]
@@ -62,7 +64,7 @@ resource "aws_glue_catalog_table" "this" {
     }
 
     dynamic "partition_keys" {
-        for_each = [for p in var.partition_keys: {
+        for_each = [for p in element(var.partition_keys, count.index): {
             name = p[0]
             type = p[1]
         }]
