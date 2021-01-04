@@ -46,3 +46,8 @@ variable "update_behavior" {
   type = string
   default = "LOG"
 }
+
+variable "configuration" {
+  type = any
+  default = null
+}

@@ -8,12 +8,16 @@ data "aws_caller_identity" "current" {}
 locals {
   region       = data.aws_region.current.name
   account_id   = data.aws_caller_identity.current.account_id
-  function_arn = "arn:aws:lambda:${local.region}:${local.account_id}:function:${var.function_name}"
+  # function_arn = "arn:aws:lambda:${local.region}:${local.account_id}:function:${var.function_name}"
 }
 
 output "guessed_function_arn" {
   description = "Guessed function arn in the format: arn:aws:lambda:<region>:<account_id>:function:<function_name>"
-  value       = local.function_arn
+  # value       = local.function_arn
+  value       =   [
+    "arn:aws:lambda:${local.region}:${local.account_id}:function:${element(var.function_name, 0)}",
+    "arn:aws:lambda:${local.region}:${local.account_id}:function:${element(var.function_name, 1)}"
+  ]
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -25,15 +29,15 @@ output "function" {
   value       = try(aws_lambda_function.lambda[0], null)
 }
 
-output "aliases" {
-  description = "A map of all created 'aws_lambda_alias' resources keyed by name."
-  value       = try(aws_lambda_alias.alias, null)
-}
+# output "aliases" {
+#   description = "A map of all created 'aws_lambda_alias' resources keyed by name."
+#   value       = try(aws_lambda_alias.alias, null)
+# }
 
-output "permissions" {
-  description = "A map of all created 'aws_lambda_permission' resources keyed by statement_id."
-  value       = try(aws_lambda_permission.permission, null)
-}
+# output "permissions" {
+#   description = "A map of all created 'aws_lambda_permission' resources keyed by statement_id."
+#   value       = try(aws_lambda_permission.permission, null)
+# }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # OUTPUT ALL INPUT VARIABLES
@@ -53,7 +57,7 @@ output "module_inputs" {
     kms_key_arn                    = var.kms_key_arn
     layer_arns                     = var.layer_arns
     memory_size                    = var.memory_size
-    permissions                    = values(local.permissions)
+    # permissions                    = values(local.permissions)
     publish                        = var.publish
     reserved_concurrent_executions = var.reserved_concurrent_executions
     runtime                        = var.runtime
@@ -61,7 +65,7 @@ output "module_inputs" {
     s3_bucket                      = local.s3_bucket
     s3_key                         = local.s3_key
     s3_object_version              = local.s3_object_version
-    source_code_hash               = local.source_code_hash
+    # source_code_hash               = local.source_code_hash
     timeout                        = var.timeout
     tracing_mode                   = var.tracing_mode
     vpc_subnet_ids                 = var.vpc_subnet_ids
@@ -73,10 +77,10 @@ output "module_inputs" {
 # OUTPUT MODULE CONFIGURATION
 # ----------------------------------------------------------------------------------------------------------------------
 
-output "module_enabled" {
-  description = "Whether the module is enabled."
-  value       = var.module_enabled
-}
+# output "module_enabled" {
+#   description = "Whether the module is enabled."
+#   value       = var.module_enabled
+# }
 
 output "module_tags" {
   description = "The map of tags that will be applied to all created resources that accept tags."

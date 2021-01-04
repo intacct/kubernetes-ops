@@ -1,7 +1,7 @@
-# locals {
-#   audittrail_tn        = "${trim(var.obj_name[0], "/")}"
-#   audittrailfields_tn = "${trim(var.obj_name[1], "/")}"
-# }
+locals {
+  audittrail_tn       = trim(var.obj_name[0], "/")
+  audittrailfields_tn = trim(var.obj_name[1], "/")
+}
 
 provider "aws" {
   profile = var.auth_profile
@@ -25,50 +25,55 @@ module "iam_policy" {
 }
 
 data "aws_iam_policy_document" "policy" {
-  statement {
-    actions   = [
-      "s3:ListAllMyBuckets",
-      "s3:HeadBucket"
-    ]
-    effect    = "Allow"
-    resources = ["*"]
-  }
+  # statement {
+  #   actions   = [
+  #     "s3:ListAllMyBuckets",
+  #     "s3:HeadBucket"
+  #   ]
+  #   effect    = "Allow"
+  #   resources = ["*"]
+  # }
+  # statement {
+  #   actions = [
+  #     "glue:GetTable",
+  #     "glue:getDatabase"
+  #   ]
+  #   effect    = "Allow"
+  #   resources = ["*"]
+  # }
   statement {
     actions = [
-      "glue:GetTable",
-      "glue:getDatabase"
-    ]
-    effect    = "Allow"
-    resources = ["*"]
-  }
-  statement {
-    actions = [
-      "athena:BatchGetNamedQuery",
-      "athena:BatchGetQueryExecution", 
-      "athena:CancelQueryExecution",
-      "athena:CreateNamedQuery",
-      "athena:DeleteNamedQuery",
-      "athena:GetCatalogs",
-      "athena:GetExecutionEngine",
-      "athena:GetExecutionEngines",
-      "athena:GetNamedQuery",
-      "athena:GetNamespace",
-      "athena:GetNamespaces",
-      "athena:GetQueryExecution",
-      "athena:GetQueryExecutions",
-      "athena:GetQueryResults",
-      "athena:GetQueryResultsStream",
-      "athena:GetTable",
-      "athena:GetTables",
-      "athena:GetWorkGroup",
-      "athena:ListNamedQueries",
-      "athena:ListQueryExecutions",
-      "athena:ListTagsForResource", 
-      "athena:ListWorkGroups",
       "athena:StartQueryExecution",
+      "glue:GetPartitions",
+      "athena:GetQueryResults",
+      "athena:DeleteNamedQuery",
+      "athena:ListWorkGroups",
+      "athena:GetNamedQuery",
+      "athena:ListQueryExecutions",
+      "athena:GetWorkGroup",
+      "athena:GetExecutionEngine",
       "athena:StopQueryExecution",
+      "athena:GetExecutionEngines",
+      "s3:HeadBucket",
       "athena:TagResource",
-      "athena:UntagResource"
+      "athena:UntagResource",
+      "athena:GetQueryResultsStream",
+      "athena:GetNamespace",
+      "athena:GetQueryExecutions",
+      "athena:GetCatalogs",
+      "athena:ListTagsForResource",
+      "athena:ListNamedQueries",
+      "glue:GetTable",
+      "glue:GetDatabase",
+      "athena:GetNamespaces",
+      "athena:CreateNamedQuery",
+      "s3:ListAllMyBuckets",
+      "athena:CancelQueryExecution",
+      "athena:GetQueryExecution",
+      "athena:GetTables",
+      "athena:GetTable",
+      "athena:BatchGetNamedQuery",
+      "athena:BatchGetQueryExecution"
     ]
     effect = "Allow"
     resources = [
@@ -166,7 +171,8 @@ module "s3_module" {
     tags              = var.tags
     versioning        = var.versioning
     create_s3_objects  = var.create_s3_objects
-    obj_name          = concat(var.obj_name, var.glue_obj_name)
+    # obj_name          = concat(var.obj_name, var.glue_obj_name)
+    obj_name          = var.obj_name
     # attach_policy = true
 }
 
@@ -299,12 +305,22 @@ variable index {
 #   ]
 # }
 
+output lurl {
+  value = [
+    for obj in var.obj_name:
+      # "url = format ("%s%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj, "/")"
+      # "url = format ("%s%s%s%s%s","s3://",${module.s3_module.this_s3_bucket_id},"/",${obj}, "/")"
+      "obj = ${obj}"
+  ]
+}
+
 locals {
   location_urls = [
     for obj in var.obj_name:
-      format ("%s%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj, "/")
+      format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)
   ]
 }
+
 module "glue_table" {
   source             = "../../modules/multi-region/glue/table"
   create_table       = var.create_table
@@ -314,13 +330,15 @@ module "glue_table" {
   input_formats      = var.table_input_formats
   output_formats     = var.table_output_formats
   serialization_libs = var.table_serialization_libs
-  serde_parameters  = var.table_serde_parameters
   table_types       = var.table_types
   table_parameters  = var.table_parameters
+  table_storage_parameters  = var.table_storage_parameters
+  serde_parameters  = var.table_serde_parameters
   columns           = var.table_columns
   partition_keys    = var.table_partition_keys
   location_urls     = local.location_urls
 }
+
 # module "glue_table1" {
 #   source            = "../../modules/multi-region/glue/table"
 #   create_table      = var.create_table
@@ -347,15 +365,15 @@ module "glue_table" {
 #   columns           = var.table2_columns
 # }
 
-module "glue_table3" {
+module "glue_view" {
   source            = "../../modules/multi-region/glue/view"
   create_table      = var.create_table
-  table_name        = var.table3_name
+  table_name        = var.view1_name
+  table_description = var.view1_description
+  table_type        = var.view1_type
+  columns           = var.view1_columns
   db_name           = var.db_name
-  table_description = var.table3_description
-  table_type        = var.table3_type
   parameters        = ""
-  columns           = var.table3_columns
   location_url      = ""
 }
 
@@ -364,33 +382,87 @@ module "glue_table3" {
 # Glue Crawler
 # ----------------------------------------------------------------------------------------------------------------------
 module "glue_crawler" {
-  source       = "./../../modules/multi-region/glue/crawler"
-  create       = var.create_crawler
-  name         = var.crawl_name
-  db           = module.glue_database.name
-  role         = module.iam_role.this_role_name
-  schedule     = var.crawl_schedule
-  table_prefix = var.crawl_table_prefix
-  delete_behavior = var.schema_delete_behavior
+  source          = "./../../modules/multi-region/glue/crawler"
+  create          = var.crawler1_create
+  name            = var.crawler1_name
+  schedule        = var.crawler1_schedule
+  table_prefix    = var.crawler1_table_prefix
+  delete_behavior = var.crawler1_schema_delete_behavior
+  # configuration   = var.crawler1_configuration
+  db              = module.glue_database.name
+  role            = module.iam_role.this_role_name
   # data_source_paths = [format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])]
   data_source_paths = [
-    for obj in slice(var.obj_name,2,4): 
+    for obj in slice(var.obj_name,0,2): 
     format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)  
   ]
 }
 
+module "csv_crawler" {
+  source          = "./../../modules/multi-region/glue/crawler"
+  create          = var.crawler2_create
+  name            = var.crawler2_name
+  # schedule        = var.crawler2_schedule
+  table_prefix    = var.crawler2_table_prefix
+  delete_behavior = var.crawler2_schema_delete_behavior
+  update_behavior = var.crawler2_schema_update_behavior
+  configuration   = var.crawler2_configuration
+  db              = module.glue_database.name
+  role            = module.iam_role.this_role_name
+  # data_source_paths = [format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])]
+  data_source_paths = [
+    for obj in slice(var.obj_name,0,2): 
+    format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)  
+  ]
+}
+
+module "parquet_file_crawler" {
+  source          = "./../../modules/multi-region/glue/crawler"
+  create          = var.crawler3_create
+  name            = var.crawler3_name
+  # schedule        = var.crawler3_schedule
+  table_prefix    = var.crawler3_table_prefix
+  delete_behavior = var.crawler3_schema_delete_behavior
+  configuration   = var.crawler3_configuration
+  db              = module.glue_database.name
+  role            = module.iam_role.this_role_name
+  # data_source_paths = [format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])]
+  data_source_paths = [
+    for obj in slice(var.obj_name,2,3): 
+    format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)  
+  ]
+}
+
+module "parquet_fields_crawler" {
+  source          = "./../../modules/multi-region/glue/crawler"
+  create          = var.crawler4_create
+  name            = var.crawler4_name
+  # schedule        = var.crawler4_schedule
+  table_prefix    = var.crawler4_table_prefix
+  delete_behavior = var.crawler4_schema_delete_behavior
+  configuration   = var.crawler4_configuration
+  db              = module.glue_database.name
+  role            = module.iam_role.this_role_name
+  # data_source_paths = [format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])]
+  data_source_paths = [
+    for obj in slice(var.obj_name,3,4): 
+    format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",obj)  
+  ]
+}
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 # Glue Job
 # ----------------------------------------------------------------------------------------------------------------------
-module "glue_job" {
-  source          = "./../../modules/multi-region/glue/job"
+# module "glue_job" {
+#   source          = "./../../modules/multi-region/glue/job"
 
-  create          = var.create_job
-  name            = var.job_name
-  role_arn        = module.iam_role.this_role_arn[0]
-  script_location = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[0],"/"))
-  temp_dir        = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[1],"/"))
-}
+#   create          = var.create_job
+#   name            = var.job_name
+#   role_arn        = module.iam_role.this_role_arn[0]
+#   script_location = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[0],"/"))
+#   temp_dir        = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[1],"/"))
+# }
 
 # resource "null_resource" "audittrail" {
 #     provisioner     "local-exec" {
@@ -463,34 +535,51 @@ module "glue_job" {
 # A deployment package is a ZIP archive that contains your function code and dependencies.
 # ----------------------------------------------------------------------------------------------------------------------
 
-data "archive_file" "lambda" {
+data "archive_file" "lambda_audittrail" {
   type        = "zip"
   source_file = "${path.module}/python/uploadAuditTrail.py"
   output_path = "${path.module}/python/uploadAuditTrail.py.zip"
+}
+data "archive_file" "lambda_audittrailfields" {
+  type        = "zip"
+  source_file = "${path.module}/python/uploadAuditTrailFields.py"
+  output_path = "${path.module}/python/uploadAuditTrailFields.py.zip"
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # DEPLOY THE LAMBDA FUNCTION
 # ----------------------------------------------------------------------------------------------------------------------
 
-module "lambda-function" {
+module "lambda_function" {
   source  = "./../../modules/multi-region/lambda"
   # version = "~> 0.2.0"
 
-  function_name = "IA-AuditTrail-Upload"
-  description   = "Convert audit trail headers from table to CSV format"
-  filename      = data.archive_file.lambda.output_path
-  runtime       = "python3.8"
-  handler       = "main.lambda_handler"
-  timeout       = 20
-  memory_size   = 128
+  function_name = var.lambda_funct_name
+  description   = var.lambda_funct_description
+  filename      = [
+    data.archive_file.lambda_audittrail.output_path,
+    data.archive_file.lambda_audittrailfields.output_path
+  ]
+  runtime       = var.lambda_runtime
+  handler       = var.lambda_handler
+  timeout       = var.lambda_timeout
+  memory_size   = var.lambda_memory_size
 
-  role_arn = module.lambda_role.this_role_name
+  # create_layer        = var.create_layer
+  layer_name          = var.layer_name
+  layer_description   = var.layer_description
+  compatible_runtimes = var.layer_runtime
+  layer_filename      = "${path.module}/python/awswrangler-layer-2.1.0-py3.8.zip"
+  license_info        = var.layer_license
+  # source_path = 
+
+  role_arn = element(module.lambda_role.this_role_arn, 0)
 
   module_tags = {
     Environment = var.environment_tag
   }
 }
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # CREATE AN IAM LAMBDA EXECUTION ROLE WHICH WILL BE ATTACHED TO THE FUNCTION
@@ -557,6 +646,38 @@ module "lambda_role" {
 EOF
 
 }
+
+# ----------------------------------------------------------------------------------------------------------------------
+# CREATE S3 BUCKET EVENT NOTIFICATIONS ON CSV TABLES TO TRANSFORM CSV DATA TO PARQUET
+# ----------------------------------------------------------------------------------------------------------------------
+
+module "event_notifications" {
+  source = "../../modules/multi-region/s3-bucket/notification"
+
+  bucket = module.s3_module.this_s3_bucket_id
+
+  # Common error - Error putting S3 notification configuration: InvalidArgument: Configuration is ambiguously defined. Cannot have overlapping suffixes in two rules if the prefixes are overlapping for the same event type.
+
+  lambda_notifications = {
+    csvFileCreate = {
+      function_arn  = module.lambda_function.guessed_function_arn[0]
+      function_name  = module.lambda_function.guessed_function_arn[0]
+      # function_name = module.lambda_function1.this_lambda_function_name
+      events        = ["s3:ObjectCreated:*"]
+      filter_prefix = var.obj_name[0]
+      filter_suffix = ".csv"
+    },
+    csvFieldsCreate = {
+      function_arn  = module.lambda_function.guessed_function_arn[1]
+      function_name  = module.lambda_function.guessed_function_arn[1]
+      # function_name = module.lambda_function1.this_lambda_function_name
+      events        = ["s3:ObjectCreated:*"]
+      filter_prefix = var.obj_name[1]
+      filter_suffix = ".csv"
+    }
+  }
+}
+
 
 output "output_module" {
   value = module.iam_user

@@ -13,7 +13,7 @@
 
 variable "function_name" {
   description = "(Required) A unique name for the Lambda function."
-  type        = string
+  type        = list(string)
 }
 
 variable "handler" {
@@ -25,6 +25,7 @@ variable "runtime" {
   description = "(Required) The runtime the Lambda function should run in. A list of all available runtimes can be found here: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
   type        = string
 }
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
@@ -45,8 +46,32 @@ variable "dead_letter_config_target_arn" {
 
 variable "description" {
   description = "(Optional) A description of what the Lambda function does."
-  type        = string
-  default     = null
+  type        = list(string)
+  default     = [""]
+}
+
+variable "layer_name" {
+  description = "(Required) A unique name for the Lambda function."
+  type        = list(string)
+  default     = [""]
+}
+
+variable "layer_description" {
+  description = "(Optional) A description of what the Lambda function does."
+  type        = list(string)
+  default     = []
+}
+
+variable "license_info" {
+  description = "License info for your Lambda Layer. Eg, MIT or full url of a license."
+  type        = list(string)
+  default     = [""]
+}
+
+variable "compatible_runtimes" {
+  description = "A list of Runtimes this layer is compatible with. Up to 5 runtimes can be specified."
+  type        = list(string)
+  default     = []
 }
 
 variable "environment_variables" {
@@ -57,8 +82,14 @@ variable "environment_variables" {
 
 variable "filename" {
   description = "(Optional) The path to the .zip file that contains the Lambda function source code."
-  type        = string
-  default     = null
+  type        = list
+  default     = []
+}
+
+variable "layer_filename" {
+  description = "py.zip file used to create custom layer"
+  type = string
+  default = ""
 }
 
 variable "kms_key_arn" {
@@ -158,7 +189,13 @@ variable "vpc_security_group_ids" {
 # See https://medium.com/mineiros/the-ultimate-guide-on-how-to-write-terraform-modules-part-1-81f86d31f024
 # ----------------------------------------------------------------------------------------------------------------------
 
-variable "module_enabled" {
+variable "create_lamdba" {
+  type        = bool
+  description = "(Optional) Whether to create resources within the module or not."
+  default     = true
+}
+
+variable "create_layer" {
   type        = bool
   description = "(Optional) Whether to create resources within the module or not."
   default     = true
@@ -181,3 +218,4 @@ variable "module_depends_on" {
   description = "(Optional) A list of external resources the module depends_on."
   default     = []
 }
+

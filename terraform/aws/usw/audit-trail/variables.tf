@@ -32,8 +32,6 @@ variable "versioning" {
 
 variable "obj_name" {
   description = "Name of the object/folder to be created inside bucket"
-  type        = list
-  default     = ["audittrail/", "audittrailfields/", "audittrail-parquet/", "audittrailfields-parquet/"]
 }
 
 variable "glue_obj_name" {
@@ -109,9 +107,10 @@ variable "table_descriptions" {}
 variable "table_input_formats" {}
 variable "table_output_formats" {}
 variable "table_serialization_libs" {}
-variable "table_serde_parameters" {}
 variable "table_types" {}
 variable "table_parameters" {}
+variable "table_storage_parameters" {}
+variable "table_serde_parameters" {}
 variable "table_columns" {}
 variable "table_partition_keys" {}
 
@@ -129,36 +128,71 @@ variable "table_partition_keys" {}
 # variable "table2_parameters" {}
 # variable "table2_columns" {}
 
-variable "table3_name" {}
-variable "table3_description" {}
-variable "table3_type" {}
-variable "table3_parameters" {}
-variable "table3_columns" {}
+variable "view1_name" {}
+variable "view1_description" {}
+variable "view1_type" {}
+variable "view1_parameters" {}
+variable "view1_columns" {}
 
-# # ---- aws_glue_crawler
-variable "create_crawler" { default = true }
-variable "crawl_name" { default = "IA-AuditDataCrawler" }
-variable "crawl_role" { default = "" }
-variable "crawl_database" { default = "" }
-variable "schema_delete_behavior" { default = "LOG" }
+# ----------------------------------------------------------------------------------------------------------------------
+# Crawler
+# ----------------------------------------------------------------------------------------------------------------------
+variable "crawler1_create" {}
+variable "crawler1_name" {}
+variable "crawler1_schema_delete_behavior" {}
+variable "crawler1_schedule" {}
+variable "crawler1_table_prefix" { default = "" }
+variable "crawler1_configuration" {}
 
-# Run at 1:15a every day
-variable "crawl_schedule" {
-  description = "cron(Minutes Hours Day-of-month Month Day-of-week Year)"
-  default = "cron(15 1 * * ? *)"
-}
+variable "crawler2_create" {}
+variable "crawler2_name" {}
+variable "crawler2_schema_delete_behavior" {}
+variable "crawler2_schema_update_behavior" {}
+variable "crawler2_schedule" {}
+variable "crawler2_table_prefix" { default = "" }
+variable "crawler2_configuration" {}
 
-variable "crawl_table_prefix" { default = "" }
+variable "crawler3_create" {}
+variable "crawler3_name" {}
+variable "crawler3_schema_delete_behavior" {}
+variable "crawler3_schema_update_behavior" {}
+variable "crawler3_schedule" {}
+variable "crawler3_table_prefix" { default = "" }
+variable "crawler3_configuration" {}
+
+variable "crawler4_create" {}
+variable "crawler4_name" {}
+variable "crawler4_schema_delete_behavior" {}
+variable "crawler4_schema_update_behavior" {}
+variable "crawler4_schedule" {}
+variable "crawler4_table_prefix" { default = "" }
+variable "crawler4_configuration" {}
+
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Lambda
 # ----------------------------------------------------------------------------------------------------------------------
-# variable "lambda_funct_name_1" {}
-variable "lambda_funct_name_2" {}
+variable "create_lambda" {}
+variable "lambda_funct_name" {}
+variable "lambda_funct_description" {}
+variable "lambda_handler" {}
 variable "lambda_upload_role_name" {}
 variable "lambda_role_path" {}
 variable "lambda_role_policy_name" {}
+variable "lambda_runtime" {}
+variable "lambda_timeout" {}
+variable "lambda_memory_size" {}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Lambda Layer
+# ----------------------------------------------------------------------------------------------------------------------
+variable "create_layer" {}
+variable "layer_name" {}
+variable "layer_description" {}
+variable "layer_runtime" {}
+variable "layer_license" {}
 
 
 # ----------------------------------------------------------------------------------------------------------------------

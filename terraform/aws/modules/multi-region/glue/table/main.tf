@@ -5,7 +5,7 @@ resource "aws_glue_catalog_table" "this" {
     database_name  = var.db_name
     description    = element(var.table_descriptions, count.index)
     table_type     = element(var.table_types, count.index)
-    parameters     = element(var.table_parameters, count.index)
+    parameters     = length(var.table_parameters) > 0 ? element(var.table_parameters, count.index) : {}
 
     storage_descriptor {
         # location      = var.location_url
@@ -18,6 +18,8 @@ resource "aws_glue_catalog_table" "this" {
         # output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
         input_format  = element(var.input_formats, count.index)
         output_format = element(var.output_formats, count.index)
+        number_of_buckets = var.number_of_buckets
+        parameters = element(var.table_storage_parameters, count.index)
 
 
         ser_de_info {

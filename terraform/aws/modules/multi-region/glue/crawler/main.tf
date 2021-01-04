@@ -14,17 +14,19 @@ resource "aws_glue_crawler" "glue_crawler_s3" {
     update_behavior = var.update_behavior
   }
 
-  s3_target {
-    path = var.data_source_paths[0]
-  }
-  s3_target {
-    path = var.data_source_paths[1]
-  }
-  # dynamic "s3_target" {
-  #   for_each = var.data_source_paths
-  #   content {
-  #       path = data_source_paths
-  #   }
+  # s3_target {
+  #   path = var.data_source_paths[0]
   # }
-   
+  # s3_target {
+  #   path = var.data_source_paths[1]
+  # }
+  dynamic "s3_target" {
+    for_each = var.data_source_paths
+    content {
+        path = s3_target.value
+    }
+  }
+
+  configuration = var.configuration != null ? jsonencode(var.configuration) : null
+
 }

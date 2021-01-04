@@ -36,10 +36,10 @@ table_serialization_libs = [
         "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
     ]
 table_serde_parameters = [
-        {"serialization.format" = 1},
-        {"serialization.format" = 1},
-        {"serialization.format" = 1},
-        {"serialization.format" = 1},
+        {"separatorChar" = ","},
+        {"field.delim" = ","},
+        {"serialization.format" = "1"},
+        {"serialization.format" = "1"}
     ]
 table_types = [
         "EXTERNAL_TABLE",
@@ -48,10 +48,38 @@ table_types = [
         "EXTERNAL_TABLE",
     ]
 table_parameters = [
-        [{EXTERNAL = "TRUE"}],
-        [{EXTERNAL = "TRUE"}],
-        [{EXTERNAL = "TRUE"}],
-        [{EXTERNAL = "TRUE"}],
+        {
+            classification     = "csv",
+            UPDATED_BY_CRAWLER = "ia-audittrail_csv_crawler"
+        },
+        {
+            classification = "csv"
+        },
+        {
+            classification     = "parquet",
+            UPDATED_BY_CRAWLER = "ia-audittrail_parquet_crawler"
+        },
+        {
+            classification = "parquet",
+            UPDATED_BY_CRAWLER = "ia-audittrailfields_parquet_crawler"
+        },
+    ]
+table_storage_parameters = [
+        {
+            UPDATED_BY_CRAWLER = "ia-audittrail_csv_crawler"
+        },
+        {
+            classification = "csv",
+            UPDATED_BY_CRAWLER = "ia-audittrail_csv_crawler"
+        },
+        {
+            classification     = "parquet",
+            UPDATED_BY_CRAWLER = "ia-audittrail_parquet_crawler"
+        },
+        {
+            classification = "parquet",
+            UPDATED_BY_CRAWLER = "ia-audittrailfields_parquet_crawler"
+        },
     ]
 table_columns = [
         [
@@ -60,7 +88,7 @@ table_columns = [
             ["objectkey", "string"],
             ["objectdesc", "string"],
             ["userid", "string"],
-            ["accesstime", "timestamp"],
+            ["accesstime", "bigint"],
             ["accessmode", "string"],
             ["ipaddress", "string"],
             ["source", "string"],
@@ -74,12 +102,12 @@ table_columns = [
             ["newval", "string"],
             ["oldstrval", "string"],
             ["newstrval", "string"],
-            ["oldintval", "string"],
-            ["newintval", "string"],
-            ["oldnumval", "string"],
-            ["newnumval", "string"],
-            ["olddateval", "string"],
-            ["newdateval", "string"]
+            ["oldintval", "bigint"],
+            ["newintval", "bigint"],
+            ["oldnumval", "bigint"],
+            ["newnumval", "bigint"],
+            ["olddateval", "bigint"],
+            ["newdateval", "bigint"]
         ],
         [
             ["recordid", "string"],
@@ -101,12 +129,12 @@ table_columns = [
             ["newval", "string"],
             ["oldstrval", "string"],
             ["newstrval", "string"],
-            ["oldintval", "string"],
-            ["newintval", "string"],
-            ["oldnumval", "string"],
-            ["newnumval", "string"],
-            ["olddateval", "string"],
-            ["newdateval", "string"]
+            ["oldintval", "bigint"],
+            ["newintval", "bigint"],
+            ["oldnumval", "double"],
+            ["newnumval", "double"],
+            ["olddateval", "date"],
+            ["newdateval", "date"]
         ]
     ]
 table_partition_keys = [
@@ -132,87 +160,19 @@ table_partition_keys = [
         ]
     ]
 
+obj_name     = ["audittrail/", "audittrailfields/", "audittrail-parquet/", "audittrailfields-parquet/"]
 
-# Table1 - audittrail table definitions
-# table1_name = "audittrail"
-# table1_description = "audit trail table" 
-# table1_input_format = "org.apache.hadoop.mapred.TextInputFormat"
-# table1_output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
-# table1_serialization_lib = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
-# table1_serde_parameters = {
-#     "serialization.format" = 1
-# }
-# table1_type = "EXTERNAL_TABLE"
-# table1_parameters = [
-#         {
-#             EXTERNAL = "TRUE"
-#         }
-#     ]
-# table1_columns = [
-#       ["recordid", "string"],
-#       ["objecttype", "string"],
-#       ["objectkey", "string"],
-#       ["objectdesc", "string"],
-#       ["userid", "string"],
-#       ["accesstime", "timestamp"],
-#       ["accessmode", "string"],
-#       ["ipaddress", "string"],
-#       ["source", "string"],
-#       ["workflowaction", "string"]
-#     ]
-# table1_partition_keys = [
-#       ["cny", "int"],
-#       ["type", "string"],
-#       ["dt", "int"]
-#     ]
-
-# # Table2 - audittrailfields table definitions
-# table2_name = "audittrailfields" 
-# table2_description = "audit trail fields table" 
-# table2_input_format = "org.apache.hadoop.mapred.TextInputFormat"
-# table2_output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
-# table2_serialization_lib = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
-# table2_serde_parameters = {
-#     "serialization.format" = 1
-# }
-# table2_partition_keys = [
-#       ["cny", "int"],
-#       ["type", "string"],
-#       ["dt", "int"]
-#     ]
-# table2_type = "EXTERNAL_TABLE" 
-# table2_parameters = [
-#         {
-#             EXTERNAL = "TRUE"
-#         }
-#     ]
-# table2_columns = [
-#       ["recordid", "string"],
-#       ["fieldname", "string"],
-#       ["fieldtype", "string"],
-#       ["oldval", "string"],
-#       ["newval", "string"],
-#       ["oldstrval", "string"],
-#       ["newstrval", "string"],
-#       ["oldintval", "string"],
-#       ["newintval", "string"],
-#       ["oldnumval", "string"],
-#       ["newnumval", "string"],
-#       ["olddateval", "string"],
-#       ["newdateval", "string"]
-#     ]
-
-# Table3 - audittrailview view table definitions
-table3_name = "audittrailview" 
-table3_description = "audit trail view" 
-table3_type = "VIRTUAL_VIEW" 
-table3_parameters = [
+# view1 - audittrailview view table definitions
+view1_name = "audittrailview" 
+view1_description = "audit trail view" 
+view1_type = "VIRTUAL_VIEW" 
+view1_parameters = [
       {        
         presto_view = "true"
         comment     = "Presto View"    
       }
   ]
-table3_columns = [
+view1_columns = [
     ["cny", "int"],
     ["type", "string"],
     ["dt", "int"],
@@ -221,7 +181,7 @@ table3_columns = [
     ["objectkey", "string"],
     ["objectdesc", "string"],
     ["userid", "string"],
-    ["accesstime", "bigint"],
+    ["accesstime", "timestamp"],
     ["accessmode", "string"],
     ["ipaddress", "string"],
     ["source", "string"],
@@ -232,33 +192,111 @@ table3_columns = [
     ["newval", "string"],
     ["oldstrval", "string"],
     ["newstrval", "string"],
-    ["oldintval", "string"],
-    ["newintval", "string"],
-    ["oldnumval", "string"],
-    ["newnumval", "string"],
-    ["olddateval", "string"],
-    ["newdateval", "string"]
+    ["oldintval", "bigint"],
+    ["newintval", "bigint"],
+    ["oldnumval", "double"],
+    ["newnumval", "double"],
+    ["olddateval", "date"],
+    ["newdateval", "date"]
   ]
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Crawler
+# ----------------------------------------------------------------------------------------------------------------------
+crawler1_create                 = true
+crawler1_name                   = "IA-AuditDataCrawler"
+crawler1_schema_delete_behavior = "LOG"
+# Run at 1:15a every day
+# cron(Minutes Hours Day-of-month Month Day-of-week Year)
+crawler1_schedule               = "cron(15 1 * * ? *)"
+crawler1_configuration          = {}
 
-# table4_input_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
-# table4_output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
-# table4_serialization_lib = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
-# table4_serde_parameters = {
-#     "serialization.format" = 1
-# }
-# table5_input_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
-# table5_output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
-# table5_serialization_lib = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
-# table5_serde_parameters = {
-#     "serialization.format" = 1
-# }
+crawler2_create                 = true
+crawler2_name                   = "ia-audittrail_csv_crawler"
+crawler2_schema_delete_behavior = "DEPRECATE_IN_DATABASE"
+crawler2_schema_update_behavior = "UPDATE_IN_DATABASE"
+# Run at 1:15a every day
+# cron(Minutes Hours Day-of-month Month Day-of-week Year)
+crawler2_schedule               = "cron(15 1 * * ? *)"
+crawler2_configuration          = {
+    CrawlerOutput = {
+        Tables = {
+            AddOrUpdateBehavior = "MergeNewColumns"
+        }
+    }
+    Version       = 1
+}
+
+crawler3_create                 = true
+crawler3_name                   = "ia-audittrail_parquet_crawler"
+crawler3_schema_delete_behavior = "DEPRECATE_IN_DATABASE"
+crawler3_schema_update_behavior = "LOG"
+# Run at 1:15a every day
+# cron(Minutes Hours Day-of-month Month Day-of-week Year)
+crawler3_schedule               = "cron(15 1 * * ? *)"
+crawler3_configuration          = {
+    CrawlerOutput = {
+      Partitions = {
+        AddOrUpdateBehavior = "InheritFromTable"
+      }
+    }
+    Grouping      = {
+      TableGroupingPolicy = "CombineCompatibleSchemas"
+    }
+    Version       = 1
+}
+
+crawler4_create                 = true
+crawler4_name                   = "ia-audittrailfields_parquet_crawler"
+crawler4_schema_delete_behavior = "DEPRECATE_IN_DATABASE"
+crawler4_schema_update_behavior = "LOG"
+# Run at 1:15a every day
+# cron(Minutes Hours Day-of-month Month Day-of-week Year)
+crawler4_schedule               = "cron(15 1 * * ? *)"
+crawler4_configuration          = {
+    CrawlerOutput = {
+      Partitions = {
+        AddOrUpdateBehavior = "InheritFromTable"
+      }
+    }
+    Grouping      = {
+      TableGroupingPolicy = "CombineCompatibleSchemas"
+    }
+    Version       = 1
+}
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Lambda
 # ----------------------------------------------------------------------------------------------------------------------
 # lamdba_funct_name_1 = "IA-AuditTrail-Upload"
-lambda_funct_name_2 = "IA-AuditTrailFields-Upload"
-lambda_upload_role_name = "IA-AuditTrail-Lambda"
+create_lambda = true
+lambda_funct_name = [
+    "uploadAuditTrail",
+    "uploadAuditTrailFields"
+]
+lambda_funct_description = [
+    "Transform audittrail csv table to Parquet",
+    "Transform audittrailfields csv table to Parquet"
+]
+lambda_timeout = 20
+lambda_memory_size = 128
+lambda_handler = "lambda_function.lambda_handler"
+# lambda_upload_role_name = "IA-AuditTrail-Lambda"
+# lambda_upload_role_name = "uploadAuditTrail-role-4vhjyey0"
+lambda_upload_role_name = "uploadAuditTrail-role"
 lambda_role_path = "/service-role/"
-lambda_role_policy_name = "IA-AuditTrailLambda"
+# lambda_role_policy_name = "IA-AuditTrailLambda"
+# lambda_role_policy_name = "AWSLambdaBasicExecutionRole-838b1669-00a0-4fbd-b8ae-1356ba5e02c8"
+lambda_role_policy_name = "uploadAuditTrail-policy"
+lambda_runtime = "python3.8"
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Lambda Layer
+# ----------------------------------------------------------------------------------------------------------------------
+create_layer = true
+layer_name = ["awsDataLayer"]
+layer_description = ["An open-source Python package that extends the power of Pandas library to AWS"]
+layer_runtime = ["python3.8"]
+layer_license = ["https://github.com/awslabs/aws-data-wrangler/blob/master/LICENSE.txt"]
+

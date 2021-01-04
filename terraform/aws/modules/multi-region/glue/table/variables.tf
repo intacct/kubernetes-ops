@@ -37,11 +37,11 @@ variable "table_types" {
 }
 variable "table_parameters" {
     type = list
-    default = [
-        {
-            EXTERNAL = "TRUE"
-        }
-    ]
+    default = []
+}
+variable "table_storage_parameters" {
+    type = list
+    default = []
 }
 variable "columns" {
     description = "Table columns"
@@ -53,6 +53,10 @@ variable "partition_keys" {
 }
 variable "location_urls" {
     type = list(string)
+}
+variable "number_of_buckets" {
+    type = number
+    default = -1
 }
 
 

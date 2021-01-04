@@ -5,8 +5,8 @@ resource "aws_glue_catalog_table" this {
     database_name  = var.db_name
     description    = var.table_description
     table_type     = var.table_type
-    view_original_text = "/* Prest View: ${base64encode(file("../../modules/multi-region/glue/view/files/audittrailview.txt"))} */"
-    view_expanded_text = "/* Prest View: */"
+    view_original_text = "/* Presto View: ${base64encode(file("../../modules/multi-region/glue/view/files/audittrailview.txt"))} */"
+    view_expanded_text = "/* Presto View */"
     parameters     = {        
         presto_view = "true"
         comment     = "Presto View"    
