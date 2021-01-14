@@ -23,10 +23,9 @@ override.tf.json
 # example: *tfplan*
 terraform.log
 **/*.tfplan
+**/*_plan
+**/.DS_Store
 tfplan
-terraform/aws/usw/obiee-test/backend.tf
-terraform/aws/usw/obiee-test/destroyplan
-terraform/aws/usw/obiee-test/terragrunt.hcl
-terraform/aws/usw/obiee-test/vars.tf
-terraform/aws/usw/obiee-test/obi.tf
-terraform/aws/usw/obiee-test/files/attach_ebs.sh
+terraform/aws/usw/audit-trail/pgp-key
+.gitignore
+terraform/aws/usw/audit-trail/ia-creds
