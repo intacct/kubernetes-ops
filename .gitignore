@@ -25,7 +25,10 @@ terraform.log
 **/*.tfplan
 **/*_plan
 **/.DS_Store
-tfplan
+**/tfplan
 terraform/aws/usw/audit-trail/pgp-key
 .gitignore
 terraform/aws/usw/audit-trail/ia-creds
+**/Readme.txt
+**/dev01
+**/lambda_function.zip
