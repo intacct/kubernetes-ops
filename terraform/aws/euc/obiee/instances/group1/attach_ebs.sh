@@ -12,7 +12,7 @@ while read -a words; do
       mp="var"
       ;;
     16G)
-      mp="swapfile"
+      mp="swap"
       ;;
     esac
     

@@ -537,13 +537,13 @@ module "parquet_fields_crawler" {
 
 data "archive_file" "lambda_audittrail" {
   type        = "zip"
-  source_file = "${path.module}/python/uploadAuditTrail.py"
-  output_path = "${path.module}/python/uploadAuditTrail.py.zip"
+  source_file = "${path.module}/python/uploadAuditTrail/lambda_function.py"
+  output_path = "${path.module}/python/uploadAuditTrail/lambda_function.zip"
 }
 data "archive_file" "lambda_audittrailfields" {
   type        = "zip"
-  source_file = "${path.module}/python/uploadAuditTrailFields.py"
-  output_path = "${path.module}/python/uploadAuditTrailFields.py.zip"
+  source_file = "${path.module}/python/uploadAuditTrailFields/lambda_function.py"
+  output_path = "${path.module}/python/uploadAuditTrailFields/lambda_function.zip"
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -569,7 +569,8 @@ module "lambda_function" {
   layer_name          = var.layer_name
   layer_description   = var.layer_description
   compatible_runtimes = var.layer_runtime
-  layer_filename      = "${path.module}/python/awswrangler-layer-2.1.0-py3.8.zip"
+  # layer_filename      = "${path.module}/python/awswrangler-layer-2.1.0-py3.8.zip"
+  layer_filename      = "${path.module}/python/awswrangler-layer-1.7.0-py3.8.zip"
   license_info        = var.layer_license
   # source_path = 
 
