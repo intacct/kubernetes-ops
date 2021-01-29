@@ -41,42 +41,12 @@ module "mongo-instance" {
   ]
 
   ebs_block_device = [
-    # {
-    #   device_name = "/dev/sdb" // tmp
-    #   volume_type = "gp2"
-    #   volume_size = 10
-    #   delete_on_termination = true
-    # },
     {
-      device_name = "/dev/sdf"
+      device_name = "/dev/sdb" // tmp
       volume_type = "gp2"
-      volume_size = 16
+      volume_size = 10
       delete_on_termination = true
-    },
-    {
-      device_name = "/dev/sdg"
-      volume_type = "gp2"
-      volume_size = 20
-      delete_on_termination = true
-    },
-    {
-      device_name = "/dev/sdh"
-      volume_type = "gp2"
-      volume_size = 22
-      delete_on_termination = true
-    },
-    {
-      device_name = "/dev/sdi"
-      volume_type = "gp2"
-      volume_size = 24
-      delete_on_termination = true
-    },
-    {
-      device_name = "/dev/sdj"
-      volume_type = "gp2"
-      volume_size = 200
-      delete_on_termination = true
-    },
+    }
   ]
 
   tags = {
@@ -90,7 +60,7 @@ module "sg" {
 
   create                 = true
   name                   = format("%s-%s",var.name_prefix, var.sg_name)
-  description            = "App Security Group1"
+  description            = "App Security Group"
   vpc_id                 = var.vpc_id
   tags                   = {
       Name = format("%s-%s",var.name_prefix, var.sg_name)
