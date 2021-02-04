@@ -124,9 +124,9 @@ EOT
   // Call Ansible Playbook to run sysadmin-confign playbook on the provisioned instance
   provisioner "local-exec" {
     command = <<EOT
-ssh-add "${var.key_file}"
-ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/zabbix-agent.yml" --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
-ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+ssh-add ${var.key_file}
+ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/zabbix-agent.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/sysadmin-config.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 EOT
   }
 
