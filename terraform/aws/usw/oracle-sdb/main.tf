@@ -6,7 +6,7 @@ provider "aws" {
 module "deploy_oracle_sdb" {
     source          = "../../modules/multi-region/oracle-db"
 
-    create_instance = true
+    create_instance = false
     instance_type   = var.instance_type
     ami             = var.ami
     vpc             = var.vpc 

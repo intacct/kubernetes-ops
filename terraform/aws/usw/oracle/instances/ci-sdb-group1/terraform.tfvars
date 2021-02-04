@@ -6,7 +6,7 @@ subnet_suffix   = "sn-5db7"
 subnet_id       = "subnet-ec035db7"
 private_ips     = ["10.234.2.13"]
 key_name        = "peter.hall"
-key_file        = "/Users/peter.hall/.ssh/peterhall.pem"
+key_file        = "~/.ssh/peterhall.pem"
 ami             = "ami-0155c31ea13d4abd2" // Centos 8.2
 security_group_id = "sg-0c7fd535b054d41ae"
 

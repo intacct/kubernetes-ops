@@ -44,7 +44,7 @@ while read -a words; do
 done < <(lsblk)
 echo "ClientAliveInterval 120" >> /etc/ssh/sshd_config
 echo "ClientAliveCountMax 720" >> /etc/ssh/sshd_config
-# reboot -h now
+reboot -h now
 
 # dd if=/dev/zero of=/u02/swapfile bs=128M count=8
 # chmod 0600 /u02/swapfile

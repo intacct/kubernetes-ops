@@ -9,7 +9,7 @@ module "deploy_ci_instance" {
 
     create_nacl     = false
     create_security_group = false
-    create_instance = true
+    create_instance = false
     instance_type   = "m5a.4xlarge"
     # ami             = "ami-0157b1e4eefd91fd7" // Cenos 8 x86_64
     ami             = "ami-0a248ce88bcc7bd23" // Centos 7 x86_64
