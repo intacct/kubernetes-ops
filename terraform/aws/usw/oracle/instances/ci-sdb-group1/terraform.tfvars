@@ -32,14 +32,14 @@ ebs_block_devices = [
       # u02
       device_name = "/dev/sdf"
       volume_type = "gp2"
-      volume_size = 1000
+      volume_size = 200
       delete_on_termination = true
     },
     {
       # u03
       device_name = "/dev/sdg"
       volume_type = "gp2"
-      volume_size = 1500
+      volume_size = 500
       delete_on_termination = true
     },
     {
