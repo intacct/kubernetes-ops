@@ -8,10 +8,10 @@ while read -a words; do
     100G)
       mp="u01"
       ;;
-    1000G)
+    200G)
       mp="u02"
       ;;
-    1500G)
+    500G)
       mp="u03"
       ;;
     10G)
