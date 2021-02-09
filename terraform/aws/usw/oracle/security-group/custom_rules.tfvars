@@ -10,6 +10,13 @@ custom_inbound = [
         from_port   = 1521
         to_port     = 1521
         protocol    = "tcp"
+        description = "usw Oracle subnet"
+        cidr_blocks = "10.234.2.0/24"
+    },
+    {
+        from_port   = 1521
+        to_port     = 1521
+        protocol    = "tcp"
         description = "usw obiee subnet"
         cidr_blocks = "10.234.9.0/24"
     },
