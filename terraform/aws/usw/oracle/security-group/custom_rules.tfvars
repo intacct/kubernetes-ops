@@ -34,6 +34,14 @@ custom_inbound = [
         cidr_blocks = "10.234.5.0/24"
         description = "usw aux subnet"
     },
+    {
+        # ENG VLAN
+        from_port   = 1521
+        to_port     = 1521
+        protocol    = "tcp"
+        cidr_blocks = "10.226.16.0/23"
+        description = "eng vlan subnet"
+    },
 ]
 
 custom_outbound = ["all-all"]

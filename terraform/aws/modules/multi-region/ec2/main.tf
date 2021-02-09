@@ -97,9 +97,8 @@ resource "aws_instance" "this" {
   // Remove instance entry in ~/.ssh/known_hosts in case the instance was redeployed 
   provisioner "local-exec" {
       command = <<EOT
-sed '/^${element(var.private_ips,count.index)}/d' ~/.ssh/known_hosts > /tmp/kh
-sed '/^${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}/d' /tmp/kh > /tmp/kh2
-mv /tmp/kh2 ~/.ssh/known_hosts
+sed -i '/^${element(var.private_ips,count.index)}/d' ~/.ssh/known_hosts
+sed -i '/^${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}/d' ~/.ssh/known_hosts
 EOT
   }
 
@@ -125,6 +124,7 @@ EOT
   provisioner "local-exec" {
     command = <<EOT
 ssh-add ${var.key_file}
+ssh-keyscan ${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} >> ~/.ssh/known_hosts
 ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/zabbix-agent.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/sysadmin-config.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 EOT
