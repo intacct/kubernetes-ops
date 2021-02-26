@@ -121,7 +121,7 @@ resource "aws_network_acl" "euc-obi-nacl" {
     cidr_block  = "10.235.9.10/32"
   }
   ingress {
-    # Open port for DNS server
+    # DNS - 123, NIS - 910, SunRPC - 111 Server requests
      rule_no    = 210
      action     = "allow"
      from_port  = 0
@@ -227,6 +227,15 @@ resource "aws_network_acl" "euc-obi-nacl" {
     to_port     = 123
     protocol    = "udp"
     cidr_block  = "0.0.0.0/0"
+  }
+  egress {
+    # DNS - 123, NIS - 910, SunRPC - 111 Server requests
+    rule_no     = 200
+    action      = "allow"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_block  = "192.168.20.13/32"
   }
 
   tags = {
