@@ -137,7 +137,16 @@ resource "aws_network_acl" "euc-obi-nacl" {
      to_port    = 123
      protocol   = "udp"
      cidr_block = "0.0.0.0/0"
-  }    
+  }
+  ingress {
+    # Radius TCP/UDP requests from 10.226.12.13, 10.226.12.14 1812-1813, 389, 636
+      rule_number = 230
+      rule_action = "allow"
+      from_port   = 1812
+      to_port     = 1813
+      protocol    = "-1"
+      cidr_block  = "10.226.12.12/30"
+  }
 
   egress {
     rule_no     = 100
