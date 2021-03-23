@@ -97,8 +97,8 @@ resource "aws_instance" "this" {
   // Remove instance entry in ~/.ssh/known_hosts in case the instance was redeployed 
   provisioner "local-exec" {
       command = <<EOT
-sed -i '/^${element(var.private_ips,count.index)}/d' ~/.ssh/known_hosts
-sed -i '/^${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}/d' ~/.ssh/known_hosts
+sed -i '' '/^${element(var.private_ips,count.index)}/d' ~/.ssh/known_hosts
+sed -i '' '/^${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}/d' ~/.ssh/known_hosts
 EOT
   }
 
