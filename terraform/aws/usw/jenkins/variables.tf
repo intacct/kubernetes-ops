@@ -27,12 +27,17 @@ variable "keyname" {
 
 variable "hostnames" {
   type    = list
-  default = ["usw-ci-n50"]
+  default = [
+    "usw-ci-n50",
+    "usw-ci-n51"]
 }
 
 variable "ips" {
   type = list
-  default =  ["10.234.4.50"]
+  default =  [
+    "10.234.4.50",
+    "10.234.4.51"
+    ]
 }
 
 variable "instance_type" {

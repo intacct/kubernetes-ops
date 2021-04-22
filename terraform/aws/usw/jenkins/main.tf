@@ -73,6 +73,20 @@ resource "aws_security_group" "usw-ci-sg" {
       protocol    = "tcp"
       cidr_blocks = ["10.234.4.0/24"]
   }
+  ingress {
+      description = "Docker"
+      from_port   = 4243
+      to_port     = 4243
+      protocol    = "tcp"
+      cidr_blocks = ["10.226.16.0/24"]
+  }
+  ingress {
+      description = "Grafana"
+      from_port   = 3001
+      to_port     = 3001
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     # Allow all outbound traffic
@@ -93,7 +107,7 @@ resource "aws_instance" "usw-ci" {
   instance_type               = var.instance_type
   vpc_security_group_ids      = ["${aws_security_group.usw-ci-sg.id}"]
   associate_public_ip_address = false
-  count                       = 1
+  count                       = 2
   private_ip                  = "${element(var.ips,count.index)}"
   ami                         = var.ami
   key_name                    = var.keyname
@@ -130,7 +144,8 @@ EOT
 
   provisioner "local-exec" {
     command = <<EOT
-ssh-add var.key_file
+ssh-add ${var.key_file}
+ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/zabbix-agent.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 ansible-playbook -i "${element(var.hostnames, count.index)}", -v -K "/Users/skrishnamurthy/do-ansible/sysadmin-config.yml" --extra-vars "hosts_var=${element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
 EOT
   }
