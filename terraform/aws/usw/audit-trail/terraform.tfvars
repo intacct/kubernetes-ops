@@ -160,8 +160,6 @@ table_partition_keys = [
         ]
     ]
 
-obj_name     = ["audittrail/", "audittrailfields/", "audittrail-parquet/", "audittrailfields-parquet/"]
-
 # view1 - audittrailview view table definitions
 view1_name = "audittrailview" 
 view1_description = "audit trail view" 
@@ -300,3 +298,20 @@ layer_description = ["An open-source Python package that extends the power of Pa
 layer_runtime = ["python3.8"]
 layer_license = ["https://github.com/awslabs/aws-data-wrangler/blob/master/LICENSE.txt"]
 
+# ----------------------------------------------------------------------------------------------------------------------
+# S3 
+# ----------------------------------------------------------------------------------------------------------------------
+create_bucket = true
+bucket = ["ia-audittrailbucket", "krose-audittest"]
+acl = "private"
+tags = [
+  {
+      "Name" = "ia-audittrailbucket"
+  },
+  {
+      "Name" = "krose-audittest"
+  }
+]
+versioning = { "enabled" = true }
+create_s3_objects = true
+obj_name = ["audittrail/", "audittrailfields/", "audittrail-parquet/", "audittrailfields-parquet/"]

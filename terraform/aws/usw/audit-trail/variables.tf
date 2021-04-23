@@ -12,14 +12,17 @@ variable "create_bucket" {
   default     = true
 }
 
-variable "bucket" { default = "ia-audittrailbucket" }
+variable "bucket" { 
+  type = list
+  default = ["ia-audittrailbucket"]
+}
 
 variable "tags" {
   description = "A mapping of tags to assign to the bucket."
-  type        = map(string)
-  default     = {
+  type        = list
+  default     = [{
       "Name" = "ia-audittrailbucket"
-  }
+  }]
 }
 
 variable "versioning" {
