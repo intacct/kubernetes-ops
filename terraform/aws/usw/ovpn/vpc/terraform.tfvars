@@ -1,0 +1,9 @@
+region   = "us-west-2"
+profile  = "2auth"
+vpc_id   = "vpc-48c2bd2e"
+create_subnet = true
+subnet_id = []
+subnet_name = "ovpn"
+subnet_suffix = "tf"
+subnets = ["10.234.13.0/24"]
+azs = ["us-west-2a","us-west-2b","us-west-2c"]
