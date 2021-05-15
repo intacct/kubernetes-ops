@@ -5,7 +5,7 @@
 auth_profile = "2auth"
 region = "us-west-2" 
 keyname = "sridhar.krishnamurthy" 
-pgp_key = "keybase:kaysree" 
+pgp_key = "keybase:skrishnamurthy" 
 password_len = 10 
 require_password_reset = false 
 # variable "acl" { default = "private" }
@@ -15,8 +15,6 @@ require_password_reset = false
 ##################
 user_names = [
     "prerna.sharma",
-//    "Sandip.Lakshminarasaiah",
-    "RicardoFilipe.Santos"
   ] 
 
 ##################

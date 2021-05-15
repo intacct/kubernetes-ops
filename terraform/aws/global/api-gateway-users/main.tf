@@ -31,9 +31,9 @@ output "output_iam_user_access_key" {
 output "output_iam_user_encrypted_secred" {
     value = module.iam_user.this_iam_access_key_encrypted_secret
 }
-output "output_iam_user_secret_key_cmd" {
-    value = module.iam_user.keybase_secret_key_decrypt_command
-}
+# output "output_iam_user_secret_key_cmd" {
+#     value = module.iam_user.keybase_secret_key_decrypt_command
+# }
 
 module "iam_group" {
     source = "../../modules/multi-region/iam-group"
