@@ -229,6 +229,15 @@ locals {
         protocol    = "tcp"
         cidr_block  = "0.0.0.0/0"
       },
+      {
+        # RDP
+        rule_number = 200
+        rule_action = "allow"
+        from_port   = 3389
+        to_port     = 3389
+        protocol    = "tcp"
+        cidr_block  = "0.0.0.0/0"
+      },
     ]
     public_outbound = [
       {
@@ -239,6 +248,15 @@ locals {
         to_port         = 65535
         protocol        = "tcp"
         cidr_block      = "10.234.1.0/0"
+      },
+      {
+        # RDP
+        rule_number     = 200
+        rule_action     = "allow"
+        from_port       = 3389
+        to_port         = 3389
+        protocol        = "tcp"
+        cidr_block      = "0.0.0.0/0"
       },
     ]
   }
