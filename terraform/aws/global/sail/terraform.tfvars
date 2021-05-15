@@ -1,9 +1,9 @@
 acl             = "private"
 create_bucket   = true
-bucket_name     = "ia-sail-dev"
-tags            = {
+bucket_name     = ["ia-sail-dev"]
+tags            = [{
     "Name" = "ia-sail-dev"
-}
+}]
 versioning      = {
     "enabled" = true
 }
@@ -12,9 +12,10 @@ obj_name          = []
 user_name         = [
     "Janarthanan.Rajarajan", 
     "Shilpa.Narasimhamuruthi",
-    "Chandrasekhar.Punji"
+    "Chandrasekhar.Punji",
+    "abhijit.kumar"
 ]
-pgp_key           = "keybase:kaysree"
+pgp_key           = "keybase:skrishnamurthy"
 password_len      = 10
 require_password_reset = false
 group_name        = "IA-sail"

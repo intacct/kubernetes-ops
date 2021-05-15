@@ -8,10 +8,10 @@ variable "create_bucket" {
   description = "Set it false if bucket creation should be disabled"
   type        = bool
 }
-variable "bucket_name" { type = string }
+variable "bucket_name" { type = list(string) }
 variable "tags" {
   description = "A mapping of tags to assign to the bucket."
-  type        = map(string)
+  type        = list
 }
 variable "versioning" {
   description = "Map containing versioning configuration."
