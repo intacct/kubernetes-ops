@@ -15,8 +15,6 @@ require_password_reset = false
 ##################
 user_names = [
     "prerna.sharma",
-//    "Sandip.Lakshminarasaiah",
-    "RicardoFilipe.Santos"
   ] 
 
 ##################

@@ -102,24 +102,24 @@ EOF
 
 }
 
-output "keybase_secret_key_decrypt_command" {
-  value = <<EOF
-echo "${element(concat(aws_iam_access_key.this.*.encrypted_secret, [""]), 0)}" | base64 --decode | keybase pgp decrypt ; echo
-EOF
+# output "keybase_secret_key_decrypt_command" {
+#   value = <<EOF
+# echo "${element(concat(aws_iam_access_key.this.*.encrypted_secret, [""]), 0)}" | base64 --decode | keybase pgp decrypt ; echo
+# EOF
 
-}
+# }
 
-output "keybase_secret_key_pgp_message" {
-  value = <<EOF
------BEGIN PGP MESSAGE-----
-Version: Keybase OpenPGP v2.0.76
-Comment: https://keybase.io/crypto
+# output "keybase_secret_key_pgp_message" {
+#   value = <<EOF
+# -----BEGIN PGP MESSAGE-----
+# Version: Keybase OpenPGP v2.0.76
+# Comment: https://keybase.io/crypto
 
-${element(concat(aws_iam_access_key.this.*.encrypted_secret, [""]), 0)}
------END PGP MESSAGE-----
-EOF
+# ${element(concat(aws_iam_access_key.this.*.encrypted_secret, [""]), 0)}
+# -----END PGP MESSAGE-----
+# EOF
 
-}
+# }
 
 output "this_iam_user_ssh_key_ssh_public_key_id" {
   description = "The unique identifier for the SSH public key"
