@@ -7,10 +7,12 @@ resource "aws_glue_catalog_table" this {
     table_type     = var.table_type
     view_original_text = "/* Presto View: ${base64encode(file("../../modules/multi-region/glue/view/files/audittrailview.txt"))} */"
     view_expanded_text = "/* Presto View */"
-    parameters     = {        
-        presto_view = "true"
-        comment     = "Presto View"    
-    }
+    # parameters     = {        
+    #     presto_view = "true"
+    #     comment     = "Presto View"    
+    # }
+    parameters     = length(var.parameters) > 0 ? element(var.parameters, count.index) : {}
+
 
     storage_descriptor {
         ser_de_info {
@@ -28,12 +30,5 @@ resource "aws_glue_catalog_table" this {
                 type = columns.value.type
             }
         }
-        # dynamic "columns" {
-        #     for_each = var.columns
-        #     content {
-        #         name = "${columns.key}"
-        #         type = "${columns.value}"
-        #     }
-        # }
     }
 }

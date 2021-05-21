@@ -26,7 +26,7 @@ variable "table_type" {
 }
 
 variable "parameters" {
-    type = any
+    type = list
     default = [
         {
             EXTERNAL = "TRUE"

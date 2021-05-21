@@ -1,5 +1,6 @@
 import pandas as pd
 import urllib.parse
+import awswrangler as wr
 
 def lambda_handler(event, context):
     for record in event['Records']:
@@ -15,7 +16,9 @@ def lambda_handler(event, context):
     outputParquet = urllib.parse.unquote(outputParquet)
 
 
-
-    df = pd.read_csv(inputCSV)
-    df.to_parquet(outputParquet)
-
+    parquetTypes = {'recordid': 'string', 'objecttype':'string', 'objectkey':'string', 'objectdesc':'string', \
+     'userid':'string', 'accesstime':'datetime64[ms]', 'accessmode':'string', 'ipaddress':'string', \
+     'source':'string', 'workflowaction':'string'}
+    df = wr.s3.read_csv(inputCSV)
+    df = df.astype(parquetTypes)
+    wr.s3.to_parquet(df=df, path=outputParquet)

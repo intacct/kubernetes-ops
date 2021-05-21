@@ -131,6 +131,7 @@ variable "table_partition_keys" {}
 # variable "table2_parameters" {}
 # variable "table2_columns" {}
 
+variable "create_view" {}
 variable "view1_name" {}
 variable "view1_description" {}
 variable "view1_type" {}

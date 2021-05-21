@@ -367,13 +367,13 @@ module "glue_table" {
 
 module "glue_view" {
   source            = "../../modules/multi-region/glue/view"
-  create_table      = var.create_table
+  create_table      = var.create_view
   table_name        = var.view1_name
   table_description = var.view1_description
   table_type        = var.view1_type
   columns           = var.view1_columns
   db_name           = var.db_name
-  parameters        = ""
+  parameters        = var.view1_parameters
   location_url      = ""
 }
 
@@ -554,6 +554,7 @@ module "lambda_function" {
   source  = "./../../modules/multi-region/lambda"
   # version = "~> 0.2.0"
 
+  create_lambda = var.create_lambda
   function_name = var.lambda_funct_name
   description   = var.lambda_funct_description
   filename      = [
@@ -570,7 +571,8 @@ module "lambda_function" {
   layer_description   = var.layer_description
   compatible_runtimes = var.layer_runtime
   # layer_filename      = "${path.module}/python/awswrangler-layer-2.1.0-py3.8.zip"
-  layer_filename      = "${path.module}/python/awswrangler-layer-1.7.0-py3.8.zip"
+  # layer_filename      = "${path.module}/python/awswrangler-layer-1.7.0-py3.8.zip"
+  layer_filename      = "${path.module}/python/awswrangler-layer-2.7.0-py3.8.zip"
   license_info        = var.layer_license
   # source_path = 
 

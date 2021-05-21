@@ -125,7 +125,7 @@ resource "aws_s3_bucket_public_access_block" "this" {
   restrict_public_buckets = var.restrict_public_buckets
 }
 resource "aws_s3_bucket_public_access_block" "this_test" {
-  count = var.create_bucket ? 1 : 0
+  count = var.create_bucket && length(var.bucket) > 1 ? 1 : 0
 
   // Chain resources (s3_bucket -> s3_bucket_policy -> s3_bucket_public_access_block)
   // to prevent "A conflicting conditional operation is currently in progress against this resource."

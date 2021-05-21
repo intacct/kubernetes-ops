@@ -49,8 +49,7 @@ table_types = [
     ]
 table_parameters = [
         {
-            classification     = "csv",
-            UPDATED_BY_CRAWLER = "ia-audittrail_csv_crawler"
+            classification     = "csv"
         },
         {
             classification = "csv"
@@ -66,11 +65,10 @@ table_parameters = [
     ]
 table_storage_parameters = [
         {
-            UPDATED_BY_CRAWLER = "ia-audittrail_csv_crawler"
+            classification = "csv"
         },
         {
-            classification = "csv",
-            UPDATED_BY_CRAWLER = "ia-audittrail_csv_crawler"
+            classification = "csv"
         },
         {
             classification     = "parquet",
@@ -104,10 +102,10 @@ table_columns = [
             ["newstrval", "string"],
             ["oldintval", "bigint"],
             ["newintval", "bigint"],
-            ["oldnumval", "bigint"],
-            ["newnumval", "bigint"],
-            ["olddateval", "bigint"],
-            ["newdateval", "bigint"]
+            ["oldnumval", "double"],
+            ["newnumval", "double"],
+            ["olddateval", "timestamp"],
+            ["newdateval", "timestamp"]
         ],
         [
             ["recordid", "string"],
@@ -133,8 +131,8 @@ table_columns = [
             ["newintval", "bigint"],
             ["oldnumval", "double"],
             ["newnumval", "double"],
-            ["olddateval", "date"],
-            ["newdateval", "date"]
+            ["olddateval", "timestamp"],
+            ["newdateval", "timestamp"]
         ]
     ]
 table_partition_keys = [
@@ -161,13 +159,15 @@ table_partition_keys = [
     ]
 
 # view1 - audittrailview view table definitions
+create_view = true
 view1_name = "audittrailview" 
 view1_description = "audit trail view" 
 view1_type = "VIRTUAL_VIEW" 
 view1_parameters = [
       {        
-        presto_view = "true"
-        comment     = "Presto View"    
+        classification  = "parquet",
+        presto_view     = "true",
+        comment         = "Presto View"    
       }
   ]
 view1_columns = [
@@ -201,7 +201,8 @@ view1_columns = [
 # ----------------------------------------------------------------------------------------------------------------------
 # Crawler
 # ----------------------------------------------------------------------------------------------------------------------
-crawler1_create                 = true
+# ia-auditdatacrawler
+crawler1_create                 = false
 crawler1_name                   = "IA-AuditDataCrawler"
 crawler1_schema_delete_behavior = "LOG"
 # Run at 1:15a every day
@@ -209,7 +210,8 @@ crawler1_schema_delete_behavior = "LOG"
 crawler1_schedule               = "cron(15 1 * * ? *)"
 crawler1_configuration          = {}
 
-crawler2_create                 = true
+# ia-audittrail_csv_crawler
+crawler2_create                 = false
 crawler2_name                   = "ia-audittrail_csv_crawler"
 crawler2_schema_delete_behavior = "DEPRECATE_IN_DATABASE"
 crawler2_schema_update_behavior = "UPDATE_IN_DATABASE"
@@ -225,9 +227,10 @@ crawler2_configuration          = {
     Version       = 1
 }
 
+# ia-audittrail_parquet_crawler
 crawler3_create                 = true
 crawler3_name                   = "ia-audittrail_parquet_crawler"
-crawler3_schema_delete_behavior = "DEPRECATE_IN_DATABASE"
+crawler3_schema_delete_behavior = "DELETE_FROM_DATABASE"
 crawler3_schema_update_behavior = "LOG"
 # Run at 1:15a every day
 # cron(Minutes Hours Day-of-month Month Day-of-week Year)
@@ -244,9 +247,10 @@ crawler3_configuration          = {
     Version       = 1
 }
 
+# ia-audittrailfields_parquet_crawler
 crawler4_create                 = true
 crawler4_name                   = "ia-audittrailfields_parquet_crawler"
-crawler4_schema_delete_behavior = "DEPRECATE_IN_DATABASE"
+crawler4_schema_delete_behavior = "DELETE_FROM_DATABASE"
 crawler4_schema_update_behavior = "LOG"
 # Run at 1:15a every day
 # cron(Minutes Hours Day-of-month Month Day-of-week Year)

@@ -26,11 +26,17 @@ variable "runtime" {
   type        = string
 }
 
+variable "create_lambda" {
+  description = "(Required) Setting this value to False, removes the lambda function"
+  type        = bool
+}
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These variables have defaults, but may be overridden.
 # ----------------------------------------------------------------------------------------------------------------------
+
 
 variable "aliases" {
   description = "(Optional) A map of aliases (keyed by the alias name) that will be created for the Lambda function. If 'version' is omitted, the alias will automatically point to '$LATEST'."
