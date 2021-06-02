@@ -25,22 +25,6 @@ module "iam_policy" {
 }
 
 data "aws_iam_policy_document" "policy" {
-  # statement {
-  #   actions   = [
-  #     "s3:ListAllMyBuckets",
-  #     "s3:HeadBucket"
-  #   ]
-  #   effect    = "Allow"
-  #   resources = ["*"]
-  # }
-  # statement {
-  #   actions = [
-  #     "glue:GetTable",
-  #     "glue:getDatabase"
-  #   ]
-  #   effect    = "Allow"
-  #   resources = ["*"]
-  # }
   statement {
     actions = [
       "athena:StartQueryExecution",
@@ -77,7 +61,6 @@ data "aws_iam_policy_document" "policy" {
     ]
     effect = "Allow"
     resources = [
-      # "arn:aws:athena:*"
       "*"
     ]
   }
@@ -158,7 +141,6 @@ module "iam_group" {
   group_users                       = module.iam_user.this_iam_user_name
   attach_iam_self_management_policy = false
   custom_group_policy_arns          = [
-    # "arn:aws:iam::aws:policy/AdministratorAccess",
     module.iam_policy.arn
   ]
 }
@@ -177,16 +159,6 @@ module "s3_module" {
 }
 
 
-# module "iam_policy_glue" {
-#   source  = "../../modules/multi-region/iam-policy"
-#   # version = "~> 2.0"
-
-#   name        = "IA-AuditTrailServiceRoleAccess"
-#   path        = "/"
-#   description = "Provides role IA-AuditTrailServiceRole access to IA-AuditTrail bucket"
-
-#   policy = data.aws_iam_policy_document.service-role-s3-policy.json
-# }
 
 data "aws_iam_policy_document" "service-role-s3-policy" {
   statement {
@@ -339,32 +311,6 @@ module "glue_table" {
   location_urls     = local.location_urls
 }
 
-# module "glue_table1" {
-#   source            = "../../modules/multi-region/glue/table"
-#   create_table      = var.create_table
-#   table_name        = var.table1_name
-#   db_name           = var.db_name
-#   table_description = var.table1_description
-#   partition_keys    = var.table1_partition_keys
-#   table_type        = var.table1_type
-#   parameters        = var.table1_parameters
-#   location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[2])
-#   columns           = var.table1_columns
-# }
-
-# module "glue_table2" {
-#   source            = "../../modules/multi-region/glue/table"
-#   create_table      = var.create_table
-#   table_name        = var.table2_name
-#   db_name           = var.db_name
-#   table_description = var.table2_description
-#   partition_keys    = var.table2_partition_keys
-#   table_type        = var.table2_type
-#   parameters        = var.table2_parameters
-#   location_url      = format ("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",var.obj_name[3])
-#   columns           = var.table2_columns
-# }
-
 module "glue_view" {
   source            = "../../modules/multi-region/glue/view"
   create_table      = var.create_view
@@ -450,82 +396,6 @@ module "parquet_fields_crawler" {
   ]
 }
 
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Glue Job
-# ----------------------------------------------------------------------------------------------------------------------
-# module "glue_job" {
-#   source          = "./../../modules/multi-region/glue/job"
-
-#   create          = var.create_job
-#   name            = var.job_name
-#   role_arn        = module.iam_role.this_role_arn[0]
-#   script_location = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[0],"/"))
-#   temp_dir        = format("%s%s%s%s","s3://",module.s3_module.this_s3_bucket_id,"/",trim(var.glue_obj_name[1],"/"))
-# }
-
-# resource "null_resource" "audittrail" {
-#     provisioner     "local-exec" {
-
-#       # success using file://
-#       # command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-
-#       ## fails when using string
-#       # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-#       command = "aws athena start-query-execution --query-string file://files/create_audittrail.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData/ --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
-#     }
-# }
-
-# resource "null_resource" "audittrailfields" {
-#     provisioner     "local-exec" {
-
-#       # success using file://
-#       # command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-
-#       ## fails when using string
-#       # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-#       command = "aws athena start-query-execution --query-string file://files/create_audittrailfields.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData/ --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
-#     }
-# }
-
-# resource "null_resource" "athena_view" {
-#     provisioner     "local-exec" {
-
-#       # success using file://
-#       # command = "aws athena start-query-execution --query-string file://query11.sql  --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-
-#       ## fails when using string
-#       # command = "aws athena start-query-execution --query-string \"CREATE OR REPLACE VIEW query11 AS SELECT * FROM  meta.getresources_vw\" --output json --query-execution-context Database=${aws_athena_database.metadb.id} --result-configuration OutputLocation=s3://xxxxxxx2"
-#       command = "aws athena start-query-execution --query-string file://files/create_audittrailview.sql --result-configuration OutputLocation=s3://ia-audittrailbucket/AuditData/ --query-execution-context Database=ia-audittrail --profile=2auth --region=us-west-2"
-#     }
-# }
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Create Athena Tables and views
-# ----------------------------------------------------------------------------------------------------------------------
-# module "athena_tables" {
-#   source = "./../../modules/multi-region/athena"
-# #   name = "ia-autittrail"
-# #   db_name = "ia-audittrail"
-# #   query = <<EOF
-# # CREATE EXTERNAL TABLE IF NOT EXISTS audittrail (
-# #   recordid STRING,
-# #   objecttype STRING,
-# #   objectkey STRING,
-# #   objectdesc STRING,
-# #   userid STRING,
-# #   accesstime TIMESTAMP,
-# #   accessmode STRING,
-# #   ipaddress STRING,
-# #   source STRING,
-# #   workflowaction STRING
-# #   ) Partitioned by (cny int, type string, dt int)
-# #   ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-# #   WITH SERDEPROPERTIES ( 'serialization.format' = '1')
-# #   LOCATION 's3://ia-audittrailbucket/AuditData/'
-# # EOF
-# }
-
 # output "s3_bucket_arn" {
 #   value = module.s3_module.this_s3_bucket_arn
 # }
@@ -570,8 +440,6 @@ module "lambda_function" {
   layer_name          = var.layer_name
   layer_description   = var.layer_description
   compatible_runtimes = var.layer_runtime
-  # layer_filename      = "${path.module}/python/awswrangler-layer-2.1.0-py3.8.zip"
-  # layer_filename      = "${path.module}/python/awswrangler-layer-1.7.0-py3.8.zip"
   layer_filename      = "${path.module}/python/awswrangler-layer-2.7.0-py3.8.zip"
   license_info        = var.layer_license
   # source_path = 
@@ -593,7 +461,8 @@ data "aws_iam_policy_document" "lambda-service-role-policy" {
     sid = "1"
     actions   = [
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup"
     ]
     effect    = "Allow"
     resources = ["*"]
@@ -601,16 +470,9 @@ data "aws_iam_policy_document" "lambda-service-role-policy" {
   statement {
     sid = "2"
     actions = [
-      "logs:CreateLogGroup"
-    ]
-    effect    = "Allow"
-    resources = ["*"]
-  }
-  statement {
-    sid = "3"
-    actions = [
       "s3:GetObject",
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:ListBucket"
     ]
     effect = "Allow"
     resources = [
