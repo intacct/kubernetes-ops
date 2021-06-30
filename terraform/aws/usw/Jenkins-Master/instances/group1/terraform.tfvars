@@ -2,8 +2,8 @@
 region          = "us-west-2"
 name_prefix     = "usw"
 vpc_id          = "vpc-48c2bd2e"
-key_name        = "sridhar.krishnamurthy"
-key_file        = "/Users/skrishnamurthy/.aws/sridharkrishnamurthy.pem"
+key_name        = "rahulsinghhada.pem"
+key_file        = "/c/Users/rahulsingh.hada/.aws/rahulsinghhada.pem"
 profile         = "2auth"
 use_name_prefix = true
 use_num_suffix  = true
@@ -11,13 +11,13 @@ exec_script     = "./attach_ebs.sh"
 
 
 # Vars that need to be updated per instance group
-subnet_suffix   = "sn-2813"
-subnet_id       = "subnet-04d91dcebe5f42813"
-sg_description  = "OVPN Security Group"  
-private_ips     = ["10.234.13.10"]
-ami             = "ami-0ddc70e50205f89b6"
-instance_name   = "ovpn"
-instance_type   = "m5.xlarge"
-hostnames       = ["ovpn01"]
-sg_name         = "ovpn-tf"
+subnet_suffix   = "sn-4216"
+subnet_id       = "subnet-4d614216"
+sg_description  = "ci"  
+private_ips     = ["10.234.4.201"]
+ami             = "ami-0155c31ea13d4abd2"
+instance_name   = "ci-m01-test"
+instance_type   = "r5.xlarge"
+hostnames       = ["ci-m01-test"]
+sg_name         = "ci-app-servers"
 ebs_devices     = []

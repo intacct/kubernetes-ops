@@ -50,7 +50,7 @@ module "instance" {
 module "sg" {
   source = "../../../../modules/multi-region/security-group"
 
-  create                 = true
+  create                 = false
   # name                   = format("%s-%s",var.name_prefix, var.sg_name)
   name                   = var.sg_name
   description            = var.sg_description

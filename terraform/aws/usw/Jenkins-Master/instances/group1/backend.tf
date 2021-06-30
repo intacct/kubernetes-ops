@@ -3,7 +3,7 @@ terraform {
     organization = "intacct"
 
     workspaces {
-      name = "tf-usw-ovpn-instances-group1"
+      name = "tf-usw-ci-m01-instances-group1"
     }
   }
 }
