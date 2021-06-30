@@ -1,0 +1,9 @@
+region   = "eu-central-1"
+profile  = "2auth"
+vpc_id   = "vpc-4b8def20"
+create_subnet = true
+subnet_id = []
+subnet_name = "ovpn"
+subnet_suffix = "tf"
+subnets = ["10.235.13.0/24"]
+azs = ["eu-central-1a","eu-central-1b"]
