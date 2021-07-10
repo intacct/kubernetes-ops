@@ -5,40 +5,40 @@ provider "aws" {
 
 
 module "iam_group" {
-    source = "../../modules/multi-region/iam-group"
-    create_group = true
-    name = var.group_name
-    group_users = var.user_names
-    custom_group_policy_arns          = [
-      module.iam_policy.arn
-    ]
-    attach_iam_self_management_policy = true
+  source       = "../../modules/multi-region/iam-group"
+  create_group = true
+  name         = var.group_name
+  group_users  = var.user_names
+  custom_group_policy_arns = [
+    module.iam_policy.arn
+  ]
+  attach_iam_self_management_policy = true
 }
 
 module "s3_module" {
-    source            = "../../modules/multi-region/s3-bucket"
-    create_bucket     = var.create_bucket
-    bucket            = var.bucket_name
-    acl               = var.bucket_acl
-    tags              = var.bucket_tags
-    versioning        = var.bucket_versioning
-    create_s3_objects  = var.create_s3_objects
-    obj_name          = var.obj_names
-    # attach_policy = true
+  source            = "../../modules/multi-region/s3-bucket"
+  create_bucket     = var.create_bucket
+  bucket            = var.bucket_name
+  acl               = var.bucket_acl
+  tags              = var.bucket_tags
+  versioning        = var.bucket_versioning
+  create_s3_objects = var.create_s3_objects
+  obj_name          = var.obj_names
+  # attach_policy = true
 }
 
 module "iam_policy" {
-  source  = "../../modules/multi-region/iam-policy"
+  source = "../../modules/multi-region/iam-policy"
 
   name        = var.policy_name
   path        = var.policy_path
   description = "Provides full access to billing-integration bucket via the AWS Management Console"
-  policy = data.aws_iam_policy_document.policy.json
+  policy      = data.aws_iam_policy_document.policy.json
 }
 
 data "aws_iam_policy_document" "policy" {
   statement {
-    actions   = [
+    actions = [
       "s3:ListAllMyBuckets",
       "s3:HeadBucket"
     ]
@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "policy" {
   }
 
   statement {
-    actions   = [
+    actions = [
       "s3:*",
       "s3:GetAccessPoint",
       "s3:GetLifecycleConfiguration",
@@ -100,17 +100,17 @@ data "aws_iam_policy_document" "policy" {
       "s3:DeleteObject",
       "s3:DeleteObjectVersion"
     ]
-    effect    = "Allow"
+    effect = "Allow"
     resources = [
       module.s3_module.this_s3_bucket_arns[0],
-      format("%s%s", module.s3_module.this_s3_bucket_arns[0],"/*")
+      format("%s%s", module.s3_module.this_s3_bucket_arns[0], "/*")
     ]
   }
 }
 
 data "aws_iam_policy_document" "service-role-s3-policy" {
   statement {
-    actions   = [
+    actions = [
       # "s3:*"
       "s3:GetAccessPoint",
       "s3:GetLifecycleConfiguration",
@@ -163,10 +163,10 @@ data "aws_iam_policy_document" "service-role-s3-policy" {
       "s3:DeleteObject",
       "s3:DeleteObjectVersion"
     ]
-    effect    = "Allow"
+    effect = "Allow"
     resources = [
       module.s3_module.this_s3_bucket_arns[0],
-      format("%s%s", module.s3_module.this_s3_bucket_arns[0],"/*")
+      format("%s%s", module.s3_module.this_s3_bucket_arns[0], "/*")
     ]
   }
 }
@@ -174,15 +174,15 @@ data "aws_iam_policy_document" "service-role-s3-policy" {
 module "iam_role" {
   source = "../../modules/multi-region/iam-role"
   # version = "~> 2.0"
-  
-  name  = var.role_name
-  path  = var.role_path
+
+  name = var.role_name
+  path = var.role_path
   # custom_iam_policy_arns = [
   #   module.iam_policy_glue.arn
   # ]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+  policy_arn         = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
   target_policy_name = var.role_policy_name
-  target_policy = data.aws_iam_policy_document.service-role-s3-policy.json
+  target_policy      = data.aws_iam_policy_document.service-role-s3-policy.json
 
   assume_role_policy = <<EOF
 {
