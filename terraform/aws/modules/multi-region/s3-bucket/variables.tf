@@ -18,7 +18,7 @@ variable "attach_policy" {
 
 variable "bucket" {
   description = "(Optional, Forces new resource) The name of the bucket. If omitted, Terraform will assign a random, unique name."
-  type        = list
+  type        = list(any)
   # default     = "intacct-audit"
 }
 
@@ -35,12 +35,12 @@ variable "acl" {
 }
 
 variable "policy" {
-  description = "(Optional) A valid bucket policy JSON document." 
+  description = "(Optional) A valid bucket policy JSON document."
   # Note that if the policy document is not specific enough (but still valid), Terraform may view the policy as constantly changing in a terraform plan. 
   #     In this case, please make sure you use the verbose/specific version of the policy. 
   #     For more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide."
-  type        = string
-  default     = <<EOF
+  type    = string
+  default = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -56,26 +56,26 @@ variable "policy" {
   ]
 }
 EOF
-      # "Principal": {
-      #   "AWS": ["arn:aws:iam::374322211295:user/IA-AuditTrailUser",
-      #           "arn:aws:iam::374322211295:group/Administrators",]
-      # },
+  # "Principal": {
+  #   "AWS": ["arn:aws:iam::374322211295:user/IA-AuditTrailUser",
+  #           "arn:aws:iam::374322211295:group/Administrators",]
+  # },
 
 }
 
 variable "tags" {
   description = "(Optional) A mapping of tags to assign to the bucket."
-  type        = list
+  type        = list(any)
   # default     = {
   #     "Name" = "intacct-audit"
   # }
 }
 
 variable "force_destroy" {
-  description = "(Optional, Default:false ) A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error."  
+  description = "(Optional, Default:false ) A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error."
   # These objects are not recoverable."
-  type        = bool
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "acceleration_status" {
@@ -85,24 +85,25 @@ variable "acceleration_status" {
 }
 
 variable "auth_profile" {
-  description   = "(Optional) Specifies the profile that should be used from .aws credentials for authentication to AWS"
-  type          = string
-  default       = "2auth" 
+  description = "(Optional) Specifies the profile that should be used from .aws credentials for authentication to AWS"
+  type        = string
+  default     = "2auth"
 }
 
+/*
 variable "region" {
   description = "(Optional) If specified, the AWS region this bucket should reside in. Otherwise, the region used by the callee."
   type        = string
-  default     = "us-west-2"
 }
+*/
 
 variable "request_payer" {
-  description = "(Optional) Specifies who should bear the cost of Amazon S3 data transfer." 
+  description = "(Optional) Specifies who should bear the cost of Amazon S3 data transfer."
   # Can be either BucketOwner or Requester. 
   #     By default, the owner of the S3 bucket would incur the costs of any data transfer. 
   #     See Requester Pays Buckets developer guide for more information."
-  type        = string
-  default     = null
+  type    = string
+  default = null
 }
 
 variable "versioning" {

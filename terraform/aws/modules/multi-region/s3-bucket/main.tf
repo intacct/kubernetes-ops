@@ -1,7 +1,9 @@
+/*
 provider "aws" {
   profile = var.auth_profile
-  region = var.region
+  region  = var.region
 }
+*/
 
 resource "aws_s3_bucket" "this" {
   count = var.create_bucket ? length(var.bucket) : 0
@@ -13,7 +15,7 @@ resource "aws_s3_bucket" "this" {
   force_destroy       = var.force_destroy
   acceleration_status = var.acceleration_status
   # region              = var.region
-  request_payer       = var.request_payer
+  request_payer = var.request_payer
 
   dynamic "versioning" {
     for_each = length(keys(var.versioning)) == 0 ? [] : [var.versioning]
@@ -35,18 +37,18 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_object" "this" {
-    count   = var.create_s3_objects ? length(var.obj_name) : 0
-    bucket  = aws_s3_bucket.this[0].id
-    acl     = var.acl
-    key     = element(var.obj_name, count.index)
-    source  = var.obj_source
+  count  = var.create_s3_objects ? length(var.obj_name) : 0
+  bucket = aws_s3_bucket.this[0].id
+  acl    = var.acl
+  key    = element(var.obj_name, count.index)
+  source = var.obj_source
 }
 resource "aws_s3_bucket_object" "this_test" {
-    count   = length(var.bucket) > 1 && var.create_s3_objects ? length(var.obj_name) : 0
-    bucket  = aws_s3_bucket.this[1].id
-    acl     = var.acl
-    key     = element(var.obj_name, count.index)
-    source  = var.obj_source
+  count  = length(var.bucket) > 1 && var.create_s3_objects ? length(var.obj_name) : 0
+  bucket = aws_s3_bucket.this[1].id
+  acl    = var.acl
+  key    = element(var.obj_name, count.index)
+  source = var.obj_source
 }
 
 resource "aws_s3_bucket_policy" "this" {
