@@ -5,9 +5,9 @@ locals {
 resource "aws_instance" "this" {
   count = var.instance_count
 
-  ami              = var.ami
-  instance_type    = var.instance_type
-  user_data        = null == var.exec_script ? var.user_data : file(var.exec_script)
+  ami           = var.ami
+  instance_type = var.instance_type
+  user_data     = null == var.exec_script ? var.user_data : file(var.exec_script)
   # user_data_base64 = var.user_data_base64
   subnet_id = length(var.network_interface) > 0 ? null : element(
     distinct(compact(concat([var.subnet_id], var.subnet_ids))),
@@ -96,8 +96,8 @@ resource "aws_instance" "this" {
 
   // Remove instance entry in ~/.ssh/known_hosts in case the instance was redeployed 
   provisioner "local-exec" {
-      command = <<EOT
-sed -i '' '/^${element(var.private_ips,count.index)}/d' ~/.ssh/known_hosts
+    command = <<EOT
+sed -i '' '/^${element(var.private_ips, count.index)}/d' ~/.ssh/known_hosts
 sed -i '' '/^${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}/d' ~/.ssh/known_hosts
 EOT
   }
@@ -105,7 +105,7 @@ EOT
   // Set hostname on the provisioned instance
   provisioner "remote-exec" {
     inline = [
-      "sudo hostnamectl set-hostname ${var.use_name_prefix ? format("${var.name_prefix_format}%s.%s", var.name_prefix, element(var.hostnames, count.index), var.domain_suffix) : format("%s.%s",element(var.hostnames, count.index), var.domain_suffix)}",
+      "sudo hostnamectl set-hostname ${var.use_name_prefix ? format("${var.name_prefix_format}%s.%s", var.name_prefix, element(var.hostnames, count.index), var.domain_suffix) : format("%s.%s", element(var.hostnames, count.index), var.domain_suffix)}",
       "sudo yum -y update"
       # "sudo dnf -y install firewalld",
       # "sudo systemctl start firewalld",
@@ -113,27 +113,27 @@ EOT
     ]
   }
   connection {
-    host  = element(var.private_ips,count.index)
-    type = "ssh"
-    user = "centos"
+    host        = element(var.private_ips, count.index)
+    type        = "ssh"
+    user        = "centos"
     private_key = file(var.key_file)
-    timeout = "10m"
+    timeout     = "10m"
   }
 
   // Call Ansible Playbook to run sysadmin-confign playbook on the provisioned instance
-#   provisioner "local-exec" {
-#     command = <<EOT
-# ssh-add ${var.key_file}
-# ssh-keyscan ${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} >> ~/.ssh/known_hosts
-# ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/zabbix-agent.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
-# ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/sysadmin-config.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
-# EOT
-#   }
+  #   provisioner "local-exec" {
+  #     command = <<EOT
+  # ssh-add ${var.key_file}
+  # ssh-keyscan ${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} >> ~/.ssh/known_hosts
+  # ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/zabbix-agent.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+  # ansible-playbook -i "${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)}", -v ~/do-ansible/sysadmin-config.yml --extra-vars "hosts_var=${var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)} remote_user_var=centos become_var=yes"
+  # EOT
+  #   }
 
-#   timeouts {
-#     create = "30m"
-#     update = "30m"
-#     delete = "30m"
-#   }
+  #   timeouts {
+  #     create = "30m"
+  #     update = "30m"
+  #     delete = "30m"
+  #   }
 
 }
