@@ -15,7 +15,8 @@ require_password_reset = false
 user_names = [
     "prerna.sharma",
     "crusu",
-    "jeanbaptiste.benoist"
+    "jeanbaptiste.benoist",
+    "ia-snowflake"
   ] 
 
 ##################
