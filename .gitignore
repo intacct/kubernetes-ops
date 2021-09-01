@@ -32,3 +32,6 @@ terraform/aws/usw/audit-trail/ia-creds
 **/Readme.txt
 **/dev01
 **/lambda_function.zip
+**/*.log
+**/.terraform.lock.hcl
+**/*.creds
