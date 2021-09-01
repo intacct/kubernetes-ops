@@ -22,6 +22,19 @@ module "iam_user" {
   password_reset_required = false
 }
 
+module "service_users" {
+  source                  = "../../modules/multi-region/iam-user"
+  name                    = var.service_users
+  force_destroy           = true
+  create_user             = true
+  create_iam_user_login_profile = false
+  create_iam_access_key   = true
+
+  pgp_key                 = var.pgp_key
+  password_length         = var.password_len
+  password_reset_required = false
+}
+
 module "iam_group" {
     source = "../../modules/multi-region/iam-group"
     create_group = true
@@ -54,3 +67,19 @@ output "output_iam_user_encrypted_secred" {
 # output "output_iam_user_secret_key_cmd" {
 #     value = module.iam_user.keybase_secret_key_decrypt_command
 # }
+output "output_service_user_name" {
+    value = module.service_users.this_iam_user_name
+}
+output "output_service_user_encrypted_password" {
+    value = module.service_users.this_iam_user_login_profile_encrypted_password
+}
+output "output_service_user_encrypted_password_cmd" {
+    value = module.service_users.keybase_password_decrypt_command
+}
+output "output_service_user_access_key" {
+    value = module.service_users.this_iam_access_key_id
+}
+output "output_service_user_encrypted_secred" {
+    value = module.service_users.this_iam_access_key_encrypted_secret
+}
+

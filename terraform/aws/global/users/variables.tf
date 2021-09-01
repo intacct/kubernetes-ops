@@ -14,6 +14,7 @@ variable "require_password_reset" { }
 # IAM User
 ##################
 variable "user_names" { } 
+variable "service_users" { } 
 
 ##################
 # IAM Group

@@ -16,7 +16,12 @@ user_names = [
   "prerna.sharma",
   "crusu",
   "jeanbaptiste.benoist",
-  "ia-snowflake"
+  "sharad.ramachandran"
+]
+
+service_users = [
+  "ia-snowflake",
+  "ia-s3-glacier",
 ]
 
 ##################
