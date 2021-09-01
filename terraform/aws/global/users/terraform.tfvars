@@ -16,7 +16,8 @@ user_names = [
   "prerna.sharma",
   "crusu",
   "jeanbaptiste.benoist",
-  "sharad.ramachandran"
+  "sharad.ramachandran",
+  "alexandru.talmaciu"
 ]
 
 service_users = [
