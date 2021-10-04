@@ -119,13 +119,23 @@ variable "associate_public_ip_address" {
 }
 
 variable "private_ip" {
-  description = "Private IP address to associate with the instance in a VPC"
+  description = "Private IP address to associate with eth0 of instance"
+  type        = string
+  default     = null
+}
+variable "eth1_ip" {
+  description = "Private IP address to associate with eth1 of instance"
   type        = string
   default     = null
 }
 
 variable "private_ips" {
-  description = "A list of private IP address to associate with the instance in a VPC. Should match the number of instances."
+  description = "A list of private IP address to associate with eth0 of instances in a VPC. Should match the number of instances."
+  type        = list(string)
+  default     = []
+}
+variable "eth1_ips" {
+  description = "A list of private IP address to associate with eth1 of instances in a VPC. Should match the number of instances."
   type        = list(string)
   default     = []
 }
@@ -232,3 +242,8 @@ variable "domain_suffix" {
   default     = "intacct.com"
 }
 
+variable "create_eni1" {
+  description = "Set it to True if ETH1 needs to be created"
+  type        = bool
+  default     = false
+}

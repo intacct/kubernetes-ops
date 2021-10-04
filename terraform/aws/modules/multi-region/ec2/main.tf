@@ -137,3 +137,30 @@ EOT
   #   }
 
 }
+
+
+resource "aws_network_interface" "eth1" {
+  count = var.create_eni1 ? var.instance_count : 0
+
+  subnet_id = length(var.network_interface) > 0 ? null : element(
+    distinct(compact(concat([var.subnet_id], var.subnet_ids))),
+    count.index,
+  )
+  private_ips = length(var.eth1_ips) > 0 ? [element(var.eth1_ips, count.index)] : [var.eth1_ip]
+  security_groups = var.vpc_security_group_ids
+  source_dest_check = var.source_dest_check
+  attachment {
+    instance     = aws_instance.this[count.index].id
+    device_index = 1
+  }
+  lifecycle {
+    ignore_changes = [private_ips]
+  }
+  tags = merge(
+    {
+      "Name" = var.use_name_prefix ? format("${var.name_prefix_format}%s", var.name_prefix, element(var.hostnames, count.index)) : element(var.hostnames, count.index)
+    },
+    var.tags,
+  )
+
+}
