@@ -23,6 +23,7 @@ user_names = [
 service_users = [
   "ia-snowflake",
   "ia-s3-glacier",
+  "ia-sail"
 ]
 
 ##################

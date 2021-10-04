@@ -210,6 +210,12 @@ module "iam_role" {
 EOF
 }
 
+module "sns_topic" {
+  source  = "../../modules/multi-region/sns"
+  # version = "~> 3.0"
+
+  name  = "sail-topic"
+}
 
 # terraform {
 #   required_version = ">= 0.10.3" # introduction of Local Values configuration language feature
