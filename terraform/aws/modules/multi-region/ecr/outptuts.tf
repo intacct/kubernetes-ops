@@ -1,8 +1,11 @@
 # output "arn" {
-#   value       = aws_ecr_repository.default.arn
+#   value       = aws_ecr_repository.default[0]
 #   description = "Full ARN of the repository"
 # }
-
+output "repository" {
+  description = "All outputs of the repository."
+  value       = try(aws_ecr_repository.default[0], null)
+}
 # output "name" {
 #   value       = aws_ecr_repository.default.name
 #   description = "Name of the repository"
