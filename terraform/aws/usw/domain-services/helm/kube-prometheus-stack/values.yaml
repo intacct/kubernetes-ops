@@ -17,7 +17,7 @@ grafana:
     annotations:
       kubernetes.io/ingress.class: ingress-external
     hosts:
-    - grafana.us-west-2.dev.k8s.intacct.com
+    - grafana.ds-dev.intacct.com
   additionalDataSources:
   - name: loki
     access: proxy
@@ -31,3 +31,10 @@ grafana:
     type: loki
     url: http://loki-stack:3100
     version: 1
+# Istio changes to not add the istio sidecar to the prometheus operator's addmission webhook patch
+# https://github.com/prometheus-community/helm-charts/issues/479#issuecomment-752709725
+prometheusOperator:
+  admissionWebhooks:
+    patch:
+      podAnnotations:
+        sidecar.istio.io/inject: "false"

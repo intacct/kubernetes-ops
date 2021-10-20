@@ -1,7 +1,26 @@
 provider "aws" {
   profile = var.auth_profile
   region  = var.region
+
 }
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.37.0"
+    }
+    random = {
+      source = "hashicorp/random"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
+    }
+  }
+
+}
+
 
 
 
@@ -356,7 +375,7 @@ module "eks" {
   k8s_subnets    = [module.vpc.private_subnets[0], module.vpc.private_subnets[1], module.vpc.private_subnets[2]]
   public_subnets = [module.vpc.public_subnets[0]]
 
-  cluster_version                = "1.18"
+  cluster_version                = "1.20"
   cluster_endpoint_public_access = false
   cluster_endpoint_public_access_cidrs = [
     "0.0.0.0/0"
@@ -376,16 +395,33 @@ module "eks" {
 
 
   map_roles = [
+    # {
+    #   rolearn  = "arn:aws:iam::827126933480:role/AWSReservedSSO_AWSAdministratorAccess_89a5a5d338e56292"
+    #   username = "role1"
+    #   groups   = ["view"]
+    # },
     {
-      rolearn  = "arn:aws:iam::66666666666:role/role1"
-      username = "role1"
+      rolearn  = "arn:aws:iam::827126933480:role/AWSReservedSSO_AWSAdministratorAccess_89a5a5d338e56292"
+      username = "admin"
       groups   = ["system:masters"]
     },
+
+    # arn:aws:sts::827126933480:assumed-role/AWSReservedSSO_ia-ds-ecr-permissions_c151974230977a27/sasha.tooryani@sage.com
   ]
   map_users = [
     {
-      userarn  = "arn:aws:iam::725654443526:user/username"
-      username = "username"
+      userarn  = "arn:aws:iam::827126933480:user/garland.kan"
+      username = "garland.kar"
+      groups   = ["system:masters"]
+    },
+    {
+      userarn  = "arn:aws:iam::827126933480:user/saasha.tooryani"
+      username = "sasha.tooryani"
+      groups   = ["edit"]
+    },
+    {
+      userarn  = "arn:aws:iam::827126933480:user/ia-jenkins"
+      username = "ia.jenkins"
       groups   = ["system:masters"]
     },
   ]
@@ -394,7 +430,7 @@ module "eks" {
     ng1 = {
       disk_size        = 20
       desired_capacity = 4
-      max_capacity     = 4
+      max_capacity     = 12
       min_capacity     = 2
       instance_types   = ["t3.small"]
       additional_tags  = var.tags
@@ -455,7 +491,7 @@ provider "kubernetes" {
 # Helm - kube-prometheus-stack
 #
 module "kube-prometheus-stack" {
-  source = "github.com/ManagedKube/kubernetes-ops//terraform-modules/aws/helm/kube-prometheus-stack?ref=v1.0.9"
+  source = "github.com/ManagedKube/kubernetes-ops//terraform-modules/aws/helm/kube-prometheus-stack?ref=v1.0.30"
 
   helm_values = file("${path.module}/helm/kube-prometheus-stack/values.yaml")
 
@@ -582,6 +618,20 @@ module "cluster-autoscaler" {
 #  depends_on = [
 #    data.terraform_remote_state.eks
 #  ]
+}
+
+
+# file templating
+data "template_file" "certificate" {
+  template = file("${path.module}/helm/kube-prometheus-stack/certificate.tpl.yaml")
+
+  # vars = {
+  #   fullnameOverride  = local.fullnameOverride
+  # }
+}
+
+resource "kubectl_manifest" "certificate" {
+  yaml_body = data.template_file.certificate.rendered
 }
 output "output_console_user_name" {
     value = module.console_users.this_iam_user_name
