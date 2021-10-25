@@ -5,7 +5,7 @@ locals {
   tags = {
     ops_env              = "dev"
     ops_managed_by       = "terraform",
-    ops_source_repo      = "kubernetes-ops",
+    ops_source_repo      = "do-infrastructure",
     ops_source_repo_path = "terraform/aws/domain-services/${local.environment_name}/eu-central-1/5-route53-hostedzone",
     ops_owners           = "devops",
   }
