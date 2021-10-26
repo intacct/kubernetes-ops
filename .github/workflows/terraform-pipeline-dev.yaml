@@ -86,13 +86,9 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: eu-central-1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # - name: aws cli
-      #   run: |
-      #   aws s3 ls
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
