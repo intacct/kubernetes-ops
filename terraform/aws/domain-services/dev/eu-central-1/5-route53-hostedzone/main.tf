@@ -20,7 +20,7 @@ terraform {
   }
 
   backend "remote" {
-    organization = "intacct"
+    organization = "ia-ds"
 
     workspaces {
       name = "terraform_aws_domain-services_dev_eu-central-1_5-route53-hostedzone"
