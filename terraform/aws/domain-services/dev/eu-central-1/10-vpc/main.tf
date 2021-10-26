@@ -7,6 +7,7 @@ locals {
     ops_source_repo      = "do-infrastructure",
     ops_source_repo_path = "terraform/aws/domain-services/${local.environment_name}/eu-central-1/10-vpc",
     ops_owners           = "devops",
+    temp                 = "temp tag",
   }
 }
 
