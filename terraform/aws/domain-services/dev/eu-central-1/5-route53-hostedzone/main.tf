@@ -1,5 +1,5 @@
 locals {
-  aws_region       = "us-east-1"
+  aws_region       = "eu-central-1"
   environment_name = "dev"
   domain_name      = "dev2.k8s.managedkube.com"
   tags = {
