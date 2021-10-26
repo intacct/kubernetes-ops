@@ -22,7 +22,7 @@ jobs:
     env:
       # The path that you want to construct the matrix on.  Only files in this
       # path that has changed will be included in.
-      TERRAFORM_CHECK_PATH: terraform-environments/aws/dev
+      TERRAFORM_CHECK_PATH: terraform/aws/domain-services/dev
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
