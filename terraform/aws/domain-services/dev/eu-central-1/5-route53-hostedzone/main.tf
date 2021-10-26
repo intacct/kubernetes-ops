@@ -1,7 +1,7 @@
 locals {
   aws_region       = "eu-central-1"
   environment_name = "dev"
-  domain_name      = "dev2.k8s.managedkube.com"
+  domain_name      = "dev3.k8s.managedkube.com"
   tags = {
     ops_env              = "dev"
     ops_managed_by       = "terraform",
