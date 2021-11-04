@@ -134,7 +134,19 @@ module "iam_policy" {
   description = "Provides full access to billing-integration bucket via the AWS Management Console"
   policy = data.aws_iam_policy_document.policy.json
 }
+module "iam_jenkins_policy" {
+  source  = "../../modules/multi-region/iam-policy"
 
+  name        = "ia_ds_jenkins"
+  path        = "/"
+  description = "Allows ia_jenkins user to deploy apps to k8s dev cluster"
+  policy = data.aws_iam_policy_document.jenkins_policy.json
+}
+
+resource "aws_iam_user_policy_attachment" "test-attach" {
+  user       = module.service_users.this_iam_user_name[1]
+  policy_arn = module.iam_jenkins_policy.arn
+}
 data "aws_iam_policy_document" "policy" {
   statement {
     actions   = [
@@ -157,6 +169,25 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
+data "aws_iam_policy_document" "jenkins_policy" {
+   
+  statement {
+    actions   = [
+      "eks:DescribeNodegroup",
+      "eks:ListNodegroups",
+      "eks:DescribeCluster",
+      "eks:ListClusters",
+      "eks:AccessKubernetesApi",
+      "ssm:GetParameter",
+      "eks:ListUpdates",
+      "eks:ListFargateProfiles"
+    ]
+    effect    = "Allow"
+    resources = [
+      "*"
+    ]
+  }
+}
 # module "iam_role" {
 #   source = "../../modules/multi-region/iam-role"
 #   # version = "~> 2.0"
@@ -296,6 +327,16 @@ locals {
 
 
 resource "aws_vpc_peering_connection" "this" {
+  peer_owner_id = var.eng_peer_acc_id
+  peer_vpc_id   = var.eng_peer_vpc_id
+  vpc_id        = var.owner_vpc_id
+  # auto_accept   = true
+
+  tags = {
+    Name = "ia-ds-vpc-peering-vpc-eng-oregon"
+  }
+}
+resource "aws_vpc_peering_connection" "ia-jenkins" {
   peer_owner_id = var.peer_acc_id
   peer_vpc_id   = var.peer_vpc_id
   vpc_id        = var.owner_vpc_id
@@ -315,18 +356,13 @@ resource "aws_route" "r1" {
 resource "aws_route" "r2" {
   route_table_id          = "rtb-06bff830f524c223d"
   destination_cidr_block  = "10.48.0.0/16"
-  vpc_peering_connection_id = "pcx-0c10d8f33f74ecee2"
+  vpc_peering_connection_id = "pcx-06934547d26ccb176"
 }
-# resource "aws_route" "r3" {
-#   route_table_id          = "rtb-06bff830f524c223d"
-#   destination_cidr_block  = "172.16.0.0/12"
-#   instance_id             = "i-0e7e6c5bdd966c007"
-# }
-# resource "aws_route" "r4" {
-#   route_table_id          = "rtb-06bff830f524c223d"
-#   destination_cidr_block  = "10.0.0.0/8"
-#   instance_id             = "i-0e7e6c5bdd966c007"
-# }
+resource "aws_route" "r3" {
+  route_table_id          = "rtb-06bff830f524c223d"
+  destination_cidr_block  = "10.234.4.0/24"
+  vpc_peering_connection_id = "pcx-06dbb329c42b298ba"
+}
 
 
 # data "aws_eks_cluster" "eks" {
@@ -405,19 +441,12 @@ module "eks" {
       username = "admin"
       groups   = ["system:masters"]
     },
-
-    # arn:aws:sts::827126933480:assumed-role/AWSReservedSSO_ia-ds-ecr-permissions_c151974230977a27/sasha.tooryani@sage.com
   ]
   map_users = [
     {
       userarn  = "arn:aws:iam::827126933480:user/garland.kan"
       username = "garland.kar"
       groups   = ["system:masters"]
-    },
-    {
-      userarn  = "arn:aws:iam::827126933480:user/saasha.tooryani"
-      username = "sasha.tooryani"
-      groups   = ["edit"]
     },
     {
       userarn  = "arn:aws:iam::827126933480:user/ia-jenkins"
@@ -669,4 +698,8 @@ output "output_service_user_encrypted_secred" {
 
 output "output_vpc" {
     value = module.vpc.vpc_arn
+}
+
+output "outoput_eks" {
+  value = module.eks
 }

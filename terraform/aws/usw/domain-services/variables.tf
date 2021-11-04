@@ -90,6 +90,8 @@ variable "custom_outbound" {}
 variable "owner_vpc_id" {}
 variable "peer_vpc_id" {}
 variable "peer_acc_id" {}
+variable "eng_peer_vpc_id" {}
+variable "eng_peer_acc_id" {}
 
 ##################
 # AWS Routes

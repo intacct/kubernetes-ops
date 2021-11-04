@@ -18,11 +18,9 @@ create_vpc = true
 # private_subnet_names = ["snet", "snet", "snet"]
 private_subnets = ["10.52.0.0/18", "10.52.64.0/18", "10.52.128.0/18"]
 public_subnets  = ["10.52.224.0/19"]
-# public_subnet_names = ["snet", "snet", "snet"]
 intra_subnets   = ["10.52.192.0/19"]
-# public_subnets = ["10.52.224.0/19"]
-# public_subnet_names = ["snet"]
 route_inst_cidr_block  = ["192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8"]
+
 
 ##################
 # Elastic Container Repository
@@ -93,6 +91,10 @@ ebs_devices     = []
 owner_vpc_id     = "vpc-05e939a0b246773e3"
 peer_vpc_id  = "vpc-0423d618162cda69d"
 peer_acc_id  = "144866517101"
+
+# owner_vpc_id     = "vpc-05e939a0b246773e3"
+eng_peer_vpc_id  = "vpc-48c2bd2e"
+eng_peer_acc_id  = "374322211295"
 
 ##################
 # EKS Cluster
