@@ -17,7 +17,7 @@ terraform {
     organization = "ia-ds"
 
     workspaces {
-      name = "ds_eu-central-1_10_vpc_dev"
+      name = "ds_dev_eu-central-1_10_vpc"
     }
   }
 }
