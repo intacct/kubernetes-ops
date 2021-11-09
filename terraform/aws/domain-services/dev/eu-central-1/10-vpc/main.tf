@@ -29,6 +29,7 @@ variable "environment_tags" {}
 variable "vpc_cidr" {}
 variable "private_subnets" {}
 variable "public_subnets" {}
+variable "zones" {}
 
 provider "aws" {
   region = var.aws_region
@@ -41,7 +42,7 @@ module "vpc" {
   source = "github.com/ManagedKube/kubernetes-ops//terraform-modules/aws/vpc?ref=v1.0.24"
 
   aws_region       = var.aws_region
-  azs              = ["${var.aws_region}a", "${var.aws_region}b", "${var.aws_region}c"]
+  azs              = ["${var.aws_region}${var.zones[0]}", "${var.aws_region}${var.zones[1]}", "${var.aws_region}${var.zones[2]}"]
   vpc_cidr         = var.vpc_cidr
   private_subnets  = var.private_subnets
   public_subnets   = var.public_subnets
