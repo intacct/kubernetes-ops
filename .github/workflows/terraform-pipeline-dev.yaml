@@ -116,7 +116,7 @@ jobs:
       - name: Terraform Init
         id: init
         working-directory: ${{matrix.tf_config}}
-        run: terraform init
+        run: terraform init -var-file=../variables.tfvars -var-file=../../variables.tfvars 
 
       - name: Terraform Plan
         id: plan
