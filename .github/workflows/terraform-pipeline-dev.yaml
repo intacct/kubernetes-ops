@@ -14,6 +14,8 @@ on:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
     - 'terraform/aws/domain-services/dev/**'
+    - '!terraform/aws/domain-services/dev/variables.tfvars'
+    - '!terraform/aws/domain-services/dev/eu-central-1/variables.tfvars'
 
 jobs:
   ## This generates a matrix of changed directory to run Terraform on
@@ -41,8 +43,11 @@ jobs:
           # leaving only the parent dir name
           while IFS= read -r file
           do
-            parent_dir=$(dirname -- "$file")
-            echo $parent_dir >> file2.txt
+            filename=$(basename "$file")
+            if [[ "$filename" != "variables.tfvars" ]]; then
+              parent_dir=$(dirname -- "$file")
+              echo $parent_dir >> file2.txt
+            fi
           done < files1.txt
 
           echo "## All changed directories"
@@ -111,13 +116,13 @@ jobs:
       - name: Terraform Init
         id: init
         working-directory: ${{matrix.tf_config}}
-        run: terraform init
+        run: terraform init -var-file=../variables.tfvars -var-file=../../variables.tfvars
 
       - name: Terraform Plan
         id: plan
         working-directory: ${{matrix.tf_config}}
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color
+        run: terraform plan -no-color -var-file=../variables.tfvars -var-file=../../variables.tfvars
         continue-on-error: true
 
       - uses: actions/github-script@0.9.0
@@ -154,4 +159,4 @@ jobs:
       - name: Terraform Apply
         working-directory: ${{matrix.tf_config}}
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var-file=../variables.tfvars -var-file=../../variables.tfvars

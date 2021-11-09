@@ -1,13 +1,8 @@
 locals {
-  aws_region       = "eu-central-1"
-  environment_name = "dev"
-  tags = {
-    ops_env              = "${local.environment_name}"
-    ops_managed_by       = "terraform",
-    ops_source_repo      = "do-infrastructure",
-    ops_source_repo_path = "terraform/aws/domain-services/${local.environment_name}/eu-central-1/10-vpc",
-    ops_owners           = "devops",
+  local_tags = {
+    ops_source_repo_path = "${var.base_path}/${var.environment_name}/${var.aws_region}/10-vpc",
   }
+  tags = merge(var.environment_tags, local.local_tags, { "ops_env" : var.environment_name })
 }
 
 terraform {
@@ -22,13 +17,22 @@ terraform {
     organization = "ia-ds"
 
     workspaces {
-      name = "terraform_aws_domain-services_dev_eu-central-1_10-vpc"
+      name = "ds_dev_eu-central-1_10_vpc"
     }
   }
 }
 
+variable "base_path" {}
+variable "aws_region" {}
+variable "environment_name" {}
+variable "environment_tags" {}
+variable "vpc_cidr" {}
+variable "private_subnets" {}
+variable "public_subnets" {}
+variable "zones" {}
+
 provider "aws" {
-  region = local.aws_region
+  region = var.aws_region
 }
 
 #
@@ -37,12 +41,12 @@ provider "aws" {
 module "vpc" {
   source = "github.com/ManagedKube/kubernetes-ops//terraform-modules/aws/vpc?ref=v1.0.24"
 
-  aws_region       = local.aws_region
-  azs              = ["eu-central-1a", "eu-central-1c", "eu-central-1c"]
-  vpc_cidr         = "10.0.0.0/16"
-  private_subnets  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets   = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-  environment_name = local.environment_name
-  cluster_name     = local.environment_name
+  aws_region       = var.aws_region
+  azs              = ["${var.aws_region}${var.zones[0]}", "${var.aws_region}${var.zones[1]}", "${var.aws_region}${var.zones[2]}"]
+  vpc_cidr         = var.vpc_cidr
+  private_subnets  = var.private_subnets
+  public_subnets   = var.public_subnets
+  environment_name = var.environment_name
+  cluster_name     = var.environment_name
   tags             = local.tags
 }
