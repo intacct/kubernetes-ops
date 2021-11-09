@@ -26,6 +26,9 @@ variable "base_path" {}
 variable "aws_region" {}
 variable "environment_name" {}
 variable "environment_tags" {}
+variable "vpc_cidr" {}
+variable "private_subnets" {}
+variable "public_subnets" {}
 
 provider "aws" {
   region = var.aws_region
