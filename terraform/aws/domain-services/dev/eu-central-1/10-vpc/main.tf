@@ -2,7 +2,7 @@ locals {
   local_tags = {
     ops_source_repo_path = "${var.base_path}/${var.environment_name}/${var.aws_region}/10-vpc",
   }
-  tags = merge(var.environment_tags, local.local_tags, {"ops_env": var.environment_name})
+  tags = merge(var.environment_tags, local.local_tags, { "ops_env" : var.environment_name })
 }
 
 terraform {
