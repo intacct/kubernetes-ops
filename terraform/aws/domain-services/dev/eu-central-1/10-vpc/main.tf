@@ -39,9 +39,9 @@ module "vpc" {
 
   aws_region       = var.aws_region
   azs              = ["${var.aws_region}a", "${var.aws_region}c", "${var.aws_region}c"]
-  vpc_cidr         = "10.54.0.0/16"
-  private_subnets  = ["10.54.1.0/24", "10.54.2.0/24", "10.54.3.0/24"]
-  public_subnets   = ["10.54.101.0/24", "10.54.102.0/24", "10.54.103.0/24"]
+  vpc_cidr         = var.vpc_cidr
+  private_subnets  = var.private_subnets
+  public_subnets   = var.public_subnets
   environment_name = var.environment_name
   cluster_name     = var.environment_name
   tags             = local.tags
