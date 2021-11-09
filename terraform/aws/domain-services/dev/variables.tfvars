@@ -1,2 +1,2 @@
-environment_name="dev"
-base_path="terraform/aws/domain-services"
+environment_name = "dev"
+base_path        = "terraform/aws/domain-services"
