@@ -14,6 +14,8 @@ on:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
     - 'terraform/aws/domain-services/dev/**'
+    - '!terraform/aws/domain-services/dev/variables.tfvars'
+    - '!terraform/aws/domain-services/dev/eu-central-1/variables.tfvars'
 
 jobs:
   ## This generates a matrix of changed directory to run Terraform on
