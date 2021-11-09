@@ -43,9 +43,11 @@ jobs:
           # leaving only the parent dir name
           while IFS= read -r file
           do
-            echo "file: $file"
-            parent_dir=$(dirname -- "$file")
-            echo $parent_dir >> file2.txt
+            filename=$(basename "$file")
+            if [[ "$filename" != "variables.tfvars" ]]; then
+              parent_dir=$(dirname -- "$file")
+              echo $parent_dir >> file2.txt
+            fi
           done < files1.txt
 
           echo "## All changed directories"
