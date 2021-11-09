@@ -159,4 +159,4 @@ jobs:
       - name: Terraform Apply
         working-directory: ${{matrix.tf_config}}
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var-file=../variables.tfvars -var-file=../../variables.tfvars
