@@ -6,16 +6,15 @@ on:
     # only run when files in this path changes
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
-    - 'terraform/aws/domain-services/dev/**'
+    - 'terraform/aws/domain-services/**/dev*/**'
     branches:
       - master
   pull_request:
     # only run when files in this path changes
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
-    - 'terraform/aws/domain-services/dev/**'
-    - '!terraform/aws/domain-services/dev/variables.tfvars'
-    - '!terraform/aws/domain-services/dev/eu-central-1/variables.tfvars'
+    - 'terraform/aws/domain-services/**/dev*/**'
+    - '!terraform/aws/domain-services/**/variables.tfvars'
 
 jobs:
   ## This generates a matrix of changed directory to run Terraform on
@@ -24,7 +23,7 @@ jobs:
     env:
       # The path that you want to construct the matrix on.  Only files in this
       # path that has changed will be included in.
-      TERRAFORM_CHECK_PATH: terraform/aws/domain-services/dev
+      TERRAFORM_CHECK_PATH: terraform/aws/domain-services/eu-central-1/dev01
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
