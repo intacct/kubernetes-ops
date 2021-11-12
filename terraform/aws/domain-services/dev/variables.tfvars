@@ -1,12 +1,8 @@
 ###############################
 # Paths
 ###############################
-base_path        = "terraform/aws/domain-services"
-
-###############################
-# Env Name
-###############################
-environment_name = "dev"
+base_path        = "terraform/aws/domain-services/dev"
+base_env_name    = "dev"
 
 ###############################
 # Common tags

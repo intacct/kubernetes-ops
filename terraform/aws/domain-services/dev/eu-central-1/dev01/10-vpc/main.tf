@@ -1,6 +1,6 @@
 locals {
   local_tags = {
-    ops_source_repo_path = "${var.base_path}/${var.environment_name}/${var.aws_region}/10-vpc",
+    ops_source_repo_path = "${var.base_path}/${var.aws_region}/${var.environment_name}/10-vpc",
   }
   tags = merge(var.environment_tags, local.local_tags, { "ops_env" : var.environment_name })
 }
@@ -17,7 +17,7 @@ terraform {
     organization = "ia-ds"
 
     workspaces {
-      name = "ds_dev_eu-central-1_10_vpc"
+      name = "ds_dev_eu-central-1_dev01_10_vpc"
     }
   }
 }
