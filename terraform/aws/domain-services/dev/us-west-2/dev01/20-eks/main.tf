@@ -70,13 +70,13 @@ module "eks" {
   cluster_version = var.cluster_version
 
   # public cluster - kubernetes API is publicly accessible
-  cluster_endpoint_public_access = true
+  cluster_endpoint_public_access       = true
   cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
   # private cluster - kubernetes API is internal the the VPC
   cluster_endpoint_private_access                = true
   cluster_create_endpoint_private_access_sg_rule = true
-  cluster_endpoint_private_access_cidrs = var.cluster_endpoint_private_access_cidrs
+  cluster_endpoint_private_access_cidrs          = var.cluster_endpoint_private_access_cidrs
 
   map_roles = var.map_roles
   map_users = var.map_users
