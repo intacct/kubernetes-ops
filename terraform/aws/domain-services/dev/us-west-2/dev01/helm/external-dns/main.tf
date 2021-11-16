@@ -24,7 +24,7 @@ terraform {
     organization = "ia-ds"
 
     workspaces {
-      name = "ds_dev_us-west-2_dev01_helm_kube-prometheus-stack"
+      name = "ds_dev_us-west-2_dev01_helm_external-dns"
     }
   }
 }
