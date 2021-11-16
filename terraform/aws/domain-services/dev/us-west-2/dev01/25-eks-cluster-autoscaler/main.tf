@@ -29,6 +29,12 @@ terraform {
   }
 }
 
+variable "base_path" {}
+variable "base_env_name" {}
+variable "aws_region" {}
+variable "environment_name" {}
+variable "environment_tags" {}
+
 provider "aws" {
   region = var.aws_region
 }
