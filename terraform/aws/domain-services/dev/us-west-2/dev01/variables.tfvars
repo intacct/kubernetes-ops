@@ -61,3 +61,8 @@ node_groups = {
 # DNS / Route53
 ###############################
 domain_name = "dev01.us-west-2.dev.ds.sage.com"
+
+###############################
+# AWS Secret
+###############################
+secrets_prefix   = "dev01/"
