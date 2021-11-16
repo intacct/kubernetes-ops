@@ -1,6 +1,6 @@
 locals {
   local_tags = {
-    ops_source_repo_path = "${var.base_path}/${var.aws_region}/${var.environment_name}/20-eks",
+    ops_source_repo_path = "${var.base_path}/${var.aws_region}/${var.environment_name}/cert-manager",
   }
   tags = merge(var.environment_tags, local.local_tags, { "ops_env" : var.environment_name })
 }
@@ -33,6 +33,11 @@ terraform {
   }
 }
 
+variable "base_path" {}
+variable "base_env_name" {}
+variable "aws_region" {}
+variable "environment_name" {}
+variable "environment_tags" {}
 variable "lets_encrypt_email" {}
 
 provider "aws" {
