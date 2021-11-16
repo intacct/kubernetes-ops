@@ -12,3 +12,8 @@ environment_tags = {
   ops_source_repo = "do-infrastructure",
   ops_owners      = "devops",
 }
+
+###############################
+# Cert Manager
+###############################
+lets_encrypt_email = "gar@managedkube.com"
