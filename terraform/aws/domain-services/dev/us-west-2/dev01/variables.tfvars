@@ -31,6 +31,11 @@ map_roles = [
     username = "role1"
     groups   = ["system:masters"]
   },
+  {
+      rolearn  = "arn:aws:iam::827126933480:role/AWSReservedSSO_AWSAdministratorAccess_89a5a5d338e56292"
+      username = "admin"
+      groups   = ["system:masters"]
+    }
 ]
 map_users = [
   {
@@ -38,6 +43,16 @@ map_users = [
     username = "username"
     groups   = ["system:masters"]
   },
+  {
+      userarn  = "arn:aws:iam::827126933480:user/garland.kan"
+      username = "garland.kar"
+      groups   = ["system:masters"]
+    },
+    {
+      userarn  = "arn:aws:iam::827126933480:user/ia-jenkins"
+      username = "ia.jenkins"
+      groups   = ["system:masters"]
+    }
 ]
 node_groups = {
   ng1 = {
