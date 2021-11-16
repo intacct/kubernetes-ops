@@ -66,3 +66,8 @@ node_groups = {
     k8s_labels       = {}
   }
 }
+
+###############################
+# DNS / Route53
+###############################
+domain_name = "dev01.us-west-2.dev.ds.sage.com"
