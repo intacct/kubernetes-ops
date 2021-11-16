@@ -8,7 +8,7 @@ on:
     paths:
     - 'terraform/aws/domain-services/dev/**'
     # Don't run this pipeline on changes to the helm directories
-    - '!terraform/aws/domain-services/dev/us-west-2/dev01/helm/kube-prometheus-stack/*'
+    - '!terraform/aws/domain-services/dev/**/helm/**'
     branches:
       - master
   pull_request:
@@ -18,7 +18,7 @@ on:
     - 'terraform/aws/domain-services/dev/**'
     - '!terraform/aws/domain-services/**/variables.tfvars'
     # Don't run this pipeline on changes to the helm directories
-    - '!terraform/aws/domain-services/dev/us-west-2/dev01/helm/kube-prometheus-stack/*'
+    - '!terraform/aws/domain-services/dev/**/helm/**'
 
 jobs:
   ## This generates a matrix of changed directory to run Terraform on
