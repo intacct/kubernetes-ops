@@ -59,7 +59,7 @@ data "terraform_remote_state" "route53_hosted_zone" {
   config = {
     organization = "ia-ds"
     workspaces = {
-      name = "ds_${var.base_env_name}_${var.aws_region}_${var.environment_name}_route53-hostedzone"
+      name = "ds_${var.base_env_name}_${var.aws_region}_${var.environment_name}_5-route53-hostedzone"
     }
   }
 }
