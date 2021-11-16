@@ -7,6 +7,8 @@ on:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
     - 'terraform/aws/domain-services/dev/**'
+    # Don't run this pipeline on changes to the helm directories
+    - '!terraform/aws/domain-services/dev/**/helm'
     branches:
       - master
   pull_request:
@@ -15,6 +17,8 @@ on:
     paths:
     - 'terraform/aws/domain-services/dev/**'
     - '!terraform/aws/domain-services/**/variables.tfvars'
+    # Don't run this pipeline on changes to the helm directories
+    - '!terraform/aws/domain-services/dev/**/helm'
 
 jobs:
   ## This generates a matrix of changed directory to run Terraform on
