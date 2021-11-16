@@ -6,19 +6,16 @@ on:
     # only run when files in this path changes
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
-    - 'terraform/aws/domain-services/dev/**'
-    # Don't run this pipeline on changes to the helm directories
-    - '!terraform/aws/domain-services/dev/**/helm/**'
+    # Only run on changes in the helm folder
+    - 'terraform/aws/domain-services/dev/**/helm/**'
     branches:
       - master
   pull_request:
     # only run when files in this path changes
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#example-using-positive-and-negative-patterns-1
     paths:
-    - 'terraform/aws/domain-services/dev/**'
-    - '!terraform/aws/domain-services/**/variables.tfvars'
-    # Don't run this pipeline on changes to the helm directories
-    - '!terraform/aws/domain-services/dev/**/helm/**'
+    # Only run on changes in the helm folder
+    - 'terraform/aws/domain-services/dev/**/helm/**'
 
 jobs:
   ## This generates a matrix of changed directory to run Terraform on
@@ -119,13 +116,13 @@ jobs:
       - name: Terraform Init
         id: init
         working-directory: ${{matrix.tf_config}}
-        run: terraform init -var-file=../variables.tfvars -var-file=../../variables.tfvars -var-file=../../../variables.tfvars
+        run: terraform init -var-file=../../variables.tfvars -var-file=../../../variables.tfvars -var-file=../../../../variables.tfvars
 
       - name: Terraform Plan
         id: plan
         working-directory: ${{matrix.tf_config}}
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -var-file=../variables.tfvars -var-file=../../variables.tfvars -var-file=../../../variables.tfvars
+        run: terraform plan -no-color -var-file=../../variables.tfvars -var-file=../../../variables.tfvars -var-file=../../../../variables.tfvars
         continue-on-error: true
 
       - uses: actions/github-script@0.9.0
@@ -162,4 +159,4 @@ jobs:
       - name: Terraform Apply
         working-directory: ${{matrix.tf_config}}
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var-file=../variables.tfvars -var-file=../../variables.tfvars -var-file=../../../variables.tfvars
+        run: terraform apply -auto-approve -var-file=../../variables.tfvars -var-file=../../../variables.tfvars -var-file=../../../../variables.tfvars
