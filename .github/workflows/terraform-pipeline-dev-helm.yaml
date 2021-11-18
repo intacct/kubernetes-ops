@@ -95,6 +95,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: sts identity
+        run: |
+          aws sts get-caller-identity
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
