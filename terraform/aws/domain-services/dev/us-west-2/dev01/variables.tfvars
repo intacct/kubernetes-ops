@@ -48,6 +48,11 @@ map_users = [
     username = "ia-tf"
     groups   = ["system:masters"]
   },
+  {
+    userarn  = "arn:aws:iam::827126933480:user/test-cred-user-temp"
+    username = "ia-tf"
+    groups   = ["system:masters"]
+  },
 ]
 node_groups = {
   ng1 = {
