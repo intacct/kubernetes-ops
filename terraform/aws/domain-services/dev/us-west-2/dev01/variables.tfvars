@@ -42,6 +42,11 @@ map_users = [
     userarn  = "arn:aws:iam::827126933480:user/ia-jenkins"
     username = "ia.jenkins"
     groups   = ["system:masters"]
+  },
+  {
+    userarn  = "arn:aws:iam::827126933480:user/test-cred-user-temp"
+    username = "test-cred-user-temp"
+    groups   = ["system:masters"]
   }
 ]
 node_groups = {
