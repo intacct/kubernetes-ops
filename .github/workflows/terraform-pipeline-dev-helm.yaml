@@ -91,13 +91,11 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.GAR_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.GAR_AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-west-2
      # Testing removing MFA to resolve EKS unreachable error: AWS_SESSION_TOKEN: ${{ secrets.DEV_AWS_SESSION_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: sts identity
-        run: |
-          aws sts get-caller-identity
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
