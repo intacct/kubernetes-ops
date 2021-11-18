@@ -17,7 +17,7 @@ grafana:
     annotations:
       kubernetes.io/ingress.class: nginx-external
     hosts:
-    - grafana.dev01.us-west-2.dev.ds.intacct.com
+    - grafana.dev01.us-west-2.dev.ds.intacct.com.foo
     tls:
     - hosts:
       - grafana.dev01.us-west-2.dev.ds.intacct.com # This should match a DNS name in the Certificate
