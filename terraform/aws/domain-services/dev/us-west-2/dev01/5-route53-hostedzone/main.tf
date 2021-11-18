@@ -1,6 +1,6 @@
 locals {
   local_tags = {
-    ops_source_repo_path = "${var.base_path}/${var.aws_region}/${var.environment_name}/20-eks",
+    ops_source_repo_path = "${var.base_path}/${var.aws_region}/${var.environment_name}/5-route53-hostedzone",
   }
   tags = merge(var.environment_tags, local.local_tags, { "ops_env" : var.environment_name })
 
