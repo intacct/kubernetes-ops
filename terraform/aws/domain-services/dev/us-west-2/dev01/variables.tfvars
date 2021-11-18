@@ -70,7 +70,7 @@ node_groups = {
 ###############################
 # DNS / Route53
 ###############################
-domain_name = "dev01.us-west-2.dev.ds.sage.com"
+domain_name = "dev01.us-west-2.dev.ds-dev.intacct.com"
 
 ###############################
 # AWS Secret
