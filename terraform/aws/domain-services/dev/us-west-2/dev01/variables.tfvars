@@ -44,10 +44,10 @@ map_users = [
     groups   = ["system:masters"]
   },
   {
-    userarn  = "arn:aws:iam::827126933480:user/test-cred-user-temp"
-    username = "test-cred-user-temp"
+    userarn  = "arn:aws:iam::827126933480:user/ia-tf"
+    username = "ia-tf"
     groups   = ["system:masters"]
-  }
+  },
 ]
 node_groups = {
   ng1 = {
