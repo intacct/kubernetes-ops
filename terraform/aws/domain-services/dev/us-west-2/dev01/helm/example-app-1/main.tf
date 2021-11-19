@@ -2,8 +2,8 @@ locals {
   namespace         = "example-app"
   fullnameOverride  = "app1"
   replica_count     = 1
-  docker_repository = "managedkube/example-app:latest"
-  docker_tag        = "latest"
+  docker_repository = "mendhak/http-https-echo"
+  docker_tag        = "21"
   requests_memory   = "0.2Gi"
   local_tags = {
     ops_source_repo_path = "${var.base_path}/${var.aws_region}/${var.environment_name}/helm/example-app",
