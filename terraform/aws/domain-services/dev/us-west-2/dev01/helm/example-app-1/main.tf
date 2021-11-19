@@ -70,6 +70,21 @@ provider "helm" {
   }
 }
 
+# Helm values file templating
+data "template_file" "helm_values" {
+  template = file("${path.module}/helm_values.yaml")
+
+  # Parameters you want to pass into the helm_values.yaml.tpl file to be templated
+  vars = {
+    fullnameOverride  = local.fullnameOverride
+    namespace         = local.namespace
+    replica_count     = local.replica_count
+    docker_repository = local.docker_repository
+    docker_tag        = local.docker_tag
+    requests_memory   = local.requests_memory
+  }
+}
+
 #
 # Helm - example app
 #
