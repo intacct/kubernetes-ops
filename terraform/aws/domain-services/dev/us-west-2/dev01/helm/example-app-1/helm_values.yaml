@@ -1,0 +1,37 @@
+replicaCount: ${replica_count}
+
+fullnameOverride: ${fullnameOverride}
+namespace: ${namespace}
+
+# containerSpecOptions:
+#   securityContext:
+#     runAsUser: 1000
+#     runAsGroup: 1000
+
+deployment:
+  containers:
+  - name: ${fullnameOverride}
+    image:
+      repository: ${docker_repository}
+      tag: ${docker_tag}
+      pullPolicy: Always
+
+    env:
+      base: []
+      # - name: REDIS_HOST
+      #   value: redis
+      # - name: DB_HOST
+      #   value: redis
+      # - name: DB_PASS
+      #   value: redis
+      perEnv: []
+
+    ports:
+    - name: http
+      protocol: TCP
+      containerPort: 17000
+      servicePort: 17000
+
+    resources:
+      requests:
+        memory: ${requests_memory}
