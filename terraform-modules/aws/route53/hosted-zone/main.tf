@@ -1,7 +1,7 @@
 resource "aws_kms_key" "this" {
-  customer_master_key_spec = "ECC_NIST_P256"
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
   deletion_window_in_days  = 7
-  key_usage                = "SIGN_VERIFY"
+  key_usage                = "ENCRYPT_DECRYPT"
   policy = jsonencode({
     Statement = [
       {
