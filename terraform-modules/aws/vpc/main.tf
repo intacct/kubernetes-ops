@@ -1,3 +1,14 @@
+provider "aws" {
+  profile = "terraform"
+  region  = var.region
+  
+  // This is necessary so that tags required for eks can be applied to the vpc without changes to the vpc wiping them out.
+  // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/guides/resource-tagging
+  ignore_tags {
+    key_prefixes = ["kubernetes.io/"]
+  }
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.7.0"
@@ -24,21 +35,21 @@ module "vpc" {
   enable_dns_hostnames = var.enable_dns_hostnames
   enable_dns_support   = var.enable_dns_support
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                    = "1"
-  }
+//  public_subnet_tags = {
+  //  "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+   // "kubernetes.io/role/elb"                    = "1"
+//  }
 
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"           = "1"
-  }
+ // private_subnet_tags = {
+ //   "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+ //   "kubernetes.io/role/internal-elb"           = "1"
+//  }
 
-  elasticache_subnet_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"           = "1"
-    "ops_purpose"                               = "Overloaded for k8s worker usage"
-  }
+//  elasticache_subnet_tags = {
+//    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+//    "kubernetes.io/role/internal-elb"           = "1"
+//    "ops_purpose"                               = "Overloaded for k8s worker usage"
+ // }
 
   tags = var.tags
 }

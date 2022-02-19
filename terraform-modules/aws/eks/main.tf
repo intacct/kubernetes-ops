@@ -11,9 +11,6 @@ terraform {
   }
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
-}
 
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
@@ -146,3 +143,81 @@ resource "null_resource" "patch" {
     command = self.triggers.cmd_patch
   }
 }
+
+resource "aws_kms_key" "eks" {
+  description = "EKS Secret Encryption Key"
+  tags        = var.tags
+}
+
+module "eks" {
+  source           = "terraform-aws-modules/eks/aws"
+  version          = "18.2.6"
+  cluster_name     = var.cluster_name
+  cluster_version  = var.cluster_version
+  enable_irsa      = var.enable_irsa
+  # write_kubeconfig = false
+  tags             = var.tags
+
+  # vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
+  vpc_id = var.vpc_id
+
+  # Using a conditional for backwards compatibility for those who started out only
+  # using the private_subnets for the input variable.  The new k8s_subnets is new
+  # and makes the subnet id input var name more generic to where the k8s worker nodes goes
+  subnet_ids = length(var.private_subnets) > 0 ? var.private_subnets : var.k8s_subnets
+
+  cluster_endpoint_public_access       = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
+
+  cluster_endpoint_private_access                = var.cluster_endpoint_private_access
+  cluster_security_group_additional_rules        = var.cluster_security_group_additional_rules
+
+  cluster_encryption_config = [{
+    provider_key_arn = aws_kms_key.eks.arn
+    resources        = ["secrets"]
+  }]
+
+  cluster_enabled_log_types     = var.cluster_enabled_log_types
+
+  # map_roles = var.map_roles
+  # map_users = var.map_users
+
+  eks_managed_node_groups = var.eks_managed_node_groups
+
+}
+
+resource "aws_ec2_tag" "vpc_tag" {
+  resource_id = data.terraform_remote_state.vpc.outputs.vpc_id
+  key         = "kubernetes.io/cluster/${var.cluster_name}"
+  value       = "shared"
+}
+
+resource "aws_ec2_tag" "private_subnet_tag" {
+  count = length(var.private_subnets)
+  resource_id = [data.terraform_remote_state.vpc.outputs.private_subnets[count.index].id]
+  key         = "kubernetes.io/role/elb"
+  value       = "1"
+}
+
+resource "aws_ec2_tag" "private_subnet_cluster_tag" {
+  count =       length(var.private_subnets)
+  resource_id = [data.terraform_remote_state.vpc.outputs.private_subnets[count.index].id]
+  key         = "kubernetes.io/cluster/${var.cluster_name}"
+  value       = "shared"
+}
+
+resource "aws_ec2_tag" "public_subnet_tag" {
+  
+  count = length(var.public_subnets)
+  resource_id = [data.terraform_remote_state.vpc.outputs.public_subnets[count.index].id]
+  key         = "kubernetes.io/role/elb"
+  value       = "1"
+}
+
+resource "aws_ec2_tag" "public_subnet_cluster_tag" {
+  count = length(var.public_subnets)
+  resource_id = [data.terraform_remote_state.vpc.outputs.public_subnets[count.index].id]
+  key         = "kubernetes.io/cluster/${var.cluster_name}"
+  value       = "shared"
+}
+
