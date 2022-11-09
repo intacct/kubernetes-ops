@@ -6,6 +6,7 @@ resource "helm_release" "helm_chart" {
   version          = var.helm_version
   verify           = var.verify
   repository       = "https://prometheus-community.github.io/helm-charts"
+  timeout          = 900
 
   values = [
     file("${path.module}/values.yaml"),
