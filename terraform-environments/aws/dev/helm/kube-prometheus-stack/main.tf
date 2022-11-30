@@ -114,3 +114,16 @@ data "template_file" "certificate" {
 resource "kubectl_manifest" "certificate" {
   yaml_body = data.template_file.certificate.rendered
 }
+
+data "template_file" "secret" {
+  template = file("${path.module}/secret.tpl.yaml")
+
+  vars = {
+    encoded_secret = local.encoded_secret
+    namespace      = "monitoring"
+  }
+}
+
+resource "kubectl_manifest" "secret" {
+  yaml_body = data.template_file.secret.rendered
+}
