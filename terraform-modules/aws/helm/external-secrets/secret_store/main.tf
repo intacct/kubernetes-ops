@@ -4,7 +4,7 @@ locals {
 
 data "aws_region" "current" {}
 
-resource "kubernetes_manifest" "secret_store" {
+resource "kubectl_manifest" "secret_store" {
   manifest = {
     "apiVersion" = "external-secrets.io/v1alpha1"
     "kind"       = "SecretStore"
@@ -33,7 +33,7 @@ resource "kubernetes_manifest" "secret_store" {
   }
 }
 
-resource "kubernetes_manifest" "cluster_secret_store" {
+resource "kubectl_manifest" "external_secrets_cluster_store" {
   manifest = {
     "apiVersion" = "external-secrets.io/v1alpha1"
     "kind"       = "ClusterSecretStore"
