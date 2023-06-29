@@ -1,23 +1,3 @@
-# resource "null_resource" "vpa_deployment" {
-#   triggers = {
-#     git_clone = module.git_clone.timestamp
-#   }
-
-#   provisioner "local-exec" {
-#     command = <<EOF
-#       git clone https://github.com/kubernetes/autoscaler.git
-#       cd autoscaler/vertical-pod-autoscaler
-#       ./hack/vpa-up.sh
-#     EOF
-#   }
-# }
-
-# module "git_clone" {
-#   source = "cloudposse/git-archive/null"
-#   version = "0.3.2"
-#   repository = var.vpa_repo
-#   output_path = var.output_path
-# }
 resource "null_resource" "vpa_deployment" {
   provisioner "local-exec" {
     command = <<EOF
@@ -26,4 +6,15 @@ resource "null_resource" "vpa_deployment" {
       ./hack/vpa-up.sh
     EOF
   }
+}
+
+resource "null_resource" "vpa_undeployment" {
+  provisioner "local-exec" {
+    command = <<EOF
+      cd autoscaler/vertical-pod-autoscaler/
+      ./hack/vpa-down.sh
+    EOF
+  }
+
+  depends_on = [null_resource.vpa_deployment]
 }

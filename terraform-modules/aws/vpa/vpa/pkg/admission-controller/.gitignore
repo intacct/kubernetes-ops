@@ -1,7 +1,0 @@
-# Admission Controller binary
-admission-controller
-admission-controller-amd64
-admission-controller-arm64
-admission-controller-arm
-admission-controller-ppc64le
-admission-controller-s390x
