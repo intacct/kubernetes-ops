@@ -19,9 +19,7 @@
 #   output_path = var.output_path
 # }
 resource "null_resource" "vpa_deployment" {
-  triggers = {
-    file_changes = filesetlist(".", "vertical-pod-autoscaler/**")
-  }
+  count = length(fileset(".", "vertical-pod-autoscaler/**"))
 
   provisioner "local-exec" {
     command = <<EOF
