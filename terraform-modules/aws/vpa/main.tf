@@ -1,8 +1,11 @@
 resource "null_resource" "vpa_deployment" {
   provisioner "local-exec" {
-    command     = "./hack/vpa-up.sh"
-    working_dir = "autoscaler/vertical-pod-autoscaler"
     when        = create
+    command = <<EOF
+      git clone https://github.com/kubernetes/autoscaler.git
+      cd autoscaler/vertical-pod-autoscaler/
+      ./hack/vpa-up.sh
+    EOF
   }
 
   provisioner "local-exec" {
@@ -16,3 +19,13 @@ resource "null_resource" "vpa_deployment" {
     trigger = timestamp()
   }
 }
+
+# resource "null_resource" "vpa_deployment" {
+#   provisioner "local-exec" {
+#     command = <<EOF
+#       git clone https://github.com/kubernetes/autoscaler.git
+#       cd autoscaler/vertical-pod-autoscaler/
+#       ./hack/vpa-up.sh
+#     EOF
+#   }
+# }
