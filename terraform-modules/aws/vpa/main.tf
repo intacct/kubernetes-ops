@@ -13,7 +13,8 @@ resource "null_resource" "vpa_deployment" {
 }
 
 module "git_clone" {
-  source = "github.com/cloudposse/terraform-null-git-archive?ref=tags/0.3.2"
+  source = "cloudposse/git-archive/null"
+  version = "0.3.2"
   repository = var.vpa_repo
   output_path = var.output_path
 }
