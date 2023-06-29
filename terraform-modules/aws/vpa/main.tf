@@ -1,20 +1,13 @@
 resource "null_resource" "vpa_deployment" {
   provisioner "local-exec" {
-    command = <<EOF
-      git clone https://github.com/kubernetes/autoscaler.git
-      cd autoscaler/vertical-pod-autoscaler/
-      ./hack/vpa-up.sh
-    EOF
+    command     = "./hack/vpa-up.sh"
+    working_dir = "autoscaler/vertical-pod-autoscaler"
+    when        = apply
   }
-}
 
-resource "null_resource" "vpa_undeployment" {
   provisioner "local-exec" {
-    command = <<EOF
-      cd autoscaler/vertical-pod-autoscaler/
-      ./hack/vpa-down.sh
-    EOF
+    command     = "./hack/vpa-down.sh"
+    working_dir = "autoscaler/vertical-pod-autoscaler"
+    when        = destroy
   }
-
-  depends_on = [null_resource.vpa_deployment]
 }
