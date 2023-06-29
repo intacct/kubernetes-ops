@@ -20,7 +20,7 @@
 # }
 resource "null_resource" "vpa_deployment" {
   triggers = {
-    file_changes = fileset(".", "vertical-pod-autoscaler/**")
+    file_changes = filesetlist(".", "vertical-pod-autoscaler/**")
   }
 
   provisioner "local-exec" {
