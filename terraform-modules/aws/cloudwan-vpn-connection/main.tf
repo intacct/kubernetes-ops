@@ -1,13 +1,14 @@
 locals {
-  customer_gateway_id = toset (var.customer_gateway_id)
   vpn_connection_arn = [for my_arn in aws_vpn_connection.main: my_arn.arn]
 }
 
 resource "aws_vpn_connection" "main" {
-  for_each = local.customer_gateway_id
-  customer_gateway_id =each.key
-  type                = "ipsec.1"
-  static_routes_only  = var.static_routes_only
+  for_each = var.create_VPN_connection ? var.vpn_connections : {}
+  customer_gateway_id = each.value["customer_gateway_id"]
+  type                = var.type
+  static_routes_only  = each.value["static_routes_only"]
+  tunnel1_inside_cidr = each.value["tunnel1_inside_cidr"]
+  tunnel2_inside_cidr = each.value["tunnel2_inside_cidr"]
   tags = var.tags
 }
 

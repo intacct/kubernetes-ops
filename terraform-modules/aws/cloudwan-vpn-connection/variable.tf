@@ -3,22 +3,16 @@ variable "create_VPN_connection" {
   default = true
   description = "For creating VPN attachment to CloudWan"
 }
-variable "customer_gateway_id" {
-  type = list(string)
-  default = []
-}
 
-variable "tags" {
-  description = "Tags to apply to all resources."
-  type        = map(string)
+variable "vpn_connections" {
+  description = "Maps of vpn_connections attributes "
+  type        = map(map(any))
   default     = {}
 }
 
-variable "static_routes_only" {
-    type = bool
-    default = false
-    description = "To enable static routing make it true"
-  
+variable "type" {
+  description = "The type of VPN connection. The only type AWS supports at this time is ipsec.1"
+  default = "ipsec.1"
 }
 
 variable "core_network_id" {
@@ -31,4 +25,10 @@ variable "segment_name" {
   type = string
   description = "To which segment the attachment need to be added"
   
+}
+
+variable "tags" {
+  description = "Tags to apply to all resources."
+  type        = map(string)
+  default     = {}
 }
