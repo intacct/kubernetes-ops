@@ -6,17 +6,9 @@ module "ec2_sgw" {
   availability_zone    = var.ec2_sgw_az
   create_security_group = var.ec2_sgw_create_security_group
   ingress_cidr_block_activation = var.ingress_cidr_block_activation
-  #aws_region           = var.ec2_sgw_aws_region
+  
 }
 
-# module "sgw" {
-#   depends_on         = [module.ec2_sgw]
-#   source             = "aws-ia/storagegateway/aws//modules/aws-sgw"
-#   gateway_name       = var.sgw_name
-#   gateway_ip_address = module.ec2_sgw.public_ip
-#   join_smb_domain    = false
-#   gateway_type       = "FILE_S3"
-# }
 
 module "sgw" {
   source     = "aws-ia/storagegateway/aws//modules/aws-sgw"
