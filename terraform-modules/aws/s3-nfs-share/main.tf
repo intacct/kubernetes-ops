@@ -21,12 +21,13 @@ module "ec2_sgw" {
 module "sgw" {
   source     = "aws-ia/storagegateway/aws//modules/aws-sgw"
   gateway_name                       = var.sgw_name
-  gateway_ip_address                 = module.ec2_sgw.public_ip
+  gateway_ip_address                 = module.ec2_sgw.private_ip
   join_smb_domain                    = false
   gateway_type                       = "FILE_S3"
   create_vpc_endpoint                = var.create_vpc_endpoint
   gateway_vpc_endpoint               = var.gateway_vpc_endpoint
   create_vpc_endpoint_security_group = var.create_vpc_endpoint_security_group #if false define vpc_endpoint_security_group_id
+  vpc_endpoint_security_group_id     = var.vpc_endpoint_security_group_id
   vpc_id                             = var.vpc_endpoint_vpc_id
   vpc_endpoint_subnet_ids            = var.vpc_endpoint_subnet_ids
   gateway_private_ip_address         = module.ec2_sgw.private_ip
