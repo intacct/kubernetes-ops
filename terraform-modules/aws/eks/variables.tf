@@ -30,6 +30,12 @@ variable "cluster_version" {
   default = "1.18"
 }
 
+variable "cluster_addons" {
+  description = "Map of cluster addon configurations to enable for the cluster. Addon name can be the map keys or set with `name`"
+  type        = any
+  default     = {}
+}
+
 variable "enable_irsa" {
   type        = bool
   default     = true

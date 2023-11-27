@@ -31,14 +31,15 @@ resource "aws_kms_key" "eks" {
 }
 
 module "eks" {
-  source           = "terraform-aws-modules/eks/aws"
-  version          = "18.6.1"
-  cluster_name     = var.cluster_name
-  cluster_version  = var.cluster_version
-  enable_irsa      = var.enable_irsa
-  tags             = var.tags
+  source                   = "terraform-aws-modules/eks/aws"
+  version                  = "18.6.1"
+  cluster_name             = var.cluster_name
+  cluster_version          = var.cluster_version
+  cluster_addons           = var.cluster_addons
+  enable_irsa              = var.enable_irsa
+  tags                     = var.tags
 
-  vpc_id = var.vpc_id
+  vpc_id                   = var.vpc_id
 
   # Using a conditional for backwards compatibility for those who started out only
   # using the private_subnets for the input variable.  The new k8s_subnets is new
@@ -60,6 +61,7 @@ module "eks" {
   cluster_enabled_log_types     = var.cluster_enabled_log_types
 
   eks_managed_node_groups = var.eks_managed_node_groups
+
 
 }
 
