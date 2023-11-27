@@ -1,3 +1,9 @@
+variable "helm_version" {
+  type = string
+  default = "9.28.0"
+  description = "Version of the helm chat"
+}
+
 variable "aws_region" {
   type        = string
   default     = "us-east-1"
