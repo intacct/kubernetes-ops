@@ -38,3 +38,7 @@ output "cluster_security_group_id" {
 output "cluster_arn" {
   value = module.eks.cluster_arn
 }
+
+output "cluster_addons" {
+  value = module.eks.cluster_addons
+}
