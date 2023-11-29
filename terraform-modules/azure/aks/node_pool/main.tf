@@ -19,6 +19,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   enable_auto_scaling   = var.enable_auto_scaling
   max_count             = var.max_count
   min_count             = var.min_count
+  orchestrator_version  = var.orchestrator_version
 
   vnet_subnet_id = var.vnet_subnet_id
   

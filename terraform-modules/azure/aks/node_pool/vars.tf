@@ -19,6 +19,11 @@ variable "node_pool_name" {
   default = "generic"
 }
 
+variable "orchestrator_version" {
+  default = "1.25.6"
+}
+
+
 variable "vm_size" {
   default = "Standard_B2s"
 }
