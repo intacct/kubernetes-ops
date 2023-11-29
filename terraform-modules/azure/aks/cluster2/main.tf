@@ -34,13 +34,14 @@ module "aks_cluster" {
   
   agents_availability_zones = var.agents_availability_zones
 
-  agents_count	   = var.default_node_pool_node_count
-  agents_max_count = var.default_node_pool_max_count
-  agents_min_count = var.default_node_pool_min_count
-  agents_pool_name = var.default_node_pool_name
-  agents_size	     = var.default_node_pool_instance_size
-  agents_tags	     = var.agents_tags
-  agents_labels	   = var.default_node_pool_node_labels
+  agents_count	        = var.default_node_pool_node_count
+  agents_max_count      = var.default_node_pool_max_count
+  agents_min_count      = var.default_node_pool_min_count
+  agents_pool_name      = var.default_node_pool_name
+  agents_size	          = var.default_node_pool_instance_size
+  agents_tags	          = var.agents_tags
+  agents_labels	        = var.default_node_pool_node_labels
+  orchestrator_version  = var.orchestrator_version
 
   maintenance_window = var.maintenance_window
 

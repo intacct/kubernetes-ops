@@ -46,6 +46,9 @@ variable "enable_pod_security_policy" {
   default = false
 }
 
+variable "orchestrator_version" {
+  default = "1.25.6"
+}
 variable "default_node_pool_name" {
   default = "default"
 }
