@@ -45,14 +45,9 @@ variable "api_server_authorized_ip_ranges" {
 variable "enable_pod_security_policy" {
   default = false
 }
-variable "default_node_pool" {
-  type = map(string)
 
-  default = {
-    name                  = "default"
-    vm_size               = "Standard_B2s"
-    orchestrator_version  = "1.25.6"
-  }
+variable "orchestrator_version" {
+  default = "1.25.6"
 }
 variable "default_node_pool_name" {
   default = "default"
