@@ -41,6 +41,7 @@ module "aks_cluster" {
   agents_size	     = var.default_node_pool_instance_size
   agents_tags	     = var.agents_tags
   agents_labels	   = var.default_node_pool_node_labels
+  node_pools       = var.default_node_pool
 
   maintenance_window = var.maintenance_window
 
