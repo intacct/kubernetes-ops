@@ -37,6 +37,9 @@ variable "kubernetes_version" {
   default = "1.24.3"
 }
 
+variable "orchestrator_version" {
+  default = "1.24.3"
+}
 variable "api_server_authorized_ip_ranges" {
   type    = list(string)
   default = ["1.1.1.1/32"]
