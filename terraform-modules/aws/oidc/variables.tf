@@ -46,6 +46,12 @@ variable "validate_conditions" {
   default     = ["repo:octo-org/octo-repo:ref:refs/heads/octo-branch"]
 }
 
+variable "validate_audiences" {
+  description = "The audience to be added to the role policy. Set to sts.amazonaws.com for cross-account assumable role"
+  type        = set(string)
+  default     = ["sts.amazonaws.com"]
+}
+
 variable "tags" {
   type        = map(any)
   default     = {}
