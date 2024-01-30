@@ -1,3 +1,7 @@
+
+### local copy for https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/5.33.1/submodules/iam-assumable-role-with-oidc?tab=inputs
+### to be able to override StringEquals for audience and StringLike for subjects
+
 locals {
   aws_account_id = var.aws_account_id != "" ? var.aws_account_id : data.aws_caller_identity.current.account_id
   partition      = data.aws_partition.current.partition
