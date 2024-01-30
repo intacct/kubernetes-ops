@@ -20,6 +20,24 @@ module "iam_assumable_role_admin" {
   oidc_fully_qualified_audiences = var.validate_audiences
   oidc_fully_qualified_subjects  = var.validate_conditions
   tags                           = var.tags
+
+  dynamic "oidc_condition" {
+    for_each = var.url
+
+    content {
+      effect  = "Allow"
+      actions = ["sts:AssumeRoleWithWebIdentity"]
+      dynamic "condition" {
+        for_each = length(var.validate_audiences) > 0 ? var.url : []
+
+        content {
+          test     = "StringEquals"
+          variable = "${oidc_condition.value}:aud"
+          values   = var.validate_audiences
+        }
+      }
+    }
+  }
 }
 
 resource "aws_iam_policy" "iam_policy" {
