@@ -11,7 +11,7 @@ resource "aws_iam_openid_connect_provider" "this" {
 }
 
 module "iam_assumable_role_admin" {
-  source                         = "./oidc2"
+  source                         = "../oidc2"
   create_role                    = true
   role_name                      = var.name
   provider_url                   = var.url
