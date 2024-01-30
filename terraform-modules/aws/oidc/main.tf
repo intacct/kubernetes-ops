@@ -11,8 +11,7 @@ resource "aws_iam_openid_connect_provider" "this" {
 }
 
 module "iam_assumable_role_admin" {
-  source                         = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                        = "5.33.1"
+  source                         = "./oidc2"
   create_role                    = true
   role_name                      = var.name
   provider_url                   = var.url
@@ -20,24 +19,6 @@ module "iam_assumable_role_admin" {
   oidc_fully_qualified_audiences = var.validate_audiences
   oidc_fully_qualified_subjects  = var.validate_conditions
   tags                           = var.tags
-
-  dynamic "oidc_condition" {
-    for_each = var.url
-
-    content {
-      effect  = "Allow"
-      actions = ["sts:AssumeRoleWithWebIdentity"]
-      dynamic "condition" {
-        for_each = length(var.validate_audiences) > 0 ? var.url : []
-
-        content {
-          test     = "StringEquals"
-          variable = "${oidc_condition.value}:aud"
-          values   = var.validate_audiences
-        }
-      }
-    }
-  }
 }
 
 resource "aws_iam_policy" "iam_policy" {
