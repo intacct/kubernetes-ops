@@ -11,14 +11,14 @@ resource "aws_iam_openid_connect_provider" "this" {
 }
 
 module "iam_assumable_role_admin" {
-  source                        = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
-  version                       = "3.6.0"
-  create_role                   = true
-  role_name                     = var.name
-  provider_url                  = var.url
-  role_policy_arns              = [aws_iam_policy.iam_policy.arn]
-  oidc_fully_qualified_subjects = var.validate_conditions
-  tags                          = var.tags
+  source                         = "../oidc-local-module" # local copy for https://registry.terraform.io/modules/terraform-aws-modules/iam/aws/5.33.1/submodules/iam-assumable-role-with-oidc?tab=inputs
+  create_role                    = true
+  role_name                      = var.name
+  provider_url                   = var.url
+  role_policy_arns               = [aws_iam_policy.iam_policy.arn]
+  oidc_fully_qualified_audiences = var.validate_audiences
+  oidc_fully_qualified_subjects  = var.validate_conditions
+  tags                           = var.tags
 }
 
 resource "aws_iam_policy" "iam_policy" {
