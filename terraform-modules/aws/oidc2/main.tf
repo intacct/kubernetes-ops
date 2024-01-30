@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "assume_role_with_oidc" {
         for_each = length(var.oidc_fully_qualified_subjects) > 0 ? local.urls : []
 
         content {
-          test     = "StringEquals"
+          test     = "StringLike"
           variable = "${statement.value}:sub"
           values   = var.oidc_fully_qualified_subjects
         }
