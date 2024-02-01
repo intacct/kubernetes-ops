@@ -2,8 +2,6 @@ locals {
   base_name                = "external-secrets"
 }
 
-data "aws_region" "current" {}
-
 resource "kubernetes_manifest" "secret_store" {
   manifest = {
     "apiVersion" = "external-secrets.io/v1alpha1"
@@ -19,7 +17,7 @@ resource "kubernetes_manifest" "secret_store" {
       "provider" = {
         "aws": {
           "service": "SecretsManager"
-          "region": data.aws_region.current.name
+          "region": var.aws_region
           "auth": {
             "jwt": {
               "serviceAccountRef": {
@@ -47,7 +45,7 @@ resource "kubernetes_manifest" "cluster_secret_store" {
       "provider" = {
         "aws": {
           "service": "SecretsManager"
-          "region": data.aws_region.current.name
+          "region": var.aws_region
           "auth": {
             "jwt": {
               "serviceAccountRef": {
