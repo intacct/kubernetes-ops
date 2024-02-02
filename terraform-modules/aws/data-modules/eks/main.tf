@@ -1,13 +1,16 @@
-variable "backend_organization" {}
-variable "workspace_name" {}
+variable "s3_bucket" {}
+variable "key" {}
+variable "region" {}
+variable "dynamodb_table" {}
 
 data "terraform_remote_state" "eks" {
-  backend = "remote"
+  backend = "s3"
   config = {
-    organization = var.backend_organization
-    workspaces = {
-      name = var.workspace_name
-    }
+    bucket = var.s3_bucket
+    key = var.key
+    region = var.region
+    dynamodb_table = var.dynamodb_table
+    
   }
 }
 
