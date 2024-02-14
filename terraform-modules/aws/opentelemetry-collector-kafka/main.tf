@@ -68,10 +68,10 @@ resource "kubernetes_manifest" "open_telemetry_collector" {
     
         service:
           pipelines:
-            #traces:
-            #  receivers: [otlp, zipkin, jaeger]
-            #  processors: [memory_limiter, batch]
-            #  exporters: [debug]
+            traces:
+              receivers: [otlp, zipkin, jaeger]
+              processors: [memory_limiter, batch]
+              exporters: [debug]
             metrics:
               receivers: [otlp]
               processors: [memory_limiter, batch]
