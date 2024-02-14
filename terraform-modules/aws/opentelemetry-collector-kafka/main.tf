@@ -132,14 +132,14 @@ resource "kubernetes_manifest" "external_secret" {
         {
           "secretKey" = "kafka-username"
           "remoteRef" = {
-            "key" = "ds/${each.value.environment}-kafka/scram"
+            "key" = each.value.secret_name
             "property" = "kafka-username"
           }
         },
         {
           "secretKey" = "kafka-password"
           "remoteRef" = {
-            "key" = "ds/${each.value.environment}-kafka/scram"
+            "key" = each.value.secret_name
             "property" = "kafka-password"
           }
         }
