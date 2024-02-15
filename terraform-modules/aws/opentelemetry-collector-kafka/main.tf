@@ -11,6 +11,10 @@ resource "kubernetes_manifest" "open_telemetry_collector" {
       }
     }
     "spec" = {
+      "mode" = "deployment"
+      "resources" = { }
+      "targetAllocator" = { }
+      "upgradeStrategy" = "automatic"
       "env" = [
         {
           "name" = "KAFKA_USERNAME"
@@ -76,10 +80,6 @@ resource "kubernetes_manifest" "open_telemetry_collector" {
               receivers: [otlp]
               processors: [memory_limiter, batch]
               exporters: [kafka/metrics]
-        mode: deployment
-        resources: { }
-        targetAllocator: { }
-        upgradeStrategy: automatic
       CONFIG
     }
   }
@@ -132,14 +132,14 @@ resource "kubernetes_manifest" "external_secret" {
         {
           "secretKey" = "kafka-username"
           "remoteRef" = {
-            "key" = "ds/${each.value.environment}-kafka/scram"
+            "key" = each.value.secret_name
             "property" = "kafka-username"
           }
         },
         {
           "secretKey" = "kafka-password"
           "remoteRef" = {
-            "key" = "ds/${each.value.environment}-kafka/scram"
+            "key" = each.value.secret_name
             "property" = "kafka-password"
           }
         }
