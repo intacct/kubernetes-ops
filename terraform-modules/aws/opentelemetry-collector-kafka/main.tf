@@ -11,6 +11,10 @@ resource "kubernetes_manifest" "open_telemetry_collector" {
       }
     }
     "spec" = {
+      "mode" = "deployment"
+      "resources" = { }
+      "targetAllocator" = { }
+      "upgradeStrategy" = "automatic"
       "env" = [
         {
           "name" = "KAFKA_USERNAME"
@@ -68,18 +72,14 @@ resource "kubernetes_manifest" "open_telemetry_collector" {
     
         service:
           pipelines:
-            traces:
-              receivers: [otlp, zipkin, jaeger]
-              processors: [memory_limiter, batch]
-              exporters: [debug]
+            #traces:
+            #  receivers: [otlp, zipkin, jaeger]
+            #  processors: [memory_limiter, batch]
+            #  exporters: [debug]
             metrics:
               receivers: [otlp]
               processors: [memory_limiter, batch]
               exporters: [kafka/metrics]
-        mode: deployment
-        resources: { }
-        targetAllocator: { }
-        upgradeStrategy: automatic
       CONFIG
     }
   }
