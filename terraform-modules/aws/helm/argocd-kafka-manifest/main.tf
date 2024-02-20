@@ -29,7 +29,7 @@ resource "kubernetes_manifest" "application_set" {
             "namespace" = "${each.value.env}-ia-kafka"
             "name"      = each.value.k8s_cluster
           }
-          "project" = each.value.argo_project
+          "project" = "appbundle-project-${each.value.jfrog}"
           "sources" = [
             {
               "path"           = "charts/kafka-chart"
@@ -48,10 +48,6 @@ resource "kubernetes_manifest" "application_set" {
                   {
                     "name"  = "kafka.connect.image.repository"
                     "value" = "intacct.jfrog.io/ia-ds-docker-${each.value.jfrog}/ia-kafka-connect"
-                  },
-                  {
-                    "name"  = "kafka.connect.image.imagePullSecrets.name"
-                    "value" = each.value.image_secret
                   }
                 ]
                 "valueFiles" = [
@@ -62,7 +58,7 @@ resource "kubernetes_manifest" "application_set" {
             },
             {
               "repoURL"        = "git@github.com:Intacct/do-kafka-infra"
-              "targetRevision" = each.value.kafka_branch
+              "targetRevision" = "main"
               "ref"            = "do-kafka"
             }
           ]
