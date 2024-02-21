@@ -48,7 +48,7 @@ resource "kubernetes_manifest" "application_set" {
                   {
                     "name"  = "kafka.connect.image.repository"
                     "value" = "intacct.jfrog.io/ia-ds-docker-${each.value.jfrog}/ia-kafka-connect"
-                  }
+                  },
                   {
                     "name"  = "kafka.ingress.domain"
                     "value" = "${each.value.k8s_cluster}.${each.value.jfrog}.ds.intacct.com"
