@@ -62,7 +62,7 @@ resource "kubernetes_manifest" "application_set" {
             },
             {
               "repoURL"        = "git@github.com:Intacct/do-kafka-infra"
-              "targetRevision" = "IAOPSPS-2711"
+              "targetRevision" = "main"
               "ref"            = "do-kafka"
             }
           ]
