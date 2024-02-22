@@ -56,13 +56,13 @@ resource "kubernetes_manifest" "application_set" {
                 ]
                 "valueFiles" = [
                   "$do-kafka/kafka-helm/helm_values.yaml",
-                  "$do-kafka/kafka-helm/values_${each.value.jfrog}.yaml"
+                  "$do-kafka/kafka-helm/values_${each.value.env}.yaml"
                 ]
               }
             },
             {
               "repoURL"        = "git@github.com:Intacct/do-kafka-infra"
-              "targetRevision" = "main"
+              "targetRevision" = "IAOPSPS-2711"
               "ref"            = "do-kafka"
             }
           ]
