@@ -96,7 +96,7 @@ resource "kubernetes_manifest" "instrumentation" {
     }
     "spec" = {
       "exporter" = {
-        "endpoint" = "http://${each.value.name}.monitoring.svc.cluster.local:4317"
+        "endpoint" = "http://${each.value.name}-collector.monitoring.svc.cluster.local:4317"
       }
       "propagators" = [
         "tracecontext",
