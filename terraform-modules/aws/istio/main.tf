@@ -76,3 +76,20 @@ resource "helm_release" "helm_chart_istio_egress" {
     helm_release.helm_chart_istio_base
   ]
 }
+
+resource "helm_release" "helm_chart_istio_external-gw" {
+  count            = var.install_helm_chart_istio_external-gw
+  chart            = "${path.module}/istio-${var.istio_version}/manifests/charts/gateway"
+  namespace        = var.namespace_name
+  create_namespace = false
+  name             = var.istio_external-gw_chart_name
+  verify           = var.verify
+
+  values = [
+    var.helm_values_istio_external-gw,
+  ]
+
+  depends_on = [
+    helm_release.helm_chart_istio_base
+  ]
+}
