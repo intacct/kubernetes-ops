@@ -113,3 +113,21 @@ variable "helm_values_istio_egress" {
   default     = ""
   description = "Additional helm values to pass in.  These values would override the default in this module."
 }
+
+variable "helm_values_istio_external-gw" {
+  type        = string
+  default     = ""
+  description = "Additional helm values to pass in.  These values would override the default in this module."
+}
+
+variable "istio_external-gw_chart_name" {
+  type        = string
+  default     = "ia-external-gw"
+  description = "The chart name for the istio-discovery helm install"
+}
+
+variable "install_helm_chart_istio_external-gw" {
+  type        = number
+  default     = 1
+  description = "Install this helm chart or not"
+}
