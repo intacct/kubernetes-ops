@@ -114,6 +114,7 @@ variable "helm_values_istio_egress" {
   description = "Additional helm values to pass in.  These values would override the default in this module."
 }
 
+#additional gateways
 variable "helm_values_istio_external-gw" {
   type        = string
   default     = ""
