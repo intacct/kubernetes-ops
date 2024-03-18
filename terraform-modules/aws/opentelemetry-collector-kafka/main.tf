@@ -133,7 +133,7 @@ resource "kubernetes_manifest" "external_secret" {
           "secretKey" = "kafka-username"
           "remoteRef" = {
             "key" = each.value.secret_name
-            "property" = "${each.value.env}-kafka-username"
+            "property" = "kafka-username"
           }
         },
         {
