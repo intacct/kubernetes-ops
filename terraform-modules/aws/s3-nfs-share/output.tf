@@ -1,11 +1,5 @@
-output "ec2_sgw_public_ip" {
-  value       = module.ec2_sgw.public_ip
-  description = "The Public IP address of the created Elastic IP."
-  sensitive   = true
-}
-
 output "ec2_sgw_private_ip" {
-  value       = module.ec2_sgw.public_ip
+  value       = module.ec2_sgw.private_ip
   description = "The Private IP address of the Storage Gateway on EC2"
   sensitive = true
 }

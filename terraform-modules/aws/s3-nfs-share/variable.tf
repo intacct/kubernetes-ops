@@ -36,6 +36,17 @@ variable "ingress_cidr_block_activation" {
   description = "The CIDR block to allow ingress port 80 into your File Gateway instance for activation. For multiple CIDR blocks, please separate with comma"
 }
 
+variable "ingress_cidr_blocks" {
+  type        = string
+  description = "The CIDR blocks to allow ingress into your File Gateway instance for NFS and SMB client access. For multiple CIDR blocks, please separate with comma"
+  default     = "10.0.0.0/8,192.168.0.0/16"
+}
+
+variable "egress_cidr_blocks" {
+  type        = string
+  description = "The CIDR blocks for Gateway activation"
+  default     = "10.0.0.0/8,192.168.0.0/16"
+}
 
 #NFS Share
 variable "nfs_share_name" {
@@ -105,4 +116,12 @@ variable "vpc_endpoint_subnet_ids" {
 }
 
 
+variable "s3_endpoint" {
+  type        = string
+  description = "The S3 endpoint to reach the S3 bucket"
+}
 
+variable "bucket_region" {
+  type        = string
+  description = "The region of the S3 bucket used by the file share. Required when specifying vpc_endpoint_dns_name"
+}
