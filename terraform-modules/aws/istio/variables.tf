@@ -40,7 +40,7 @@ variable "namespace_annotations" {
 
 variable "istio_version" {
   type        = string
-  default     = "1.18.0"
+  default     = "1.20.0"
   description = "The version of istio to install"
 }
 
@@ -114,6 +114,7 @@ variable "helm_values_istio_egress" {
   description = "Additional helm values to pass in.  These values would override the default in this module."
 }
 
+#additional gateways
 variable "helm_values_istio_external-gw" {
   type        = string
   default     = ""
