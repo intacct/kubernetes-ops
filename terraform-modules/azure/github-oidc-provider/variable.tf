@@ -29,7 +29,7 @@ variable "logout_url" {
 }
 
 variable "redirect_uris" {
-  type        = string
+  type        = list(string)
   default     = null
   description = "A set of URLs where user tokens are sent for sign-in"
 }
