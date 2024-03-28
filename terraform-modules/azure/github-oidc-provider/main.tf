@@ -36,6 +36,15 @@ resource "azuread_application" "app" {
       id   = azuread_service_principal.msgraph.app_role_ids["Group.ReadWrite.All"]
       type = "Role"
     }
+  }  
+  web {
+    logout_url    = "https://dev-backoffice.sagecm-internal.intacct.com"
+    redirect_uris = ["https://dev-backoffice.sagecm-internal.intacct.com"]
+
+    implicit_grant {
+      access_token_issuance_enabled = true
+      id_token_issuance_enabled     = true
+    }  
   }
 }
 
