@@ -22,6 +22,17 @@ variable "azure_resource_group_name" {
   description = "The Azure resource group"
 }
 
+variable "logout_url" {
+  type        = string
+  default     = null
+  description = "The URL that will be used by Microsoft's authorization service to sign out a user using front-channel, back-channel or SAML logout protocols."
+}
+
+variable "redirect_uris" {
+  type        = string
+  default     = null
+  description = "A set of URLs where user tokens are sent for sign-in"
+}
 variable "federated_identity_credential" {
   type        = any
   description = "The Azure federated_identity_credential"

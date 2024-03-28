@@ -38,8 +38,8 @@ resource "azuread_application" "app" {
     }
   }  
   web {
-    logout_url    = "https://dev-backoffice.sagecm-internal.intacct.com"
-    redirect_uris = ["https://dev-backoffice.sagecm-internal.intacct.com/"]
+    logout_url    = var.logout_url
+    redirect_uris = var.redirect_uris
 
     implicit_grant {
       access_token_issuance_enabled = true
