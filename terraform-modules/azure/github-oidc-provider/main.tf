@@ -42,8 +42,8 @@ resource "azuread_application" "app" {
     redirect_uris = var.redirect_uris
 
     implicit_grant {
-      access_token_issuance_enabled = true
-      id_token_issuance_enabled     = true
+      access_token_issuance_enabled = var.access_token_issuance_enabled
+      id_token_issuance_enabled     = var.id_token_issuance_enabled
     }  
   }
 }

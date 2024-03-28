@@ -33,6 +33,13 @@ variable "redirect_uris" {
   default     = null
   description = "A set of URLs where user tokens are sent for sign-in"
 }
+
+variable "access_token_issuance_enabled" {
+  type        = bool
+}     
+variable "id_token_issuance_enabled" {
+  type        = bool
+}  
 variable "federated_identity_credential" {
   type        = any
   description = "The Azure federated_identity_credential"
