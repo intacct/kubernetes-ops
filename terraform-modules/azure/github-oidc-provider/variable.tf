@@ -36,9 +36,11 @@ variable "redirect_uris" {
 
 variable "access_token_issuance_enabled" {
   type        = bool
+  default     = []
 }     
 variable "id_token_issuance_enabled" {
   type        = bool
+  default     = []
 }  
 variable "federated_identity_credential" {
   type        = any
